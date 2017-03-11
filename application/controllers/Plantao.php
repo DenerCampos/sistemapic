@@ -155,7 +155,7 @@ class Plantao extends CI_Controller {
         //verifica se tem alguem logado
         if ($this->session->has_userdata('nivel')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '3'){
+            if ($this->session->userdata('nivel') == '2'){
                 //grava log
                 $this->gravaLog("tentativa de acesso", "acesso ao controlador Plantao.php");
                 redirect(base_url());
@@ -284,9 +284,7 @@ class Plantao extends CI_Controller {
     private function geraPaginasRelatorioPlantao($resultado){
         for ($i = 0; $i < count($resultado); $i++){
             //gerando setores
-            foreach ($resultado[$i] as $chamado) {
-                $setores[] = $this->setor->buscaId($chamado->getIdsetor());
-            }
+            $setores = $this->geraSetoresRelatorioPlantao($resultado[$i]);
             //gerando html do relatorio
             $paginas[] = $this->load->view("plantao/relatorio", array( 
                 "assetsUrl" => base_url("assets"),
@@ -299,6 +297,21 @@ class Plantao extends CI_Controller {
         return $paginas;
     }
     
+    //Gera os setores sem repetição para o relatorio de plantão
+    private function geraSetoresRelatorioPlantao($resultado){
+        $setores_id[] = array(); $setores;
+        foreach ($resultado as $chamado) {
+            //verifica se existe o setor dentro do array (para não repetir setor)
+            if (in_array($this->setor->buscaId($chamado->getIdsetor())->getIdsetor(), $setores_id)){
+                //existe setor, não faz nada
+            } else{
+                $setores_id[] = $this->setor->buscaId($chamado->getIdsetor())->getIdsetor();
+                $setores[] = $this->setor->buscaId($chamado->getIdsetor());
+            }
+        }
+        return $setores;
+    }
+
     //Gera data para relatrio de plantão
     private function geraDataRelatorioPlantao($data){
         //Dia da semana
@@ -308,19 +321,19 @@ class Plantao extends CI_Controller {
                 $dia = "Domingo";
                 break;
             case "Monday":
-                $dia = "Segunda";
+                $dia = "Segunda-feira";
                 break;
             case "Tuesday":
-                $dia = "Terça";
+                $dia = "Terça-feira";
                 break;
             case "Wednesday":
-                $dia = "Quarta";
+                $dia = "Quarta-feira";
                 break;
             case "Thursday":
-                $dia = "Quinta";
+                $dia = "Quinta-feira";
                 break;
             case "Friday":
-                $dia = "Sexta";
+                $dia = "Sexta-feira";
                 break;
             case "Saturday":
                 $dia = "Sabado";

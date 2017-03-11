@@ -22,7 +22,7 @@ class LoadFile extends CI_Controller {
     /*------Carregamento de views--------*/ 
     public function index()
     {
-        //$this->load->view('teste', $msg);
+        redirect(base_url());
     }
     
     /*------Funções internas--------*/ 

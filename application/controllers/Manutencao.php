@@ -510,7 +510,7 @@ class Manutencao extends CI_Controller {
         //verifica se tem alguem logado
         if ($this->session->has_userdata('nivel')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') != '0'){
+            if ($this->session->userdata('nivel') == '2'){
                 //acesso negado
                 //grava log
                 $this->gravaLog("tentativa de acesso", "acesso ao controlador Manutencao.php");

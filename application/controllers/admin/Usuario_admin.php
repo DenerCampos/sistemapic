@@ -233,7 +233,7 @@ class Usuario_admin extends CI_Controller {
         //Verifica se login existe e senha
         if ($this->usuario->verificaLoginAtualiza($id, $login)){
             return FALSE;
-        } elseif (isset ($senha)){
+        } elseif (isset ($senha) && isset ($rsenha)){
             if ($senha != $rsenha) {
                 return FALSE;
             }else{

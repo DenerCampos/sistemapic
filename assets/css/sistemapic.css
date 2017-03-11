@@ -40,6 +40,37 @@ body{
     text-decoration: none;
 }
 
+.navbar-login{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size{
+    font-size: 87px;
+    color: #ccc;
+}
+
+.imagem-size{
+    width: 87px;
+    height: 70px;
+}
+
+.imagem-perfil-edit{
+    padding-top: 10px;
+}
+
+#navbar-opcoes{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
 /*mapas*/
 
 .mapa-pic{
@@ -101,4 +132,36 @@ body{
 
 .alerta{
     margin-top: 30px;
+}
+
+/*Usuario*/
+input[type=file] {
+    display: none;
+}
+
+.arquivo{
+    margin-top: 15px;
+    text-align: center;
+}
+
+.imagem-usuario{
+    height: 250px;
+}
+
+.foto-usuario{
+    height: 250px;
+    width: 270px;
+}
+
+.imagem-usuario>i{
+    font-size: 250px;
+}
+
+.btn-usuario{
+    float: right;
+    padding-right: 15px;
+}
+
+.form-usuario{
+    padding-top: 50px;
 }

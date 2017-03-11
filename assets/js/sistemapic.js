@@ -67,6 +67,11 @@ $(document).ready(function() {
         }        
     });
     
+    //Fotos usuario perfil
+    $('input[type=file]').on("change", function(){
+        fotoPerfil(this);
+    });
+    
 });
 
 //Esconder tela login
@@ -1308,4 +1313,19 @@ function defeitoManutencao(ancor){
         }
     });
 }
+
+//Fotos Perfil
+function fotoPerfil(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $(".foto-usuario").attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+    else {
+        var img = input.value;
+        $(".foto-usuario").attr('src', baseUrl+'document/user/0.png');        
+    }
+} 
 

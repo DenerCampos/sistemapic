@@ -13,6 +13,8 @@ class Usuario extends CI_Controller {
     /*------Construtor--------*/
     public function __construct() {
         parent::__construct();
+        //verifica nivel usuario
+        $this->verificaNivel();
         //carregando modelo
         $this->load->model('Usuario_model', 'usuario');
     }
@@ -20,6 +22,11 @@ class Usuario extends CI_Controller {
     
     /*------Carregamento de views--------*/ 
     public function index(){
+        redirect(base_url());
+    }
+    
+    //Editar Perfil
+    public function editar(){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -27,19 +34,18 @@ class Usuario extends CI_Controller {
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
             "ativo" => ""));      
-        //Carrega index
-        $this->load->view('home', array(
+        //Carrega edição de perfil
+        $this->load->view('usuario/editar-usuario', array(
             "assetsUrl" => base_url("assets")));
         //Modal
-        $this->load->view("usuario/criar-usuario", array( 
-            "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets")));
     }
-    
+
+
     //Mensagem de erro
-    public function erro($msg = NULL){
+    public function erro($msg = NULL, $uri = null){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -50,7 +56,8 @@ class Usuario extends CI_Controller {
         //Carrega index
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
-            "msgerro" => 'teste de ero'));
+            "msgerro" => $msg,
+            "uri" => $uri));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
@@ -71,8 +78,8 @@ class Usuario extends CI_Controller {
         //Carrega index
         $this->load->view('mensagens/mensagem', array(
             "assetsUrl" => base_url("assets"),
-            "msg" => 'teste de mensagem',
-            "uri" => 'home'));
+            "msg" => $msg,
+            "uri" => $uri));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
@@ -105,6 +112,155 @@ class Usuario extends CI_Controller {
         }
     }
     
+    //Atualiza usuario
+    public function atualizaUsuario(){
+        $nome; $email; $senha_anterior; $senha_nova; $senha_repete; $foto;
+        //recupera dados
+        $this->recuperaAtualizaUsuario($nome, $email, $senha_anterior, $senha_nova, $senha_repete, $foto);
+        try {
+            //verifica se altera senha
+            if (($senha_anterior !== "") && ($senha_nova !== "")){
+                //verifica senha antiga com o bd
+                if ($this->verificaSenha($senha_anterior, $this->usuario->buscaId($this->session->userdata("id"))->getSenha())){
+                    //verifica se login existe e senha é valido
+                    if ($this->verificaLoginAtualiza($email, $senha_nova, $senha_repete)){
+                        //salva dados atualizaUsuarioPerfil($id, $nome, $login, $senha = NULL)
+                        $this->usuario->atualizaUsuarioPerfil($this->session->userdata('id'), $nome, $email, $this->geraSenha($senha_nova));
+                        $this->salvaImagemPerfil();
+                        //carrega nova sessão
+                        $this->refazSessao($this->usuario->buscaId($this->session->userdata('id')));
+                        //Log
+                        $this->gravaLog("edição usuario", "usuario editado: ".$nome." Email: ".$email);
+                        //mensagem
+                        $this->mensagem("Usuário alterado com sucesso!", 'home');
+                    }else {
+                        //login ou senha invalidas
+                        //mensagem
+                        $this->erro("Login ou senha invalida(s).", 'usuario/editar');
+                    }
+                } else {
+                    //senha antiga invalida
+                    //Log
+                    $this->gravaLog("erro edição usuario", "usuario editado: ".$nome." Email: ".$email);
+                    //mensagem
+                    $this->erro("Senha atual invalida.", base_url('usuario/editar'));
+                }
+            } else {
+                //não atualiza senhas
+                //verifica se login existe e senha é valido
+                if ($this->verificaLoginAtualiza($email)){                    
+                    //salva dados atualizaUsuarioPerfil($id, $nome, $login, $senha = NULL)
+                    $this->usuario->atualizaUsuarioPerfil($this->session->userdata('id'), $nome, $email);
+                    $this->salvaImagemPerfil();
+                    //carrega nova sessão
+                    $this->refazSessao($this->usuario->buscaId($this->session->userdata('id')));
+                    //Log
+                    $this->gravaLog("edição usuario", "usuario editado: ".$nome." Email: ".$email);
+                    //mensagem
+                    $this->mensagem("Usuário alterado com sucesso!", 'home');
+                } else {
+                    //login  invalidas
+                    //Log
+                    $this->gravaLog("erro edição usuario", "usuario editado: ".$nome." Email: ".$email);
+                    //mensagem
+                    $this->erro("Login invalido.", 'usuario/editar');
+                }
+            }
+            
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+        }
+    }
+
+    //recupera dados do atualiza usuarios
+    private function recuperaAtualizaUsuario(&$nome, &$email, &$senha_anterior, &$senha_nova, &$senha_repete, &$foto){
+        $nome = trim($this->input->post("iptEdtNome"));
+        $email = trim($this->input->post("iptEdtEmail"));
+        $senha_anterior = trim($this->input->post("iptEdtSenhaAtual"));
+        $senha_nova = trim($this->input->post("iptEdtSenha"));
+        $senha_repete = trim($this->input->post("iptEdtRSenha"));
+        $foto = $_FILES["iptEdtFoto"];
+    }
+    
+    //salvar imagem do perfil
+    private function salvaImagemPerfil(){
+        if ($_FILES['iptEdtFoto']['error'] == 0){
+            //inicia biblioteca do codeigniter
+            $this->load->library('upload');
+            //configuração
+            $config = array(
+                'upload_path' => './document/user/',
+                'allowed_types' => 'gif|jpg|png',
+                'file_name' => $this->session->userdata("id")
+            );
+            //inicializa
+            $this->upload->initialize($config);
+            //verifica se ja tem foto o perfil
+            $this->verificaFotoPerfil();
+            //salvar e verifica erro
+            if ($this->upload->do_upload('iptEdtFoto')){
+                return TRUE;
+            } else {
+                //Log erro foto
+                $this->gravaLog("erro foto perfil", "usuario: ".$this->session->userdata("id")."Erro: ".$this->upload->display_errors());
+                return FALSE;
+            }
+        }
+        //não houve troca de arquivo
+        return TRUE;
+    }
+    
+    //verifica se já tem imagem salva no perfil
+    private function verificaFotoPerfil(){
+        //extensões permitidas
+        $ext = array ('gif', 'jpg', 'png');
+        //caminho
+        $caminho = "./document/user/";
+        //verifica se existe o arquivo
+        foreach ($ext as $value) {
+            if (file_exists($caminho.$this->session->userdata('id').".".$value)){
+                //deleta arquivo
+                unlink($caminho.$this->session->userdata('id').".".$value);
+                break;
+            }
+        }
+    }
+    
+    //Refaz sessão
+    private function refazSessao($usuario){
+        try {
+            //dados da sessão
+            $dados = array(
+                "id" => $usuario->getIdusuario(),
+                "nome" => $usuario->getNome(),
+                "login" => $usuario->getLogin(),
+                "nivel" => $usuario->getNivel(),
+                "foto" => $this->caminhoFoto($usuario)
+            );
+            //cria sessão
+            $this->session->set_userdata($dados);
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
+    }
+    
+    //busca caminho da foto perfil
+    private function caminhoFoto(&$usuario){
+        //extensões permitidas
+        $ext = array ('gif', 'jpg', 'png');
+        //caminho
+        $caminho = './document/user/';
+        //verifica se existe o arquivo
+        foreach ($ext as $value) {
+            if (file_exists($caminho.$usuario->getIdusuario().".".$value)){
+                //retorna caminho completo
+                return base_url('document/user/'.$usuario->getIdusuario().".".$value);
+            }
+        }
+        return base_url('document/user/0.png');
+    }
+
     //verificação de login e senha
     private function verificaLogin($login, $senha, $rsenha){
         //Verifica se login existe e senha
@@ -112,6 +268,22 @@ class Usuario extends CI_Controller {
             return FALSE;
         } elseif ($senha != $rsenha) {
             return FALSE;
+        } else{
+            return TRUE;
+        }
+    }
+    
+    //verificação de login e senha
+    private function verificaLoginAtualiza($login, $senha = NULL, $rsenha = NULL){
+        //Verifica se login existe e senha        
+        if ($this->usuario->verificaLoginAtualiza($this->session->userdata('id'), $login)){
+            return FALSE;
+        } elseif (isset ($senha) && isset ($rsenha)){
+            if ($senha != $rsenha) {
+                return FALSE;
+            }else{
+                return TRUE;
+            }
         } else{
             return TRUE;
         }
@@ -146,6 +318,41 @@ class Usuario extends CI_Controller {
         $this->load->model("Log_model", "registro");
         $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
         $this->registro->addLog();
+    }
+    
+    //verifica nivel de usuario para acesso ao sistema
+    private function verificaNivel(){
+        //verifica nivel usuario
+        //verifica se tem alguem logado
+        if ($this->session->has_userdata('nivel')){
+            //verifica nivel de acesso
+            if ($this->session->userdata('nivel') == '3'){
+                //grava log
+                $this->gravaLog("tentativa de acesso", "acesso ao controlador Usuario.php");
+                redirect(base_url());
+            } else {
+                //acesso permitido
+                //grava log
+                $this->gravaLog("acesso", "acesso ao controlador Usuario.php");
+            }
+        } else {
+            //grava log
+            $this->gravaLog("tentativa de acesso", "acesso ao controlador Caixa.php");
+            redirect(base_url());
+        }
+    }
+    
+    //cria sessão no navegador
+    private function criaSessao($usuario){
+        //dados da sessão
+        $dados = array(
+            "id" => $usuario->getIdusuario(),
+            "nome" => $usuario->getNome(),
+            "login" => $usuario->getLogin(),
+            "nivel" => $usuario->getNivel()
+        );
+        //cria sessão
+        $this->session->set_userdata($dados);
     }
     
 }

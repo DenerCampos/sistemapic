@@ -150,12 +150,29 @@ class Login extends CI_Controller {
             "nome" => $usuario->getNome(),
             "login" => $usuario->getLogin(),
             "nivel" => $usuario->getNivel(),
-            "area" => $usuario->getIdarea()
+            "foto" => $this->caminhoFoto($usuario)
         );
         //cria sessão
         $this->session->set_userdata($dados);
     }
     
+    //busca caminho da foto perfil
+    private function caminhoFoto(&$usuario){
+        //extensões permitidas
+        $ext = array ('gif', 'jpg', 'png');
+        //caminho da foto
+        $caminho = './document/user/';
+        //verifica se existe o arquivo
+        foreach ($ext as $value) {
+            if (file_exists($caminho.$usuario->getIdusuario().".".$value)){
+                //retorna caminho completo
+                return base_url('document/user/'.$usuario->getIdusuario().".".$value);
+            }
+        }
+        return base_url('document/user/0.png');
+    }
+
+
     //Grava log no BD
     private function gravaLog($nome, $descricao){
         //dados

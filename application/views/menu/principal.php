@@ -79,12 +79,47 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             
             <?php if ($this->session->has_userdata('nome')){ ?>
             <div class="navbar-right">
-                <div class="navbar-text">
-                    <?php echo $this->session->userdata('nome'); ?>
-                </div>
                 <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a class="navbar-link" href="<?php echo base_url('login/logoff'); ?>">Sair</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                            <?php echo $this->session->userdata('nome'); ?> 
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <div class="navbar-login">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <p class="imagem-perfil-edit">
+<!--                                                <i class="fa fa-user-circle-o icon-size"></i>-->
+                                                <img class="imagem-size img-circle img-thumbnail img-responsive"
+                                                     src="<?php echo $this->session->userdata('foto');?>">
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <p class="text-left"><strong> <?php echo $this->session->userdata('nome'); ?></strong></p>
+                                            <p class="text-left small"> <?php echo $this->session->userdata('login'); ?></p>
+                                            <p class="text-left">
+                                                <a href="<?php echo base_url('usuario/editar'); ?>" class="btn btn-primary btn-block btn-sm">Editar perfil</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <div class="navbar-login navbar-login-session">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <p>
+                                                <a href="<?php echo base_url('login/logoff'); ?>" class="btn btn-danger btn-block">Sair do sistema</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>

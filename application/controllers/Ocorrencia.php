@@ -648,5 +648,6 @@ class Ocorrencia extends CI_Controller {
             $this->gravaLog("erro fechamento", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
         }
         redirect("ocorrencia");
-    }
+    }   
+    
 }

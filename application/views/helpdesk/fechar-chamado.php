@@ -108,7 +108,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptFchDesc" class="control-label">Descrição:</label>
-                                <textarea class="form-control" id="iptFchDesc" maxlength="100" name="iptFchDesc"
+                                <textarea class="form-control" id="iptFchDesc" maxlength="1000" name="iptFchDesc"
                                   placeholder="Descrição do chamado"></textarea>
                             </div>
                         </div>
@@ -116,14 +116,14 @@
                         <div class="comentario col-md-12">
                             <div class="form-group">
                                 <label for="iptFchComentario" class="control-label">Comentários anteriores:</label>                       
-                                <textarea class="form-control" id="iptFchComentario" maxlength="100" 
+                                <textarea class="form-control" id="iptFchComentario" maxlength="1000" 
                                   name="iptFchComentario"></textarea>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptFchComentarioNovo" class="control-label">Solução:</label>                       
-                                <textarea class="form-control" id="iptFchComentarioNovo" maxlength="100" name="iptFchComentarioNovo"
+                                <textarea class="form-control" id="iptFchComentarioNovo" maxlength="1000" name="iptFchComentarioNovo"
                                           placeholder="Solução" rows="3" required="true"></textarea>
                             </div>
                         </div>

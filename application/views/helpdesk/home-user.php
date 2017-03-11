@@ -49,7 +49,7 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title">Chamados em aberto</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body table-responsive">
                                 <table class="table table-hover table-responsive">
                                     <thead>
                                         <tr>
@@ -57,6 +57,7 @@
                                             <th>Usuário</th>
                                             <th>Problema</th>
                                             <th>Data abertura</th>
+                                            <th>Descrição</th>
                                             <th>Estado</th>
                                             <th class="text-right">Opções</th>
                                         </tr>
@@ -68,6 +69,9 @@
                                             <td><?php echo $aberta->getUsuario(); ?></td>
                                             <td><?php echo $problema->buscaId($aberta->getIdproblema())->getNome(); ?></td>
                                             <td><?php echo date("d/m/Y - H:i", strtotime($aberta->getData_abertura())); ?></td>
+                                            <td title="<?php echo $aberta->getDescricao(); ?>">
+                                                <?php echo $aberta->reduzirDescricao($aberta->getDescricao()); ?>
+                                            </td>
                                             <td><?php echo $estado->buscaId($aberta->getIdocorrencia_estado())->getNome(); ?></td>
                                             <td class="text-right opcoes">
                                                 <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
@@ -103,7 +107,7 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title">Chamados em atendimento</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -112,6 +116,7 @@
                                             <th>Problema</th>
                                             <th>Data abertura</th>
                                             <th>Data atendimento</th>
+                                            <th>Descrição</th>
                                             <th>Técnico</th>
                                             <th>Estado</th>
                                             <th class="text-right opcoes">Opções</th>
@@ -125,6 +130,9 @@
                                             <td><?php echo $problema->buscaId($atendimento->getIdproblema())->getNome(); ?></td>
                                             <td><?php echo date("d/m/Y - H:i", strtotime($atendimento->getData_abertura())); ?></td>
                                             <td><?php echo date("d/m/Y - H:i", strtotime($atendimento->getData_alteracao())); ?></td>
+                                            <td title="<?php echo $atendimento->getDescricao(); ?>">
+                                                <?php echo $atendimento->reduzirDescricao($atendimento->getDescricao()); ?>
+                                            </td>
                                             <td><?php echo $usuario->buscaId($atendimento->getUsuario_atende())->getNome(); ?></td>
                                             <td><?php echo $estado->buscaId($atendimento->getIdocorrencia_estado())->getNome();; ?></td>
                                             <td class="text-right">
@@ -167,7 +175,7 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title">Chamados fechados</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -176,6 +184,7 @@
                                             <th>Problema</th>
                                             <th>Data abertura</th>
                                             <th>Data fechamento</th>
+                                            <th>Descrição</th>
                                             <th>Técnico</th>
                                             <th>Estado</th>
                                             <th class="text-right">Opções</th>
@@ -189,6 +198,9 @@
                                             <td><?php echo $problema->buscaId($fechada->getIdproblema())->getNome(); ?></td>
                                             <td><?php echo date("d/m/Y - H:i", strtotime($fechada->getData_abertura())); ?></td>
                                             <td><?php echo date("d/m/Y - H:i", strtotime($fechada->getData_fechamento())); ?></td>
+                                            <td title="<?php echo $fechada->getDescricao(); ?>">
+                                                <?php echo $fechada->reduzirDescricao($fechada->getDescricao()); ?>
+                                            </td>
                                             <td><?php echo $usuario->buscaId($fechada->getUsuario_fecha())->getNome(); ?></td>
                                             <td><?php echo $estado->buscaId($fechada->getIdocorrencia_estado())->getNome(); ?></td>
                                             <td class="text-right opcoes">

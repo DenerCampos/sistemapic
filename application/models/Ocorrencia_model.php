@@ -520,5 +520,13 @@ class Ocorrencia_model extends CI_Model {
         $this->idocorrencia_estado = $idocorrencia_estado;
     }
 
-
+    //reduzir descrição de uma ocorrencia
+    public function reduzirDescricao($descricao){
+        $tamanho = strlen($descricao);
+        if ($tamanho > 20){
+            return substr($descricao, 0, 20)."...";
+        } else {
+            return $descricao;
+        }
+    }
 }

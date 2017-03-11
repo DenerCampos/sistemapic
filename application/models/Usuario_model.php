@@ -50,9 +50,26 @@ class Usuario_model extends CI_Model {
             "login" => $login,
             "senha" => $senha,
             "nivel" => $nivel,
-            "idestado" => $idestado,
-            "idarea" => $idarea
+            "idestado" => $idestado
         );
+        if (isset($idarea)){
+            $dados["idarea"] = $idarea;
+        }
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idusuario', $id);
+        $this->db->update('usuario');
+    }
+    
+    //Atualiza usuario
+    public function atualizaUsuarioPerfil($id, $nome, $login, $senha = NULL){
+        $dados = array(
+            "nome" => $nome,
+            "login" => $login
+        );
+        if (isset($senha)){
+            $dados['senha'] = $senha;
+        }
         //atualiza no db
         $this->db->set($dados);
         $this->db->where('idusuario', $id);
@@ -116,7 +133,7 @@ class Usuario_model extends CI_Model {
             return FALSE;
         }
     }
-    
+        
     //Verifica se usuario esta ativo
     public function verificaAtivo($id){
         $query = $this->db->query(

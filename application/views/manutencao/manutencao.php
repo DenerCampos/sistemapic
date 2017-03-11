@@ -58,7 +58,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="panel-heading">
                                 <h3 class="panel-title">Aguardando envio para assitência técnica</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -122,7 +122,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="panel-heading">
                                 <h3 class="panel-title">Manutenções em andamento</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -188,7 +188,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="panel-heading">
                                 <h3 class="panel-title">Manutenções fechadas</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -252,7 +252,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="panel-heading">
                                 <h3 class="panel-title">Manutenções em garantia</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>

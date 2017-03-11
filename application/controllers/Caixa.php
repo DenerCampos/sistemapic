@@ -265,5 +265,4 @@ class Caixa extends CI_Controller {
             redirect(base_url());
         }
     }
-    
 }

@@ -32,7 +32,8 @@
                     <?php echo $chamado->getDescricao()." (".$chamado->getUsuario().")."?>
                     <br/>
                     <strong>- Solução:</strong>
-                    <?php echo $comentario->buscaFechamento($chamado->getIdocorrencia())->getDescricao(); ?>                    
+                    <?php echo $comentario->buscaFechamento($chamado->getIdocorrencia())->getDescricao(); ?> 
+                    <br/>
                 <?php } ?>
                 <?php } ?>
             </div>
