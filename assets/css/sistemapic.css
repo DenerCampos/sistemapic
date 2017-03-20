@@ -67,7 +67,7 @@ body{
 }
 
 #navbar-opcoes{
-    padding-right: 10px;
+    /*padding-right: 10px;*/
     padding-left: 10px;
 }
 
@@ -109,6 +109,60 @@ body{
     margin-top: 5px;
     margin-left: 30px;
     margin-right: 30px;
+}
+
+.ordenacao{
+    float: right;
+}
+
+.ordenacao a {
+    text-decoration: none;
+}
+
+/*Anexos*/
+.imagem-anexo-preview{
+    float: left;
+    margin-right: 10px;
+}
+
+.imagem-anexo{
+    width: 40px;
+    height: 35px;
+}
+
+.anexo{
+    margin-right: 15px;
+    float: left; 
+}
+
+.titulo-anexo{
+    float: left;
+    /*margin-top: 0px;*/
+}
+
+.novo-anexo-icon{
+    padding-top: 13px;
+    padding-left: 10px
+}
+
+.vizualiza-anexo{
+    float: left;
+    margin-right: 10px;
+}
+
+.img-vizualiza-anexo{
+    width: 60px;
+    height: 60px;
+}
+
+.editar-anexo{
+    float: left;
+    margin-right: 10px;
+}
+
+.img-editar-anexo{
+    width: 60px;
+    height: 60px;
 }
 
 /*Relatorio*/

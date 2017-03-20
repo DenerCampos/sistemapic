@@ -10,7 +10,7 @@
             </div>
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center"><strong>Deseja atender este chamado?</strong></div>
-            <form class="" method="post" 
+            <form class="formulario" method="post" 
                   action="<?php echo base_url("ocorrencia/atender") ?>">
                 <div class="modal-body">
                     <div class="row">
@@ -55,7 +55,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Atender
                     </button>
                 </div>

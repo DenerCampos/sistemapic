@@ -55,6 +55,7 @@ class Ocorrencia_model extends CI_Model {
     //Insere
     public function addOcorrencia(){
         $this->db->insert("ocorrencia", $this);
+        return $this->db->insert_id();
     }
            
     //Busca por id
@@ -91,6 +92,18 @@ class Ocorrencia_model extends CI_Model {
             "data_alteracao" => $dalteracao,
             "usuario_atende" => $usuario,
             "idocorrencia_estado" => $estado
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idocorrencia', $id);
+        $this->db->update('ocorrencia');
+    }
+    
+    //Encaminha ocorrencia
+    public function encaminha($id, $usuario, $dalteracao){
+        $dados = array(
+            "data_alteracao" => $dalteracao,
+            "usuario_atende" => $usuario
         );
         //atualiza no db
         $this->db->set($dados);
@@ -157,7 +170,51 @@ class Ocorrencia_model extends CI_Model {
             return NULL;
         }
     }
-
+        
+    //Verifica se a ocorrencia esta fechada
+    public function fechado($id){
+        $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia 
+                WHERE idocorrencia = $id AND
+                    idocorrencia_estado = 3");
+        //retorna objeto
+        if ($query->num_rows() == 1){
+            return TRUE;
+        } else{
+            return FALSE;
+        }
+    }
+    
+     //Verifica se a ocorrencia esta em atendimento
+    public function atendimento($id){
+        $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia 
+                WHERE idocorrencia = $id AND
+                    idocorrencia_estado = 2");
+        //retorna objeto
+        if ($query->num_rows() == 1){
+            return TRUE;
+        } else{
+            return FALSE;
+        }
+    }
+    
+     //Verifica se a ocorrencia esta em aberto
+    public function aberto($id){
+        $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia 
+                WHERE idocorrencia = $id AND
+                    idocorrencia_estado = 1");
+        //retorna objeto
+        if ($query->num_rows() == 1){
+            return TRUE;
+        } else{
+            return FALSE;
+        }
+    }
 
     //Busca todos
     public function todasOcorrencias($limite = NULL, $ponteiro = NULL){
@@ -182,13 +239,28 @@ class Ocorrencia_model extends CI_Model {
     
     //Busca todos por estado (1=aberta, 2=atendimento e 3=fechadas)
     public function todasPorEstado($idestado, $limite = NULL, $ponteiro = NULL){
+        //muda organização
+        switch ($idestado) {
+            case 1:
+                $org = 'data_abertura';
+                break;
+            case 2:
+                $org = 'data_alteracao DESC';
+                break;
+            case 3:
+                $org = 'data_fechamento DESC';
+                break;
+            default:
+                $org = 'data_abertura';
+                break;
+        }
         if (isset($limite)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE idocorrencia_estado = $idestado AND
                     idestado = 1
-                ORDER BY data_abertura
+                ORDER BY $org
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
@@ -196,7 +268,142 @@ class Ocorrencia_model extends CI_Model {
                     FROM ocorrencia
                     WHERE idocorrencia_estado = $idestado AND
                         idestado = 1
-                    ORDER BY data_abertura");
+                    ORDER BY $org");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos por busca (numero do chamado)
+    public function todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite) && isset($usuario)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia LIKE '$palavra' AND
+                        usuario_abre = $usuario AND
+                        idestado = 1
+                ORDER BY data_abertura DESC
+                LIMIT $ponteiro, $limite");           
+        } elseif (isset ($usuario)) {
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia LIKE '$palavra' AND
+                        usuario_abre = $usuario AND
+                        idestado = 1
+                ORDER BY data_abertura DESC");
+        } elseif (isset ($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia LIKE '$palavra' AND
+                        idestado = 1
+                ORDER BY data_abertura DESC
+                LIMIT $ponteiro, $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia LIKE '$palavra' AND
+                        idestado = 1
+                ORDER BY data_abertura DESC");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos por busca (problema)
+    public function todasPorBuscaProblema($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite) && isset($usuario)){
+            $query = $this->db->query(
+                "SELECT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN problema
+                ON ocorrencia.idproblema = problema.idproblema
+                WHERE ocorrencia.idestado = 1 AND 
+                        problema.nome LIKE '%$palavra%'
+                ORDER BY data_abertura DESC
+                LIMIT $ponteiro, $limite");           
+        } elseif (isset ($usuario)) {
+            $query = $this->db->query(
+                "SELECT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN problema
+                ON ocorrencia.idproblema = problema.idproblema
+                WHERE ocorrencia.idestado = 1 AND 
+                        problema.nome LIKE '%$palavra%'
+                ORDER BY data_abertura DESC");
+        } elseif (isset ($limite)){
+            $query = $this->db->query(
+                "SELECT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN problema
+                ON ocorrencia.idproblema = problema.idproblema
+                WHERE ocorrencia.idestado = 1 AND 
+                        problema.nome LIKE '%$palavra%'
+                ORDER BY data_abertura DESC
+                LIMIT $ponteiro, $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN problema
+                ON ocorrencia.idproblema = problema.idproblema
+                WHERE ocorrencia.idestado = 1 AND 
+                        problema.nome LIKE '%$palavra%'
+                ORDER BY data_abertura DESC");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos por busca (Descricao)
+    public function todasPorBuscaDescricao($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite) && isset($usuario)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE descricao LIKE '%$palavra%' AND
+                        usuario_abre = $usuario AND
+                        idestado = 1
+                ORDER BY data_abertura DESC
+                LIMIT $ponteiro, $limite");           
+        } elseif (isset ($usuario)) {
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE descricao LIKE '%$palavra%' AND
+                        usuario_abre = $usuario AND
+                        idestado = 1
+                ORDER BY data_abertura DESC");
+        } elseif (isset ($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE descricao LIKE '%$palavra%' AND
+                        idestado = 1
+                ORDER BY data_abertura DESC
+                LIMIT $ponteiro, $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE descricao LIKE '%$palavra%' AND
+                        idestado = 1
+                ORDER BY data_abertura DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -208,6 +415,21 @@ class Ocorrencia_model extends CI_Model {
     
     //Busca todos por estado (1=aberta, 2=atendimento e 3=fechadas)
     public function todasPorUsuario($idestado, $usuario, $limite = NULL, $ponteiro = NULL){
+        //muda organização
+        switch ($idestado) {
+            case 1:
+                $org = 'data_abertura';
+                break;
+            case 2:
+                $org = 'data_alteracao DESC';
+                break;
+            case 3:
+                $org = 'data_fechamento DESC';
+                break;
+            default:
+                $org = 'data_abertura';
+                break;
+        }
         if (isset($limite)){
             $query = $this->db->query(
                 "SELECT *
@@ -215,7 +437,7 @@ class Ocorrencia_model extends CI_Model {
                 WHERE idocorrencia_estado = $idestado AND
                     idestado = 1 AND
                     usuario_abre = $usuario
-                ORDER BY data_abertura
+                ORDER BY $org
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
@@ -224,7 +446,95 @@ class Ocorrencia_model extends CI_Model {
                     WHERE idocorrencia_estado = $idestado AND
                         idestado = 1 AND
                         usuario_abre = $usuario                 
-                    ORDER BY data_abertura");
+                    ORDER BY $org");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos em aberto por area de atendimento do tecnico
+    public function todasAbertoPorArea($area, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia_estado = 1 AND
+                    idestado = 1 AND
+                    idarea = $area
+                ORDER BY data_abertura
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia_estado = 1 AND
+                idestado = 1 AND
+                    idarea = $area
+                ORDER BY data_abertura");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos em atendimento por area de atendimento do tecnico
+    public function todasAtendimentoPorArea($usuario, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia_estado = 2 AND
+                    idestado = 1 AND
+                    (usuario_abre = $usuario OR
+                    usuario_atende = $usuario)
+                ORDER BY data_abertura DESC
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia_estado = 2 AND
+                    idestado = 1 AND
+                    (usuario_abre = $usuario OR
+                    usuario_atende = $usuario)
+                ORDER BY data_abertura DESC");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos em atendimento por area de atendimento do tecnico
+    public function todasFechadosPorArea($usuario, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia_estado = 3 AND
+                    idestado = 1 AND
+                    (usuario_abre = $usuario OR
+                    usuario_fecha = $usuario)
+                ORDER BY data_fechamento DESC
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia
+                WHERE idocorrencia_estado = 3 AND
+                    idestado = 1 AND
+                    (usuario_abre = $usuario OR
+                    usuario_fecha = $usuario)
+                ORDER BY data_fechamento DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -236,6 +546,21 @@ class Ocorrencia_model extends CI_Model {
     
     //Busca todos por estado (1=aberta, 2=atendimento e 3=fechadas)
     public function todasPorArea($idestado, $area, $usuario =NULL, $limite = NULL, $ponteiro = NULL){
+        //muda organização
+        switch ($idestado) {
+            case 1:
+                $org = 'data_abertura';
+                break;
+            case 2:
+                $org = 'data_alteracao DESC';
+                break;
+            case 3:
+                $org = 'data_fechamento DESC';
+                break;
+            default:
+                $org = 'data_abertura';
+                break;
+        }
         if (isset($limite) && (isset($usuario))){
             $query = $this->db->query(
                 "SELECT *
@@ -244,7 +569,7 @@ class Ocorrencia_model extends CI_Model {
                     idestado = 1 AND
                     idarea = $area AND
                     usuario_atende = $usuario
-                ORDER BY data_abertura
+                ORDER BY $org
                 LIMIT $ponteiro, $limite");           
         } elseif (isset ($usuario)) {
             $query = $this->db->query(
@@ -254,7 +579,7 @@ class Ocorrencia_model extends CI_Model {
                     idestado = 1 AND
                     idarea = $area AND
                     usuario_atende = $usuario
-                ORDER BY data_abertura");
+                ORDER BY $org");
         } else {
             $query = $this->db->query(
                 "SELECT *
@@ -262,7 +587,7 @@ class Ocorrencia_model extends CI_Model {
                 WHERE idocorrencia_estado = $idestado AND
                     idestado = 1 AND
                     idarea = $area
-                ORDER BY data_abertura");
+                ORDER BY $org");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){

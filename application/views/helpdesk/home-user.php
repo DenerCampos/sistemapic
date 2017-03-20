@@ -9,12 +9,16 @@
             </button>
         </div>
         <div class="pesquisar-chamado col-md-6">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Busca por número do chamado...">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit">Buscar!</button>
-                </span>
-            </div>
+            <form class="form-buscar" method="post"
+                  action="<?php echo base_url("ocorrencia/buscar") ?>">
+                <div class="input-group">
+                    <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
+                           placeholder="Busca por número, problema ou descrição...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                    </span>
+                </div>
+            </form>            
         </div>
     </div><!-- fim row -->
     <!-- tab panel -->
@@ -136,6 +140,12 @@
                                             <td><?php echo $usuario->buscaId($atendimento->getUsuario_atende())->getNome(); ?></td>
                                             <td><?php echo $estado->buscaId($atendimento->getIdocorrencia_estado())->getNome();; ?></td>
                                             <td class="text-right">
+                                                <a title="Editar" role="button" href="#mdlEditarChamado" 
+                                                   data-toggle="modal" data-target="#mdlEditarChamado"
+                                                   data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
+                                                   onclick="editarChamado(this)">
+                                                    <i class="fa fa-pencil-square-o" ></i>
+                                                </a>
                                                 <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                                    data-toggle="modal" data-target="#mdlImprimirChamado"
                                                    data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
@@ -147,13 +157,7 @@
                                                    data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
                                                    onclick="visualizarChamado(this)">
                                                     <i class="fa fa-search-plus" ></i>
-                                                </a>
-                                                <a title="Editar" role="button" href="#mdlEditarChamado" 
-                                                   data-toggle="modal" data-target="#mdlEditarChamado"
-                                                   data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
-                                                   onclick="editarChamado(this)">
-                                                    <i class="fa fa-pencil-square-o" ></i>
-                                                </a>
+                                                </a>                                                
                                             </td>
                                         </tr>
                                         <?php }?>

@@ -68,15 +68,48 @@ $(document).ready(function() {
     });
     
     //Fotos usuario perfil
-    $('input[type=file]').on("change", function(){
+    $('#iptEdtFoto').on("change", function(){
         fotoPerfil(this);
     });
     
+    //Anexo 1 help-desk
+    $('#iptCriAnexo1').on("change", function(){
+        fotoAnexo(this);
+        $(".ativo").find(".anexo").addClass("hidden");
+        $(".novo-anexo").removeClass("hidden");
+    });
+    
+    //Anexo 2 help-desk
+    $('#iptCriAnexo2').on("change", function(){
+        fotoAnexo(this);
+        $(".ativo").find(".anexo").addClass("hidden");
+    });
+    
+    //Anexo 3 help-desk
+    $('#iptCriAnexo3').on("change", function(){
+        fotoAnexo(this);
+        $(".ativo").find(".anexo").addClass("hidden");
+    });
+    
+    //Formularios
+    $(".formulario").submit(function(){
+        formulario = this;
+        botao = $(formulario).find(".carregando");
+        carregando(botao);
+    });    
 });
 
 //Esconder tela login
 function esconderLogin(){
     $('.trigger').popover('hide');
+}
+
+//Animação de carregando (botões)
+function carregando(button){
+    $html = '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
+    $valor = $(button).html();
+    $(button).html($valor+"  "+$html);
+    $(button).attr("disabled", "disabled");
 }
 
 //CRUD MAQUINAS
@@ -109,7 +142,6 @@ function verificarEstado(ancor){
     });
     //console.log($(span).attr("data-id"));
 }
-
 
 //Edição de caixa
 function editarCaixa(ancor){
@@ -1000,6 +1032,7 @@ function atenderChamado(ancor){
         }
     });
 }
+
 //Imprimir Chamado
 function imprimirChamado(ancor){
     $.ajax({
@@ -1029,7 +1062,10 @@ function imprimirChamado(ancor){
 
 //Visualizar Chamado
 function visualizarChamado(ancor){
+    $(".carregando-modal").show();
+    $(".corpo-modal").hide();
     $(".comentario").hide();
+    $(".vizualiza-anexo").remove();
     $.ajax({
         //tipo de requisição
         type:"post",
@@ -1060,11 +1096,22 @@ function visualizarChamado(ancor){
                     }
                     $(".comentario").show();
                 }
+                if (msg.arquivos){
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){
+                        $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
+                        $("#anexo-vizualiza").append($html);
+                        $(".anexo-grupo").removeClass("hidden");
+                    } 
+                } else {
+                    $(".anexo-grupo").addClass("hidden");
+                }
             }
             else{
             }
         }
     });
+    $(".carregando-modal").delay(700).hide("slow");
+    $(".corpo-modal").delay(1000).show("slow");
 }
 
 //Remover Chamado
@@ -1094,9 +1141,40 @@ function removerChamado(ancor){
     });
 }
 
+//Encaminhar Chamado
+function encaminharChamado(ancor){
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"ocorrencia/encaminharChamado",
+        //Dados
+        data:{
+            "idocorrencia":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptEncId").val(msg.idocorrencia);
+                $("#iptEncNumero").val(msg.idocorrencia);
+                $("#iptEncUsuario").val(msg.nome);
+                $("#iptEncProblema").val(msg.problema);
+                $("#selEncTecnico").val(msg.tecnico);
+            }
+            else{
+            }
+        }
+    });
+}
+
 //Editar Chamado
 function editarChamado(ancor){
+    $(".carregando-modal").show();
+    $(".corpo-modal").hide();
     $(".comentario").hide();
+    $(".editar-anexo").remove();
     $.ajax({
         //tipo de requisição
         type:"post",
@@ -1127,15 +1205,28 @@ function editarChamado(ancor){
                     }
                     $(".comentario").show();
                 }
+                if (msg.arquivos){
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){
+                        $html = '<div class="editar-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-editar-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
+                        $("#anexo-editar").append($html);
+                        $(".anexo-grupo").removeClass("hidden");
+                    } 
+                } else {
+                    $(".anexo-grupo").addClass("hidden");
+                }
             }
             else{
             }
         }
     });
+    $(".carregando-modal").delay(700).hide("slow");
+    $(".corpo-modal").delay(1000).show("slow");
 }
 
 //Fechar Chamado
 function fecharChamado(ancor){
+    $(".carregando-modal").show();
+    $(".corpo-modal").hide();
     $(".comentario").hide();
     $.ajax({
         //tipo de requisição
@@ -1172,7 +1263,46 @@ function fecharChamado(ancor){
             }
         }
     });
+    $(".carregando-modal").delay(700).hide("slow");
+    $(".corpo-modal").delay(1000).show("slow");
 }
+
+//Adicionar novo anexo (HELP-DESK)
+function novoAnexo(){
+    //pegar todos anexos
+    var $ativo = $('.ativo');
+    if ($ativo.next().length > 0){
+        $ativo.removeClass('ativo');
+        $ativo.next().removeClass('hidden');
+        $ativo.next().addClass('ativo');
+    } else {
+        $("#erro").find("p").html("Máximo de <STRONG>3 anexos</STRONG> por chamado");
+        $("#erro").removeClass("hidden");
+        //alert('Maximo de 3 anexo por chamado!');
+    }
+}
+
+//Anexo foto
+function fotoAnexo(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $link = $(".ativo").find("a");
+            $link.attr("href", e.target.result);
+            $link.removeClass("hidden");
+            $imagem = $(".ativo").find("img");
+            $imagem.attr('src', e.target.result);
+            $imagem.removeClass("hidden");
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+    else {
+        $link = $(".ativo").find("a");
+        $link.addClass("hidden");
+        $imagem = $(".ativo").find("img");
+        $imagem.addClass("hidden");
+    }
+} 
 
 //FUNÇÔES DA MANUTENÇÂO (IMPRESSORAS)
 //Enviar para manutenção

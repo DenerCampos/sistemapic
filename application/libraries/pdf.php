@@ -33,7 +33,7 @@ class Pdf {
         //$mpdf->SetHeader('{DATE j/m/Y H:i}|{PAGENO}/{nb}|Texto no cabeçalho');
 
         //Rodapé: Seta a data/hora completa de quando o PDF foi gerado + um texto no lado direito
-        //$mpdf->SetFooter('{DATE j/m/Y H:i}|{PAGENO}/{nb}|Texto no rodapé');
+        $mpdf->SetFooter('{DATE j/m/Y H:i}|{PAGENO}/{nb}|Impressão de chamado');
         
         //carrega css
         if ($css != null){

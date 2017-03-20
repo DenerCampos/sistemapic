@@ -15,6 +15,7 @@
         <link type="text/css" rel="stylesheet" href="<?php echo $assetsUrl; ?>/libs/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="<?php echo $assetsUrl; ?>/libs/css/jquery-ui.min.css" />
         <link type="text/css" rel="stylesheet" href="<?php echo $assetsUrl; ?>/libs/font-awesome/css/font-awesome.min.css" />
+        <link type="text/css" rel="stylesheet" href="<?php echo $assetsUrl; ?>/libs/lv/css/lightview/lightview.css" />
         <link type="text/css" rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/sistemapic.css" />
         
         <!-- Variavel global da url do projeto-->  

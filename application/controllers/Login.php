@@ -150,6 +150,7 @@ class Login extends CI_Controller {
             "nome" => $usuario->getNome(),
             "login" => $usuario->getLogin(),
             "nivel" => $usuario->getNivel(),
+            "area" => $usuario->getIdarea(),
             "foto" => $this->caminhoFoto($usuario)
         );
         //cria sessão

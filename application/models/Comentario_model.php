@@ -65,6 +65,22 @@ class Comentario_model extends CI_Model {
         }
     }
     
+    //Busca solucao (caso fechado) por id ocorrencia
+    public function buscaSolucao($id){
+        $query = $this->db->query(
+                "SELECT *
+                FROM comentario 
+                WHERE idocorrencia = $id 
+                ORDER BY idcomentario DESC 
+                LIMIT 1");
+        //retorna objeto
+        if ($query->num_rows() == 1){
+            return $this->getObjByRow($query->row());
+        } else{
+            return NULL;
+        }
+    }
+    
     //Busca por id ocorrencia fechamento
     public function buscaFechamento($id){
         $query = $this->db->query(

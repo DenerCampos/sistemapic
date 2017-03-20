@@ -9,12 +9,16 @@
             </button>
         </div>
         <div class="pesquisar-chamado col-md-6">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Busca por número, problema ou descrição...">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit">Buscar!</button>
-                </span>
-            </div>
+            <form class="form-buscar" method="post"
+                  action="<?php echo base_url("ocorrencia/buscar") ?>">
+                <div class="input-group">
+                    <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
+                           placeholder="Busca por número, problema ou descrição...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                    </span>
+                </div>
+            </form>            
         </div>
     </div><!-- fim row -->
     <!-- tab panel -->
@@ -22,19 +26,19 @@
         <div class="col-md-12">
             <div role="tabpanel">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li class="active" role="presentation">
+                    <li class="active" role="presentation" id="li-aberto">
                         <a href="#aberto" id="aberto-tab" role="tab" data-toggle="tab" aria-controls="aberto"
                            aria-expanded="true">
                             Em aberto
                         </a>
                     </li>
-                    <li class="" role="presentation">
+                    <li class="" role="presentation" id="li-atendimento">
                         <a href="#atendimento" id="atendimento-tab" role="tab" data-toggle="tab" aria-controls="atendimento"
                            aria-expanded="true">
                             Em atendimento
                         </a>
                     </li>
-                    <li class="" role="presentation">
+                    <li class="" role="presentation" id="li-fechado">
                         <a href="#fechado" id="fechado-tab" role="tab" data-toggle="tab" aria-controls="fechado"
                            aria-expanded="true">
                             Fechado
@@ -47,7 +51,22 @@
                         <?php if (isset($abertas)) { ?>
                         <div class="panel panel-danger">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Chamados em aberto</h3>
+                                <h3 class="panel-title">Chamados em aberto
+                                    <div class="ordenacao">
+                                        <a title="Ordenar crescente" role="button" href="#">
+                                            <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                                        </a>
+                                        <a title="Ordenar decrescente" role="button" href="#">
+                                            <i class="fa fa-sort-numeric-desc" aria-hidden="true"></i>
+                                        </a>
+                                        <a title="Ordenar crescente" role="button" href="#">
+                                            <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                                        </a>
+                                        <a title="Ordenar decrescente" role="button" href="#">
+                                            <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </h3>
                             </div>
                             <div class="panel-body table-responsive">
                                 <table class="table table-hover table-responsive">
@@ -74,6 +93,12 @@
                                             </td>
                                             <td><?php echo $estado->buscaId($aberta->getIdocorrencia_estado())->getNome(); ?></td>
                                             <td class="text-right opcoes">
+                                                <a title="Atender" role="button" href="#mdlAtenderChamado" 
+                                                   data-toggle="modal" data-target="#mdlAtenderChamado"
+                                                   data-id="<?php echo $aberta->getIdocorrencia(); ?>"
+                                                   onclick="atenderChamado(this)">
+                                                   <i class="fa fa-sign-in" ></i>
+                                                </a>
                                                 <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                                    data-toggle="modal" data-target="#mdlImprimirChamado"
                                                    data-id="<?php echo $aberta->getIdocorrencia(); ?>"
@@ -85,13 +110,7 @@
                                                    data-id="<?php echo $aberta->getIdocorrencia(); ?>"
                                                    onclick="visualizarChamado(this)">
                                                     <i class="fa fa-search-plus" ></i>
-                                                </a> 
-                                                <a title="Atender" role="button" href="#mdlAtenderChamado" 
-                                                   data-toggle="modal" data-target="#mdlAtenderChamado"
-                                                   data-id="<?php echo $aberta->getIdocorrencia(); ?>"
-                                                   onclick="atenderChamado(this)">
-                                                   <i class="fa fa-sign-in" ></i>
-                                                </a>
+                                                </a>                                                 
                                                 <a title="Remover" role="button" href="#mdlRemoverChamado" 
                                                    data-toggle="modal" data-target="#mdlRemoverChamado"
                                                    data-id="<?php echo $aberta->getIdocorrencia(); ?>"
@@ -149,6 +168,24 @@
                                             <td><?php echo $usuario->buscaId($atendimento->getUsuario_atende())->getNome(); ?></td>
                                             <td><?php echo $estado->buscaId($atendimento->getIdocorrencia_estado())->getNome();; ?></td>
                                             <td class="text-right opcoes">
+                                                <a title="Editar" role="button" href="#mdlEditarChamado" 
+                                                   data-toggle="modal" data-target="#mdlEditarChamado"
+                                                   data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
+                                                   onclick="editarChamado(this)">
+                                                    <i class="fa fa-pencil-square-o" ></i>
+                                                </a>
+                                                <a title="Emcaminhar" role="button" href="#mdlEncaminharChamado" 
+                                                   data-toggle="modal" data-target="#mdlEncaminharChamado"
+                                                   data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
+                                                   onclick="encaminharChamado(this)">
+                                                    <i class="fa fa-share" ></i>
+                                                </a>
+                                                <a title="Fechar" role="button" href="#mdlFecharChamado" 
+                                                   data-toggle="modal" data-target="#mdlFecharChamado"
+                                                   data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
+                                                   onclick="fecharChamado(this)">
+                                                    <i class="fa fa-check-square-o" ></i>
+                                                </a>
                                                 <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                                    data-toggle="modal" data-target="#mdlImprimirChamado"
                                                    data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
@@ -160,19 +197,7 @@
                                                    data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
                                                    onclick="visualizarChamado(this)">
                                                     <i class="fa fa-search-plus" ></i>
-                                                </a>
-                                                <a title="Editar" role="button" href="#mdlEditarChamado" 
-                                                   data-toggle="modal" data-target="#mdlEditarChamado"
-                                                   data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
-                                                   onclick="editarChamado(this)">
-                                                    <i class="fa fa-pencil-square-o" ></i>
-                                                </a>
-                                                <a title="Fechar" role="button" href="#mdlFecharChamado" 
-                                                   data-toggle="modal" data-target="#mdlFecharChamado"
-                                                   data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
-                                                   onclick="fecharChamado(this)">
-                                                    <i class="fa fa-check-square-o" ></i>
-                                                </a>
+                                                </a>                                                
                                                 <a title="Remover" role="button" href="#mdlRemoverChamado" 
                                                    data-toggle="modal" data-target="#mdlRemoverChamado"
                                                    data-id="<?php echo $atendimento->getIdocorrencia(); ?>"

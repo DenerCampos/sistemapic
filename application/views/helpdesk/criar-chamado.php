@@ -9,8 +9,11 @@
                 <h4 class="modal-title" id="formModalLabel">Criar chamado</h4>
             </div>
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
-            <form class="" method="post" 
+            <div class="alert alert-danger text-center hidden" id="erro">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <p></p>
+            </div>
+            <form class="formulario" method="post" enctype="multipart/form-data"
                   action="<?php echo base_url("ocorrencia/novaOcorrencia") ?>">
                 <div class="modal-body">
                     <div class="row">
@@ -93,19 +96,72 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="form-group">
+                            <div class="">
                                 <label for="iptCriDesc" class="control-label">Descrição:</label>
                                 <textarea class="form-control" id="iptCriDesc" maxlength="1000" name="iptCriDesc"
-                                          placeholder="Descrição do chamado" rows="5" required=""></textarea>
+                                          placeholder="Descrição do chamado" rows="3" required=""></textarea>
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="titulo-anexo">Anexos</h4>
+                            <a title="Novo anexo" role="button" href="#"
+                               data-id="" class="novo-anexo hidden"
+                               onclick="novoAnexo()">
+                               <i class="fa fa-plus-square-o novo-anexo-icon" ></i>
+                            </a>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="conteudo-anexo">
+                                <div class="ativo">
+                                    <div class="imagem-anexo-preview">
+                                        <a href="" class="lightview hidden">
+                                            <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                        </a>
+                                    </div>                
+                                    <div class="anexo">
+                                        <label class="btn btn-default" for="iptCriAnexo1">
+                                            <input class="anexo-input" id="iptCriAnexo1" name="iptCriAnexo1" type="file" accept="image/png, image/jpeg">
+                                            Escolher arquivo
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="hidden">
+                                    <div class="imagem-anexo-preview">                        
+                                        <a href="" class="lightview hidden">
+                                            <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                        </a>
+                                    </div>                
+                                    <div class="anexo">
+                                        <label class="btn btn-default" for="iptCriAnexo2">
+                                            <input class="anexo-input" id="iptCriAnexo2" name="iptCriAnexo2" type="file" accept="image/png, image/jpeg">
+                                            Escolher arquivo
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="hidden">
+                                    <div class="imagem-anexo-preview">                        
+                                        <a href="" class="lightview hidden">
+                                            <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                        </a>
+                                    </div>                
+                                    <div class="anexo">
+                                        <label class="btn btn-default" for="iptCriAnexo3">
+                                            <input class="anexo-input" id="iptCriAnexo3" name="iptCriAnexo3" type="file" accept="image/png, image/jpeg">
+                                            Escolher arquivo
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>                        
+                    </div>                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Criar
                     </button>
                 </div>

@@ -236,6 +236,7 @@ class Usuario extends CI_Controller {
                 "nome" => $usuario->getNome(),
                 "login" => $usuario->getLogin(),
                 "nivel" => $usuario->getNivel(),
+                "area" => $usuario->getIdarea(),
                 "foto" => $this->caminhoFoto($usuario)
             );
             //cria sessão
@@ -340,19 +341,5 @@ class Usuario extends CI_Controller {
             $this->gravaLog("tentativa de acesso", "acesso ao controlador Caixa.php");
             redirect(base_url());
         }
-    }
-    
-    //cria sessão no navegador
-    private function criaSessao($usuario){
-        //dados da sessão
-        $dados = array(
-            "id" => $usuario->getIdusuario(),
-            "nome" => $usuario->getNome(),
-            "login" => $usuario->getLogin(),
-            "nivel" => $usuario->getNivel()
-        );
-        //cria sessão
-        $this->session->set_userdata($dados);
-    }
-    
+    }    
 }

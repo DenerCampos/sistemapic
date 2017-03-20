@@ -10,7 +10,7 @@
             </div>
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center"><strong>Deseja imprimir este chamado?</strong></div>
-            <form class="" method="post" 
+            <form class="" method="post" target="_blank"
                   action="<?php echo base_url("ocorrencia/imprimir") ?>">
                 <div class="modal-body">
                     <div class="row">
