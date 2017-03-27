@@ -517,8 +517,6 @@ class Manutencao extends CI_Controller {
                 redirect(base_url());
             } else {
                 //acesso permitido
-                //grava log
-                $this->gravaLog("acesso", "acesso ao controlador Manutencao.php");
             }
         } else {
             //grava log

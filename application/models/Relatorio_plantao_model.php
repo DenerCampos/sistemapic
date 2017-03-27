@@ -36,6 +36,7 @@ class Relatorio_plantao_model extends CI_Model {
     //Insere 
     public function addPlantao(){
         $this->db->insert("relatorio_plantao", $this);
+        return $this->db->insert_id();
     }
        
     //Remover
@@ -57,6 +58,82 @@ class Relatorio_plantao_model extends CI_Model {
                     "SELECT *
                     FROM relatorio_plantao 
                     ORDER BY idrelatorio_plantao DESC");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca por id
+    public function buscaId($id){
+        $query = $this->db->query(
+            "SELECT *
+            FROM relatorio_plantao
+            WHERE idrelatorio_plantao = $id");
+        //retorna objeto plantao
+        if ($query->num_rows() == 1){
+            return $this->getObjByRow($query->row());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca por id
+    public function existe($id){
+        $query = $this->db->query(
+            "SELECT *
+            FROM relatorio_plantao
+            WHERE idrelatorio_plantao = $id");
+        //retorna objeto plantao
+        if ($query->num_rows() == 1){
+            return TRUE;
+        } else{
+            return FALSE;
+        }
+    }
+    
+    //Busca todos por data (data de emissão)
+    public function todasPorBuscaData($data, $limite = NULL, $ponteiro = NULL){
+        if (isset ($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM  relatorio_plantao
+                WHERE date(data) = '$data'
+                ORDER BY data DESC
+                LIMIT $ponteiro, $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM  relatorio_plantao
+                WHERE date(data) = '$data'
+                ORDER BY data DESC");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos por usuário (nome)
+    public function todasPorBuscaUsuario($usuario, $limite = NULL, $ponteiro = NULL){
+        if (isset ($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM  relatorio_plantao
+                WHERE usuario LIKE '%$usuario%'
+                ORDER BY data DESC
+                LIMIT $ponteiro, $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM  relatorio_plantao
+                WHERE usuario LIKE '%$usuario%'
+                ORDER BY data DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -150,6 +227,15 @@ class Relatorio_plantao_model extends CI_Model {
     function setOcorrencias($ocorrencias) {
         $this->ocorrencias = $ocorrencias;
     }
-
+    
+     //reduzir descrição de um plantão
+    public function reduzirDescricao($descricao){
+        $tamanho = strlen($descricao);
+        if ($tamanho > 30){
+            return substr($descricao, 0, 30)."...";
+        } else {
+            return $descricao;
+        }
+    }
 
 }

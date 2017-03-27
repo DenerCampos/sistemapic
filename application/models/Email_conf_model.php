@@ -188,6 +188,34 @@ class Email_conf_model extends CI_Model {
         }
     }
     
+    //retorna array com as configurações do e-mail do banco de dados (op = text ou html) 
+    public function busca($op){
+        $query = $this->db->query(
+                "SELECT *
+                FROM email_conf 
+                WHERE idestado = 1");
+        if ($query->num_rows() == 1){
+            $email = $this->getObjByRow($query->row());
+            $conf = array (
+                "useragent" => $email->getUseragent(),
+                "protocol" => $email->getProtocol(),
+                "smtp_host" => $email->getSmtp_host(),
+                "smtp_user" => $email->getSmtp_user(),
+                "smtp_pass" => $email->getSmtp_pass(),
+                "smtp_port" => $email->getSmtp_port(),
+                "smtp_crypto" => $email->getSmtp_crypto(),
+                "newline" => "\r\n",
+                "mailtype" => $op,
+                
+            );
+            //retorna array de configuração do email
+            return $conf;
+        }
+        else{
+            return null;
+        }
+    }
+    
     /*------Funções internas--------*/ 
     //Retorna objeto
     private function getObjByRow($r){

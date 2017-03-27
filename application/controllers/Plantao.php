@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Plantao extends CI_Controller {
 
     /**
-     * Base para controller.
-     * @descripition 
+     * Plantao
+     * @descripition Gerar relatórios de plantão por tecnico dos chamados fechados 
      * @author Dener Junio
      * 
      */
@@ -39,6 +39,33 @@ class Plantao extends CI_Controller {
         //Modal
         $this->load->view("plantao/criar-plantao", array( 
             "assetsUrl" => base_url("assets")));
+        $this->load->view("plantao/email-plantao", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets")));
+    }
+    
+    //Resultado
+    public function resultado($palavra, $usuario = NULL, $data = NULL){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "plantao"));      
+        //Carrega index
+        $this->load->view('plantao/resultado', array(
+            "palavra" => $palavra,
+            "data" => $data,
+            "usuario" => $usuario
+        ));      
+        //Modal
+        $this->load->view("plantao/criar-plantao", array( 
+            "assetsUrl" => base_url("assets")));
+        $this->load->view("plantao/email-plantao", array( 
+            "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets")));
@@ -52,11 +79,11 @@ class Plantao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => ""));     
+            "ativo" => "plantao"));     
         //Carrega index
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
-            "msgerro" => 'teste de ero'));
+            "msgerro" => $msg));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
@@ -73,12 +100,12 @@ class Plantao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => ""));     
+            "ativo" => "plantao"));     
         //Carrega index
         $this->load->view('mensagens/mensagem', array(
             "assetsUrl" => base_url("assets"),
-            "msg" => 'teste de mensagem',
-            "uri" => 'home'));
+            "msg" => $msg,
+            "uri" => $uri));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
@@ -87,6 +114,29 @@ class Plantao extends CI_Controller {
             "assetsUrl" => base_url("assets")));
     }
     
+    //Mensagem de sucesso do relatorio
+    public function sucesso($id, $uri, $msg) {
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array(
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array(
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "plantao"));
+        //Carrega index
+        $this->load->view('plantao/sucesso', array(
+            "assetsUrl" => base_url("assets"),
+            "msg" => $msg,
+            "uri" => $uri,
+            "emitir" => $id));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array(
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array(
+            "assetsUrl" => base_url("assets")));
+    }
+
     /*------Funções internas--------*/ 
     
     //Grava log no BD
@@ -161,8 +211,6 @@ class Plantao extends CI_Controller {
                 redirect(base_url());
             } else {
                 //acesso permitido
-                //grava log
-                $this->gravaLog("acesso", "acesso ao controlador Plantao.php");
             }
         } else {
             //grava log
@@ -186,25 +234,25 @@ class Plantao extends CI_Controller {
                 //Css do relatorio
                 $css = file_get_contents(base_url('assets/css/sistemapic.relatorio.css'));   
                 //gerando paginas
-                $paginas = $this->geraPaginasRelatorioPlantao($resultado);
+                $paginas = $this->geraPaginasRelatorioPlantao($resultado);  
                 //grava no bd relatorio plantão
-                $this->gravaPlantao($inicio, $fim);
+                $idplantao = $this->gravaPlantao($inicio, $fim);
                 //gera pdf
-                $this->pdf->geraRelatorioPDF($paginas, $css);
+                $this->pdf->geraRelatorioPDF($paginas, $css, $idplantao);
                 //grava log
                 $this->gravaLog("relatorio", "relatorio plantão gerado. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
-                redirect("plantao");
+                $this->sucesso($idplantao, "plantao", "Relatório emitido com <strong>sucesso</strong>.<br/>Desaja vizualiza-lo?");
             } else {
                 //grava log
                 $this->gravaLog("erro relatorio", "nao existe chamados neste periodo para o usuario. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
                 //não existe chamados
-                echo 'Não existe chamados neste periodo para o usuario '.$this->session->userdata("nome");
+                $this->erro('Não existe chamados fechados neste período para o usuário <strong>'.$this->session->userdata("nome")).'.</strong>';
             }
         } else {
             //grava log
             $this->gravaLog("erro relatorio", "Datas invalidas. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
             //erro nas datas
-            echo 'Datas invalidas';
+            $this->erro('Datas inválidas');
         }
     }
     
@@ -347,6 +395,7 @@ class Plantao extends CI_Controller {
     
     //Grava no bd relatorio de plantão
     private function gravaPlantao($inicio, $fim){
+        $ocorrencias = NULL;
         //busca todas ocorrencias no periodo
         $chamados = $this->ocorrencia->todasPeriodoFechados($inicio, $fim, $this->session->userdata("id"));
         for ($i = 0; $i < count($chamados); $i++){
@@ -363,6 +412,137 @@ class Plantao extends CI_Controller {
         //grava no bd
         $data = date('Y-m-d H:i:s');
         $this->plantao->newPlantao($data, $this->session->userdata("nome"), $inicio, $fim, $ocorrencias);
-        $this->plantao->addPlantao();
+        return $this->plantao->addPlantao();
+    }
+    
+    //Busca por ocorrencia
+    public function buscar(){
+        //recupera dados da busca
+        $busca = strtolower(trim($this->input->post("iptBusca")));
+        try {
+            //verifica se foi digitado algo
+            if (isset($busca) && $busca != ""){
+                //busca por data do plantão todasPorBuscaData($data, $limite = NULL, $ponteiro = NULL)
+                //$data = $this->plantao->todasPorBuscaData($busca);
+                //busca por usuario do plantão todasPorBuscaUsuario($usuario, $limite = NULL, $ponteiro = NULL)
+                $usuario = $this->plantao->todasPorBuscaUsuario($busca);
+                // view resultado($palavra, $data = NULL, $usuario = NULL)
+                $this->resultado($busca, $usuario);
+            } else {
+                $this->resultado("'vazio'");
+            }                       
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na busca. Favor tentar novamente.");
+        }
+    }
+    
+   //Enviar email AJAX
+    public function enviarEmailPlantao(){
+        //Recupera Id manutencao
+        $id = trim($this->input->post("idplantao"));
+        $plantao = $this->plantao->buscaId($id);
+        
+        //datas
+        $hoje = date("d/m/Y");
+        $ontem = date("d/m/Y", mktime (0, 0, 0, date("m")  , date("d")-1, date("Y")));
+        
+        if (isset($plantao)){
+            $msg = array(
+                "idrelatorio" => $plantao->getIdrelatorio_plantao(),
+                "data" => date("d/m/Y", strtotime($plantao->getData())),
+                "usuario" => $plantao->getUsuario(),
+                "para" => "ricardo.souza@pic-clube.com.br",
+                "copia" => "ti@pic-clube.com.br",
+                "assunto" => "Relatório final de semana (".$ontem." à ".$hoje.").",
+                "corpo" => "Prezados, boa tarde! \n\nSegue em anexo o relatório do final de semana. \n\nAtt. \n".$this->session->userdata("nome"),
+            );
+            echo json_encode($msg);
+        } else {
+            $msg = array(
+                "erro" => "Manutencao não encontrada"
+            );
+            echo json_encode($msg);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Recupera dados do email
+    private function recuperaEnviarEmail(&$id, &$para, &$copia, &$assunto, &$texto){
+        $id = trim($this->input->post("iptEmlId"));
+        $para = trim($this->input->post("iptEmlPara"));
+        $copia = trim($this->input->post("iptEmlCopia"));
+        $assunto = trim($this->input->post("iptEmlAssunto"));
+        $texto = trim($this->input->post("iptEmlCorpo"));
+    }
+
+    //Enviar email
+    public function enviarEmail(){
+        //recupera dados
+        $id; $para; $copia; $assunto; $texto;
+        
+        try {
+            //recupera dados do post
+            $this->recuperaEnviarEmail($id, $para, $copia, $assunto, $texto);
+            //verificar se existe relatorio de plantão
+            if ($this->plantao->existe($id)){
+                //anexo
+                $anexo = "./document/relatorio/".$id.".pdf";
+                if ($this->envioEmail($para, $copia, $assunto, $texto, $anexo)){
+                    $this->gravaLog("enviar email plantao", "relatorio id: ".$id." enviado: ".$this->session->userdata("id"));
+                    $this->mensagem("E-mail enviado com <strong>sucesso</strong>!", "plantao");
+                }else {
+                    $this->gravaLog("erro enviar email plantao", "relatorio id: ".$id." enviado: ".$this->session->userdata("id"));
+                    $this->erro("Erro ao enviar e-mail, <strong>tente novamente</strong>.");
+                }
+            }else{
+                //erro, não existe plantão
+                $this->gravaLog("erro enviar email plantao", "o relatorio não existe. id: ".$id);
+                $this->erro("Não existe o relatório de número: <strong>".$id.".</strong>. <br>Tente novamente.");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro para enviar e-mail. Favor tentar novamente.");
+        }
+    } 
+    
+    //enviar email
+    private function envioEmail($para, $copia, $assunto, $texto, $anexo = NULL){
+        try {
+            //carregando biblioteca de email
+            $this->load->library("email");
+            //pegando configuração
+            $this->load->model("email_conf_model", "configuracao");
+            $config = $this->configuracao->busca("text");
+            //preparando o email
+            $this->email->initialize($config);
+            $this->email->from($config["smtp_user"], $this->session->userdata("nome"));
+            $this->email->to($para);
+            $this->email->cc($copia);
+            $this->email->subject($assunto);
+            $this->email->message($texto);
+            //anexo
+            if (isset($anexo)){
+                $this->email->attach($anexo);
+            }
+            if ($this->email->send()) {
+                //email enviado com sucesso
+                return TRUE;
+            } else {
+                $head = $this->email->print_debugger(array('headers'));
+                $subject = $this->email->print_debugger(array('subject'));;
+                $body = $this->email->print_debugger(array('body'));
+                $this->gravaLog("erro enviar email plantao", "Usuario: ".$this->session->userdata("id").". Erro: ".$head." - ".$subject." - ".$body);
+                //$this->erro($teste);
+                return FALSE;
+            }
+            //enviando email
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+        }
     }
 }

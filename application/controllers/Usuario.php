@@ -92,10 +92,10 @@ class Usuario extends CI_Controller {
     //Criar usuario
     public function criar(){
         //recupera dados
-        $nome = $this->input->post("iptCriNome");
-        $login = $this->input->post("iptCriEmail");
-        $senha = $this->input->post("iptCriSenha");
-        $rsenha = $this->input->post("iptCriRSenha");
+        $nome = trim($this->input->post("iptCriNome"));
+        $login = trim($this->input->post("iptCriEmail"));
+        $senha = trim($this->input->post("iptCriSenha"));
+        $rsenha = trim($this->input->post("iptCriRSenha"));
         
         //verifica dados
         if ($this->verificaLogin($login, $senha, $rsenha)){
@@ -333,8 +333,6 @@ class Usuario extends CI_Controller {
                 redirect(base_url());
             } else {
                 //acesso permitido
-                //grava log
-                $this->gravaLog("acesso", "acesso ao controlador Usuario.php");
             }
         } else {
             //grava log

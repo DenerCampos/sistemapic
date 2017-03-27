@@ -83,9 +83,12 @@ class Pdf {
         // define um nome para o arquivo PDF
         if($filename == null){
             $filename = date("Y-m-d_his").'_impressao.pdf';
+        } else {
+            $filename = './document/relatorio/'.$filename.'.pdf';
         }
-
-        $mpdf->Output($filename, 'I');
+        
+        $mpdf->Output($filename, "F");
+        //$mpdf->Output(date("Y-m-d_his").'_impressao.pdf', 'I');
     }
 }
  

@@ -9,12 +9,16 @@
             </button>
         </div>
         <div class="pesquisar-chamado col-md-6">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Busca por data...">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button">Buscar!</button>
-                </span>
-            </div>
+            <form class="form-buscar" method="post"
+                  action="<?php echo base_url("plantao/buscar") ?>">
+                <div class="input-group">
+                    <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
+                           placeholder="Busca por nome usuário...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                    </span>
+                </div>
+            </form>            
         </div>
     </div>
     
@@ -46,12 +50,19 @@
                                         <td><?php echo date("d/m/Y - H:m", strtotime($plantao->getData()));?></td>
                                         <td><?php echo date("d/m/Y", strtotime($plantao->getData_inicio()))." até ".date("d/m/Y", strtotime($plantao->getData_fim()));?></td>
                                         <td><?php echo $plantao->getUsuario(); ?></td>
-                                        <td><?php echo $plantao->getOcorrencias(); ?></td>
-                                        <td class="text-right opcoes">                            
-                                            <a title="Visualizar" role="button" href="#mdlVisualizarRelatorio" 
-                                               data-toggle="modal" data-target="#mdlVisualizarChamado"
-                                               data-id="<?php echo "1"; ?>"
-                                               onclick="visualizarRelatorio(this)">
+                                        <td title="<?php echo $plantao->getOcorrencias(); ?>">
+                                            <?php echo $plantao->reduzirDescricao($plantao->getOcorrencias()); ?>
+                                        </td>                                        
+                                        <td class="text-right opcoes">
+                                            <a title="Enviar email" role="button" href="#mdlEmailPlantao" 
+                                                data-toggle="modal" data-target="#mdlEmailPlantao"
+                                                data-id="<?php echo $plantao->getIdrelatorio_plantao(); ?>"
+                                                onclick="EnviarEmailPlantao(this)">
+                                                <i class="fa fa-envelope-o"></i>
+                                            </a>
+                                            <a title="Visualizar" role="button" 
+                                               href="<?php echo base_url('document/relatorio/')."/".$plantao->getIdrelatorio_plantao().".pdf";?>"
+                                               target="_blank">
                                                 <i class="fa fa-search-plus" ></i>
                                             </a> 
                                         </td>

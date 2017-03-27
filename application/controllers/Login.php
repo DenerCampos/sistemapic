@@ -67,6 +67,29 @@ class Login extends CI_Controller {
     }
     
     /*------Funções internas--------*/
+    //Criar usuario
+    public function criar(){
+        //recupera dados
+        $nome = trim($this->input->post("iptCriNome"));
+        $login = trim($this->input->post("iptCriEmail"));
+        $senha = trim($this->input->post("iptCriSenha"));
+        $rsenha = trim($this->input->post("iptCriRSenha"));
+        
+        //verifica dados
+        if ($this->verificaLogin($login, $senha, $rsenha)){
+            //cria usuario
+            $this->usuario->newUsuario($nome, $login, $this->geraSenha($senha), 2, 1);
+            $this->usuario->addUsuario();
+            //Log
+            $this->gravaLog("criação usuario", "usuario criado: ".$nome." Email: ". $login);
+            $this->mensagem("Usuário criado com <strong>sucesso!</strong><br/>Usuário ".$login, "home");
+        }else{
+            //Log
+            $this->gravaLog("erro criação usuario", "tentativa de criar usuario: ".$nome." Email: ". $login);
+            echo'erro ao criar usuario';
+        }
+    }
+    
     //Efetuar login
     public function logar() {
         //recuperando dados do formulario
@@ -188,5 +211,23 @@ class Login extends CI_Controller {
         $this->load->model("Log_model", "registro");
         $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
         $this->registro->addLog();
+    }
+    
+    //verificação de login e senha
+    private function verificaLogin($login, $senha, $rsenha){
+        //Verifica se login existe e senha
+        if ($this->usuario->loginExiste($login)){
+            return FALSE;
+        } elseif ($senha != $rsenha) {
+            return FALSE;
+        } else{
+            return TRUE;
+        }
+    }
+    
+    //gera hash senha
+    private function geraSenha($senha){
+        $novo = password_hash($senha, PASSWORD_DEFAULT);
+        return $novo;
     }
 }
