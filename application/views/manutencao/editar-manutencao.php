@@ -10,15 +10,22 @@
             </div>
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center" hidden=""></div>
-            <form class="" method="post" 
+            <form class="formulario" method="post" 
                   action="<?php echo base_url("manutencao/atualizaManutencao") ?>">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12" hidden="">
+                        <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptEdtId" class="control-label">Id:</label>
                                 <input type="text" name="iptEdtId" id="iptEdtId" 
                                        class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptEdtUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptEdtUrl" id="iptEdtUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control" placeholder="" required="true">
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -90,7 +97,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Salvar
                     </button>
                 </div>

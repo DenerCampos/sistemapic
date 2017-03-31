@@ -12,17 +12,24 @@
             <div class="alert alert-danger text-center">
                 Teste a impressora, emita uma <strong>leitura X.</strong>
             </div>
-            <form class="" method="post" 
+            <form class="formulario" method="post" 
                   action="<?php echo base_url("manutencao/retornoManutencao") ?>">
                 <div class="modal-body">
                     <div class="row">  
-                        <div class="col-md-12" hidden="">
+                        <div class="col-md-12 hidden" >
                             <div class="form-group">
                                 <label for="iptRtnId" class="control-label">Id:</label>
                                 <input type="text" name="iptRtnId" id="iptRtnId" 
                                        class="form-control">
                             </div>
-                        </div> 
+                        </div>
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptRtnUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptRtnUrl" id="iptRtnUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control" placeholder="" required="true">
+                            </div>
+                        </div>
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label for="iptRtnEquipamento" class="control-label">Equipamento:</label>
@@ -64,7 +71,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Salvar
                     </button>
                 </div>

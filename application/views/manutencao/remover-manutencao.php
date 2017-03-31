@@ -10,17 +10,24 @@
             </div>
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center"><strong>Deseja remover este equipamento?</strong></div>
-            <form class="" method="post" 
-                  action="<?php echo base_url("manutencao/excluirManutencao") ?>">
+            <form class="formulario" method="post" 
+                  action="<?php echo base_url("manutencao/removeManutencao") ?>">
                 <div class="modal-body">
                     <div class="row">  
-                        <div class="col-md-12" hidden="">
+                        <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptRmvId" class="control-label">Id:</label>
                                 <input type="text" name="iptRmvId" id="iptRmvId" 
                                        class="form-control">
                             </div>
                         </div> 
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptRmvUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptRmvUrl" id="iptRmvUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control" placeholder="" required="true">
+                            </div>
+                        </div>
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label for="iptRmvEquipamento" class="control-label">Equipamento:</label>
@@ -41,7 +48,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Remover
                     </button>
                 </div>

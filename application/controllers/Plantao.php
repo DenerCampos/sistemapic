@@ -489,7 +489,7 @@ class Plantao extends CI_Controller {
             //verificar se existe relatorio de plantão
             if ($this->plantao->existe($id)){
                 //anexo
-                $anexo = "./document/relatorio/".$id.".pdf";
+                $anexo = $this->anexo($id);
                 if ($this->envioEmail($para, $copia, $assunto, $texto, $anexo)){
                     $this->gravaLog("enviar email plantao", "relatorio id: ".$id." enviado: ".$this->session->userdata("id"));
                     $this->mensagem("E-mail enviado com <strong>sucesso</strong>!", "plantao");
@@ -509,6 +509,19 @@ class Plantao extends CI_Controller {
         }
     } 
     
+    //Busca anexo 
+    private function anexo($id){
+        //caminho do documento
+        $anexo = "./document/relatorio/".$id.".pdf";
+        //verifica se existe o documento
+        if (file_exists($anexo)){
+            return $anexo;
+        } else{
+            return NULL;      
+        }       
+    }
+
+
     //enviar email
     private function envioEmail($para, $copia, $assunto, $texto, $anexo = NULL){
         try {

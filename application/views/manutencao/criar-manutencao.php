@@ -10,7 +10,7 @@
             </div>
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center" hidden=""></div>
-            <form class="" method="post" 
+            <form class="formulario" method="post" 
                   action="<?php echo base_url("manutencao/criarManutencao") ?>">
                 <div class="modal-body">
                     <div class="row">                        
@@ -19,6 +19,13 @@
                                 <label for="iptCriEquipamento" class="control-label">Equipamento:</label>
                                 <input type="text" name="iptCriEquipamento" id="iptCriEquipamento" 
                                        class="form-control" placeholder="Equipamento" required="true">
+                            </div>
+                        </div>
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptCriUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptCriUrl" id="iptCriUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control" placeholder="" required="true">
                             </div>
                         </div>
                         <div class="col-md-8">
@@ -83,7 +90,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Criar
                     </button>
                 </div>

@@ -53,7 +53,8 @@ $route['default_controller'] = 'Home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-//paginação
+//paginação 
+//Admin
 $route['admin/usuario_admin/(:num)'] = 'Admin/Usuario_admin';
 $route['admin/area_admin/(:num)'] = 'Admin/Area_admin';
 $route['admin/setor_admin/(:num)'] = 'Admin/Setor_admin';
@@ -64,6 +65,19 @@ $route['admin/email_conf_admin/(:num)'] = 'Admin/Email_conf_admin';
 $route['admin/local_maquina_admin/(:num)'] = 'Admin/Local_maquina_admin';
 $route['admin/tipo_maquina_admin/(:num)'] = 'Admin/Tipo_maquina_admin';
 $route['admin/maquina_admin/(:num)'] = 'Admin/Maquina_admin';
+
+//Ocorrencia
 $route['ocorrencia/(:num)'] = 'Ocorrencia';
+
+//Plantão
 $route['plantao/(:num)'] = 'Plantao';
+
+//Maquina
 $route['maquina/(:num)'] = 'Maquina';
+
+//Manutenção
+$route['manutencao/defeito/(:num)'] = 'Manutencao/defeito';
+$route['manutencao/manutencao/(:num)'] = 'Manutencao/manutencao';
+$route['manutencao/conserto/(:num)'] = 'Manutencao/conserto';
+$route['manutencao/garantia/(:num)'] = 'Manutencao/garantia';
+$route['manutencao/buscar/(:num)'] = 'Manutencao/buscar';

@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <a class="navbar-link" href="<?php echo base_url('caixa'); ?>">Caixas</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'manutencao')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('manutencao'); ?>">Manutenção Impressora</a>
+                    <a class="navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenção Impressora</a>
                 </li>
             </ul>
             <?php } ?>
@@ -66,7 +66,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <a class="navbar-link" href="<?php echo base_url('caixa'); ?>">Caixas</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'manutencao')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('manutencao'); ?>">Manutenções</a>
+                    <a class="navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenções</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'maquina')){ echo 'active';} ?>">
                     <a class="navbar-link" href="<?php echo base_url('maquina'); ?>">IP´s maquinas PP</a>
