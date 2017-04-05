@@ -13,7 +13,14 @@
             <form class="" method="post" 
                   action="<?php echo base_url("maquina/criarMaquina") ?>">
                 <div class="modal-body">
-                    <div class="row">                        
+                    <div class="row">
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptCriUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptCriUrl" id="iptCriUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control" placeholder="" required="true">
+                            </div>
+                        </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptCriNome" class="control-label">Nome:</label>
@@ -25,7 +32,7 @@
                             <div class="form-group">
                                 <label for="iptCriIp" class="control-label">Ip:</label>
                                 <input type="text" name="iptCriIp" id="iptCriIp" 
-                                       class="form-control" placeholder="ip" required="true">
+                                       class="form-control" placeholder="ip" required="true" value="192.168.2.">
                             </div>
                         </div>
                         <div class="col-md-4">

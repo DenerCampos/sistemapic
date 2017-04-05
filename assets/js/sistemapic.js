@@ -96,8 +96,25 @@ $(document).ready(function() {
         formulario = this;
         botao = $(formulario).find(".carregando");
         carregando(botao);
-    });    
+    }); 
+    
+    //Home animação
+    animacaoHome();
+    
 });
+
+//Animação home
+function animacaoHome(){
+    $(".titulo-home").delay(100).slideDown(300);
+    //$(".img-home").delay(450);
+    $(".img-home").animate({
+        left: 0,
+        opacity: 1
+    });
+    $(".img-home").animate({
+        width: 250
+    });
+}
 
 //Esconder tela login
 function esconderLogin(){
@@ -1092,7 +1109,8 @@ function visualizarChamado(ancor){
                 $("#iptVslComentario").text("");
                 if (msg.comentarios){
                     for(var i = 0, len = msg.comentarios.length; i < len; ++i){
-                        $("#iptVslComentario").append(msg.comentarios[i]);
+                        $html = '<p class="texto-comentario">'+msg.comentarios[i]+'</p>';
+                        $("#iptVslComentario").append($html);
                     }
                     $(".comentario").show();
                 }
@@ -1201,7 +1219,8 @@ function editarChamado(ancor){
                 $("#iptEdtComentario").text("");
                 if (msg.comentarios){
                     for(var i = 0, len = msg.comentarios.length; i < len; ++i){
-                        $("#iptEdtComentario").append(msg.comentarios[i]);
+                        $html = '<p class="texto-comentario">'+msg.comentarios[i]+'</p>';
+                        $("#iptEdtComentario").append($html);
                     }
                     $(".comentario").show();
                 }

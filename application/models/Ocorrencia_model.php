@@ -242,7 +242,7 @@ class Ocorrencia_model extends CI_Model {
         //muda organização
         switch ($idestado) {
             case 1:
-                $org = 'data_abertura';
+                $org = 'data_abertura DESC';
                 break;
             case 2:
                 $org = 'data_alteracao DESC';
@@ -418,7 +418,7 @@ class Ocorrencia_model extends CI_Model {
         //muda organização
         switch ($idestado) {
             case 1:
-                $org = 'data_abertura';
+                $org = 'data_abertura DESC';
                 break;
             case 2:
                 $org = 'data_alteracao DESC';
@@ -457,15 +457,16 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Busca todos em aberto por area de atendimento do tecnico
-    public function todasAbertoPorArea($area, $limite = NULL, $ponteiro = NULL){
+    public function todasAbertoPorArea($usuario, $area, $limite = NULL, $ponteiro = NULL){
         if (isset($limite)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 1 AND
                     idestado = 1 AND
-                    idarea = $area
-                ORDER BY data_abertura
+                    idarea = $area OR
+                    usuario_abre = $usuario
+                ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
@@ -473,8 +474,9 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 1 AND
                 idestado = 1 AND
-                    idarea = $area
-                ORDER BY data_abertura");
+                    idarea = $area OR
+                    usuario_abre = $usuario
+                ORDER BY data_abertura DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -522,8 +524,7 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 3 AND
                     idestado = 1 AND
-                    (usuario_abre = $usuario OR
-                    usuario_fecha = $usuario)
+                    (usuario_abre =  $usuario  OR usuario_atende = $usuario)
                 ORDER BY data_fechamento DESC
                 LIMIT $ponteiro, $limite");           
         } else {
@@ -549,7 +550,7 @@ class Ocorrencia_model extends CI_Model {
         //muda organização
         switch ($idestado) {
             case 1:
-                $org = 'data_abertura';
+                $org = 'data_abertura DESC';
                 break;
             case 2:
                 $org = 'data_alteracao DESC';
@@ -662,8 +663,125 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Contar todos registros
-    public function contarTodos(){
+    public function contar(){
         return $this->db->count_all('usuario');
+    }
+    
+    //Contar todos registros do administrador
+    public function contarTodosAdmin($tipo){
+        switch ($tipo) {
+            case "aberto":
+                $query = $this->db->query(                       
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 1 AND
+                        idestado = 1");
+                break;
+            case "atendimento":
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 2 AND
+                        idestado = 1");
+                break;
+            case "fechado":
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 3 AND
+                        idestado = 1");
+                break;            
+            default:
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idestado = 1");
+                break;
+        }
+        return $query->num_rows();
+    }
+    
+    //Contar todos registros do tecnico
+    public function contarTodosTecn($tipo, $area){
+        $usuario = $this->session->userdata("id");
+        switch ($tipo) {
+            case "aberto":
+                $query = $this->db->query(                       
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 1 AND
+                        idestado = 1 AND
+                        idarea = $area OR
+                        usuario_abre = $usuario");
+                break;
+            case "atendimento":
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 2 AND
+                        idestado = 1 AND
+                        (usuario_abre = $usuario OR
+                        usuario_atende = $usuario)");
+                break;
+            case "fechado":
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 3 AND
+                        idestado = 1 AND
+                        (usuario_abre = $usuario OR
+                        usuario_atende = $usuario)");
+                break;            
+            default:
+                $query = $this->db->query(
+                     "SELECT *
+                    FROM ocorrencia
+                    WHERE idestado = 1 AND
+                        idarea = $area AND
+                        (usuario_abre = $usuario OR
+                        usuario_atende = $usuario)");
+                break;
+        }
+        //$total = $query->num_rows();
+        return $query->num_rows();
+    }
+    
+    //Contar todos registros do usuario
+    public function contarTodosUsua($tipo, $usuario){
+        switch ($tipo) {
+            case "aberto":
+                $query = $this->db->query(                       
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 1 AND
+                        idestado = 1 AND
+                        usuario_abre = $usuario");
+                break;
+            case "atendimento":
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 2 AND
+                        idestado = 1 AND
+                        usuario_abre = $usuario");
+                break;
+            case "fechado":
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idocorrencia_estado = 3 AND
+                        idestado = 1 AND
+                        usuario_abre = $usuario");
+                break;            
+            default:
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM ocorrencia
+                    WHERE idestado = 1 AND
+                        usuario_abre = $usuario");
+                break;
+        }
+        return $query->num_rows();
     }
 
     /* ------Funções internas-------- */

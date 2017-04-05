@@ -31,7 +31,7 @@
                             <div class="col-md-12 hidden">
                                 <div class="form-group">
                                     <label for="iptEdtUrl" class="control-label">Url:</label>
-                                    <input type="text" name="iptEdtUrl" id="iptEdtUrl" value="<?php echo current_url(); ?>"
+                                    <input type="text" name="iptEdtUrl" id="iptEdtUrl" value="<?php echo $this->uri->uri_string(); ?>"
                                            class="form-control" required="true">
                                 </div>
                             </div>
@@ -112,26 +112,36 @@
                                            class="form-control" placeholder="8300">
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12">                                
                                 <div class="form-group">
                                     <label for="iptEdtDesc" class="control-label">Descrição:</label>
                                     <textarea class="form-control" id="iptEdtDesc" maxlength="1000" name="iptEdtDesc"
-                                      placeholder="Descrição do chamado"></textarea>
+                                              placeholder="Descrição do chamado"></textarea>
                                 </div>
-                            </div>
-                            <!--Comentarios-->
-                            <div class="comentario col-md-12">
-                                <div class="form-group">
-                                    <label for="iptEdtComentario" class="control-label">Comentários anteriores:</label>                       
-                                    <textarea class="form-control" id="iptEdtComentario" maxlength="1000" 
-                                      name="iptEdtComentario"></textarea>
-                                </div>
-                            </div>
+                            </div> 
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="iptEdtComentarioNovo" class="control-label">Comentário:</label>                       
                                     <textarea class="form-control" id="iptEdtComentarioNovo" maxlength="1000" name="iptEdtComentarioNovo"
                                       placeholder="Novo comentário" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12 comentario">
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#comentarios-anteriores" aria-expanded="true" aria-controls="collapseOne">
+                                                    Comentários anteriores <span class="caret"></span>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="comentarios-anteriores" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                            <div class="panel-body" id="iptEdtComentario">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

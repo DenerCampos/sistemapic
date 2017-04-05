@@ -16,12 +16,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   action="<?php echo base_url("maquina/buscar") ?>">
                 <div class="input-group">
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
-                           placeholder="Busca por nome ou ip...">
+                           placeholder="Busca por nome ou ip..."
+                           <?php if (isset($palavra)) {echo 'value = "'.$palavra.'"';}?>>
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Buscar!</button>
                     </span>
                 </div>
             </form>            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                <?php echo "Busca por: <strong>".$palavra."</strong>. - ".count($maquinas)." resultado(s):"; ?>
+            </div>
         </div>
     </div>
     <div class="panel panel-primary">
@@ -71,13 +79,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <?php } //foreach maquinas?>
                         <?php } //isset maquinas?>
                     </tbody>
-                </table>
+                </table>                
             </div>
         </div>
     </div>
-    <div class="pagina-direita">
-        <nav aria-label="Page navigation">
-            <?php echo $paginas; ?>
-        </nav>
-    </div>      
+    <?php if (!isset($maquinas)) {?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <?php echo "Não existe maquinas."; ?>
+            </div>
+        </div>
+    </div>
+    <?php }?>
 </div>

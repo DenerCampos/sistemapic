@@ -24,7 +24,7 @@
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptRmvUrl" class="control-label">Url:</label>
-                                <input type="text" name="iptRmvUrl" id="iptRmvUrl" value="<?php echo current_url(); ?>"
+                                <input type="text" name="iptRmvUrl" id="iptRmvUrl" value="<?php echo $this->uri->uri_string(); ?>"
                                        class="form-control" required="true">
                             </div>
                         </div>

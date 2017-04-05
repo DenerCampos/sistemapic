@@ -29,7 +29,7 @@
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptVslUrl" class="control-label">Url:</label>
-                                <input type="text" name="iptVslUrl" id="iptVslUrl" value="<?php echo current_url(); ?>"
+                                <input type="text" name="iptVslUrl" id="iptVslUrl" value="<?php echo $this->uri->uri_string(); ?>"
                                        class="form-control" required="true">
                             </div>
                         </div>
@@ -118,10 +118,22 @@
                             </div>
                         </div>
                         <!--Comentarios-->
-                        <div class="comentario col-md-12">
-                            <div class="form-group">
-                                <label for="iptVslComentario" class="control-label">Comentários:</label>                       
-                                <textarea class="form-control" id="iptVslComentario" maxlength="100" name="iptVslComentario"></textarea>
+                        <div class="col-md-12 comentario">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#comentarios-anteriores-vizualiza" aria-expanded="true" aria-controls="collapseOne">
+                                                Comentários anteriores <span class="caret"></span>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="comentarios-anteriores-vizualiza" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body" id="iptVslComentario">
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

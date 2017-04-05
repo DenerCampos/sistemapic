@@ -29,7 +29,13 @@ class Ocorrencia extends CI_Controller {
     }    
     
     /*------Carregamento de views--------*/ 
+    //Exibe a view aberto
     public function index(){
+        redirect('ocorrencia/aberto');
+    }
+    
+    //Exibe a view aberto
+    public function aberto(){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -37,13 +43,13 @@ class Ocorrencia extends CI_Controller {
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
             "ativo" => "helpdesk"));      
-        //Carrega index
+        //Carrega home
+        $this->load->view("helpdesk/home", array (
+            "assetsUrl" => base_url("assets"),
+            "aba" => "aberto"));
+        //Carrega chamados em aberto
         if ($this->session->userdata("nivel") == "0"){
-            $this->load->view('helpdesk/home-admin', array(
-                "assetsUrl" => base_url("assets"),
-                "abertas" => $this->ocorrencia->todasPorEstado(1),
-                "atendimentos" => $this->ocorrencia->todasPorEstado(2),
-                "fechadas" => $this->ocorrencia->todasPorEstado(3),
+            $this->load->view('helpdesk/chamado-aberto-admin', array( 
                 "usuario" => new Usuario_model(),
                 "unidade" => new Unidade_model(),
                 "area" => new Area_model(),
@@ -51,13 +57,10 @@ class Ocorrencia extends CI_Controller {
                 "problema" => new Problema_model(),
                 "local" => new Local_model(),
                 "estado" => new Ocorrencia_estado_model(),
-                "paginas" => $this->listarOcorrencia()));
+                "paginas" => $this->listarOcorrenciaAdmin("aberto", "aberto"),
+                "abertas" => $this->ocorrencia->todasPorEstado(1, 6, $this->recuperaOffset())));
         } elseif ($this->session->userdata("nivel") == "1") {
-            $this->load->view('helpdesk/home-tecn', array(
-                "assetsUrl" => base_url("assets"),
-                "abertas" => $this->ocorrencia->todasAbertoPorArea($this->session->userdata("area")),
-                "atendimentos" => $this->ocorrencia->todasAtendimentoPorArea($this->session->userdata("id")),
-                "fechadas" => $this->ocorrencia->todasFechadosPorArea($this->session->userdata("id")),
+            $this->load->view('helpdesk/chamado-aberto-tecn', array(
                 "usuario" => new Usuario_model(),
                 "unidade" => new Unidade_model(),
                 "area" => new Area_model(),
@@ -65,13 +68,10 @@ class Ocorrencia extends CI_Controller {
                 "problema" => new Problema_model(),
                 "local" => new Local_model(),
                 "estado" => new Ocorrencia_estado_model(),
-                "paginas" => $this->listarOcorrencia()));
+                "paginas" => $this->listarOcorrenciaTecn("aberto", "aberto", $this->session->userdata("area")),
+                "abertas" => $this->ocorrencia->todasAbertoPorArea($this->session->userdata("id"), $this->session->userdata("area"), 6, $this->recuperaOffset())));
         } else {
-            $this->load->view('helpdesk/home-user', array(
-                "assetsUrl" => base_url("assets"),
-                "abertas" => $this->ocorrencia->todasPorUsuario(1, $this->session->userdata("id")),
-                "atendimentos" => $this->ocorrencia->todasPorUsuario(2, $this->session->userdata("id")),
-                "fechadas" => $this->ocorrencia->todasPorUsuario(3, $this->session->userdata("id")),
+            $this->load->view('helpdesk/chamado-aberto-user', array(
                 "usuario" => new Usuario_model(),
                 "unidade" => new Unidade_model(),
                 "area" => new Area_model(),
@@ -79,7 +79,8 @@ class Ocorrencia extends CI_Controller {
                 "problema" => new Problema_model(),
                 "local" => new Local_model(),
                 "estado" => new Ocorrencia_estado_model(),
-                "paginas" => $this->listarOcorrencia()));
+                "paginas" => $this->listarOcorrenciaUsua("aberto", "aberto", $this->session->userdata("id")),
+                "abertas" => $this->ocorrencia->todasPorUsuario(1, $this->session->userdata("id"), 6, $this->recuperaOffset())));
         }
         //Modal
         if ($this->session->userdata("nivel") != "2"){
@@ -126,7 +127,193 @@ class Ocorrencia extends CI_Controller {
             "assetsUrl" => base_url("assets")));
     }
     
-    //Resultado
+    //Exibe a view atendimento
+    public function atendimento(){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "helpdesk"));      
+        //Carrega home
+        $this->load->view("helpdesk/home", array (
+            "assetsUrl" => base_url("assets"),
+            "aba" => "atendimento"));
+        //Carrega chamados em aberto
+        if ($this->session->userdata("nivel") == "0"){
+            $this->load->view('helpdesk/chamado-atendimento-admin', array( 
+                "usuario" => new Usuario_model(),
+                "unidade" => new Unidade_model(),
+                "area" => new Area_model(),
+                "setor" => new Setor_model(),
+                "problema" => new Problema_model(),
+                "local" => new Local_model(),
+                "estado" => new Ocorrencia_estado_model(),
+                "paginas" => $this->listarOcorrenciaAdmin("atendimento", "atendimento"),
+                "atendimentos" => $this->ocorrencia->todasPorEstado(2, 6, $this->recuperaOffset())));
+        } elseif ($this->session->userdata("nivel") == "1") {
+            $this->load->view('helpdesk/chamado-atendimento-tecn', array(
+                "usuario" => new Usuario_model(),
+                "unidade" => new Unidade_model(),
+                "area" => new Area_model(),
+                "setor" => new Setor_model(),
+                "problema" => new Problema_model(),
+                "local" => new Local_model(),
+                "estado" => new Ocorrencia_estado_model(),
+                "paginas" => $this->listarOcorrenciaTecn("atendimento", "atendimento", $this->session->userdata("area")),
+                "atendimentos" => $this->ocorrencia->todasAtendimentoPorArea($this->session->userdata("id"), 6, $this->recuperaOffset())));
+        } else {
+            $this->load->view('helpdesk/chamado-atendimento-user', array(
+                "usuario" => new Usuario_model(),
+                "unidade" => new Unidade_model(),
+                "area" => new Area_model(),
+                "setor" => new Setor_model(),
+                "problema" => new Problema_model(),
+                "local" => new Local_model(),
+                "estado" => new Ocorrencia_estado_model(),
+                "paginas" => $this->listarOcorrenciaUsua("atendimento", "atendimento", $this->session->userdata("id")),
+                "atendimentos" => $this->ocorrencia->todasPorUsuario(2, $this->session->userdata("id"), 6, $this->recuperaOffset())));
+        }
+        //Modal
+        if ($this->session->userdata("nivel") != "2"){
+            $this->load->view("helpdesk/atender-chamado", array( 
+                "assetsUrl" => base_url("assets")));
+            $this->load->view("helpdesk/encaminhar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "tecnicos" => $this->usuario->todosTecnicos()));
+            $this->load->view("helpdesk/remover-chamado", array( 
+                "assetsUrl" => base_url("assets")));
+            $this->load->view("helpdesk/fechar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "unidades" => $this->unidade->todasUnidades(),
+                "areas" => $this->area->todasAreas(),
+                "locais" => $this->local->todosLocais(),
+                "problemas" => $this->problema->todosProblemas(),
+                "setores" => $this->setor->todosSetores()));
+        }
+        $this->load->view("helpdesk/imprimir-chamado", array( 
+            "assetsUrl" => base_url("assets")));        
+        $this->load->view("helpdesk/visualizar-chamado", array( 
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "areas" => $this->area->todasAreas(),
+            "locais" => $this->local->todosLocais(),
+            "problemas" => $this->problema->todosProblemas(),
+            "setores" => $this->setor->todosSetores()));
+        $this->load->view("helpdesk/editar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "unidades" => $this->unidade->todasUnidades(),
+                "areas" => $this->area->todasAreas(),
+                "locais" => $this->local->todosLocais(),
+                "problemas" => $this->problema->todosProblemas(),
+                "setores" => $this->setor->todosSetores()));
+        $this->load->view("helpdesk/criar-chamado", array( 
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "areas" => $this->area->todasAreas(),
+            "locais" => $this->local->todosLocais(),
+            "problemas" => $this->problema->todosProblemas(),
+            "setores" => $this->setor->todosSetores()));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets")));
+    }
+    
+    //Exibe a view fechado
+    public function fechado(){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "helpdesk"));      
+        //Carrega home
+        $this->load->view("helpdesk/home", array (
+            "assetsUrl" => base_url("assets"),
+            "aba" => "fechado"));
+        //Carrega chamados em aberto
+        if ($this->session->userdata("nivel") == "0"){
+            $this->load->view('helpdesk/chamado-fechado-admin', array( 
+                "usuario" => new Usuario_model(),
+                "unidade" => new Unidade_model(),
+                "area" => new Area_model(),
+                "setor" => new Setor_model(),
+                "problema" => new Problema_model(),
+                "local" => new Local_model(),
+                "estado" => new Ocorrencia_estado_model(),
+                "paginas" => $this->listarOcorrenciaAdmin("fechado", "fechado"),
+                "fechadas" => $this->ocorrencia->todasPorEstado(3, 6, $this->recuperaOffset())));
+        } elseif ($this->session->userdata("nivel") == "1") {
+            $this->load->view('helpdesk/chamado-fechado-tecn', array(
+                "usuario" => new Usuario_model(),
+                "unidade" => new Unidade_model(),
+                "area" => new Area_model(),
+                "setor" => new Setor_model(),
+                "problema" => new Problema_model(),
+                "local" => new Local_model(),
+                "estado" => new Ocorrencia_estado_model(),
+                "paginas" => $this->listarOcorrenciaTecn("fechado", "fechado", $this->session->userdata("area")),
+                "fechadas" => $this->ocorrencia->todasFechadosPorArea($this->session->userdata("id"), 6, $this->recuperaOffset())));
+        } else {
+            $this->load->view('helpdesk/chamado-fechado-user', array(
+                "usuario" => new Usuario_model(),
+                "unidade" => new Unidade_model(),
+                "area" => new Area_model(),
+                "setor" => new Setor_model(),
+                "problema" => new Problema_model(),
+                "local" => new Local_model(),
+                "estado" => new Ocorrencia_estado_model(),
+                "paginas" => $this->listarOcorrenciaUsua("fechado", "fechado", $this->session->userdata("id")),
+                "fechadas" => $this->ocorrencia->todasPorUsuario(3, $this->session->userdata("id"), 6, $this->recuperaOffset())));
+        }
+        //Modal
+        if ($this->session->userdata("nivel") != "2"){
+            $this->load->view("helpdesk/atender-chamado", array( 
+                "assetsUrl" => base_url("assets")));
+            $this->load->view("helpdesk/encaminhar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "tecnicos" => $this->usuario->todosTecnicos()));
+            $this->load->view("helpdesk/remover-chamado", array( 
+                "assetsUrl" => base_url("assets")));
+            $this->load->view("helpdesk/fechar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "unidades" => $this->unidade->todasUnidades(),
+                "areas" => $this->area->todasAreas(),
+                "locais" => $this->local->todosLocais(),
+                "problemas" => $this->problema->todosProblemas(),
+                "setores" => $this->setor->todosSetores()));
+        }
+        $this->load->view("helpdesk/imprimir-chamado", array( 
+            "assetsUrl" => base_url("assets")));        
+        $this->load->view("helpdesk/visualizar-chamado", array( 
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "areas" => $this->area->todasAreas(),
+            "locais" => $this->local->todosLocais(),
+            "problemas" => $this->problema->todosProblemas(),
+            "setores" => $this->setor->todosSetores()));
+        $this->load->view("helpdesk/editar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "unidades" => $this->unidade->todasUnidades(),
+                "areas" => $this->area->todasAreas(),
+                "locais" => $this->local->todosLocais(),
+                "problemas" => $this->problema->todosProblemas(),
+                "setores" => $this->setor->todosSetores()));
+        $this->load->view("helpdesk/criar-chamado", array( 
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "areas" => $this->area->todasAreas(),
+            "locais" => $this->local->todosLocais(),
+            "problemas" => $this->problema->todosProblemas(),
+            "setores" => $this->setor->todosSetores()));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets")));
+    }   
+    
+    //Exibe a view resultado da busca
     public function resultado($palavra, $numeros = NULL, $problemas = NULL, $descricao = NULL){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
@@ -166,7 +353,7 @@ class Ocorrencia extends CI_Controller {
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets")));
     }
-
+    
     //Mensagem de erro
     public function erro($msg = NULL){
         //Carrega cabeçaho html
@@ -175,7 +362,7 @@ class Ocorrencia extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => ""));     
+            "ativo" => "helpdesk"));     
         //Carrega index
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
@@ -186,7 +373,7 @@ class Ocorrencia extends CI_Controller {
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets")));
-    }
+    }   
     
     //Mensagem de erro
     public function mensagem($msg = null, $uri = null){
@@ -196,7 +383,7 @@ class Ocorrencia extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => ""));     
+            "ativo" => "helpdesk"));     
         //Carrega index
         $this->load->view('mensagens/mensagem', array(
             "assetsUrl" => base_url("assets"),
@@ -210,32 +397,17 @@ class Ocorrencia extends CI_Controller {
             "assetsUrl" => base_url("assets")));
     }
     
-    /*------Funções internas--------*/ 
-    //Grava log no BD
-    private function gravaLog($nome, $descricao){
-        //dados
-        $data = date('Y-m-d H:i:s');
-        $ip =  $this->input->ip_address();
-        if ($this->session->has_userdata("nome")){
-            $idusuario = $this->session->userdata("id");
-        } else {
-            $idusuario = 0;
-        }
-        //carrega model
-        $this->load->model("Log_model", "registro");
-        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
-        $this->registro->addLog();
-    }
+    /*----------------Funções---------------*/
     
-    //Paginação
-    public function listarOcorrencia(){
+    //Paginação Admin
+    public function listarOcorrenciaAdmin($tipo, $url){
         //Configuração da paginação codeigniter
         $config = array(
-            "base_url" => base_url('ocorrencia'),
-            "per_page" => 10,
-            "num_links" => 2,
-            "uri_segment" => 2,
-            "total_rows" => $this->ocorrencia->contarTodos(),
+            "base_url" => base_url('ocorrencia/'.$url),
+            "per_page" => 6,
+            "num_links" => 5,
+            "uri_segment" => 3,
+            "total_rows" => $this->ocorrencia->contarTodosAdmin($tipo),
             "full_tag_open" => "<ul class='pagination'>",
             "full_tag_close" => "</ul>",
             "first_link" => FALSE,
@@ -262,132 +434,82 @@ class Ocorrencia extends CI_Controller {
         return $paginas;
     }
     
-    //Paginação usuariao, recupera offset
-    private function recuperaOffset(){
-        if ($this->uri->segment(2)){
-            return $this->uri->segment(2);
-        } else{
-            return 0;
-        }
+    //Paginação Admin
+    public function listarOcorrenciaTecn($tipo, $url, $area){
+        //Configuração da paginação codeigniter
+        $config = array(
+            "base_url" => base_url('ocorrencia/'.$url),
+            "per_page" => 6,
+            "num_links" => 5,
+            "uri_segment" => 3,
+            "total_rows" => $this->ocorrencia->contarTodosTecn($tipo, $area),
+            "full_tag_open" => "<ul class='pagination'>",
+            "full_tag_close" => "</ul>",
+            "first_link" => FALSE,
+            "last_link" => FALSE,
+            "first_tag_open" => "<li>",
+            "first_tag_close" => "</li>",
+            "prev_link" => "<span aria-hidden='true'>&laquo;</span>",
+            "prev_tag_open" => "<li class='prev'>",
+            "prev_tag_close" => "</li>",
+            "next_link" => "<span aria-hidden='true'>&raquo;</span>",
+            "next_tag_open" => "<li class='next'>",
+            "next_tag_close" => "</li>",
+            "last_tag_open" => "<li>",
+            "last_tag_close" => "</li>",
+            "cur_tag_open" => "<li class='active'> <a href='#'>",
+            "cur_tag_close" => "</a></li>",
+            "num_tag_open" => "<li>",
+            "num_tag_close" => "<li>"
+        );
+        //Inicializar biblioteca pagination
+        $this->pagination->initialize($config);
+        //html completo dos links
+        $paginas = $this->pagination->create_links();
+        return $paginas;
     }
     
-    //verifica nivel de usuario para acesso ao sistema
-    private function verificaNivel(){
-        //verifica nivel usuario
-        //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
-            //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '3'){
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Ocorrencia.php");
-                redirect(base_url());
-            } else {
-                //acesso permitido
-            }
-        } else {
-            //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Ocorrencia.php");
-            redirect(base_url());
-        }
-    }
-    
-    //gera unidade
-    private function geraUnidade($nome){
-        return $this->unidade->buscaPorNome($nome)->getIdunidade();
-    }
-    
-    //gera setor
-    private function geraSetor($nome){
-        return $this->setor->buscaPorNome($nome)->getIdsetor();
-    }
-    
-    //gera problema
-    private function geraProblema($nome){
-        return $this->problema->buscaPorNome($nome)->getIdproblema();
-    }
-    
-    //gera area
-    private function geraArea($nome){
-        return $this->area->buscaPorNome($nome)->getIdarea();
-    }
-    
-    //gera usuario
-    private function geraUsuario($nome){
-        return $this->usuario->buscaUsuarioNome($nome)->getIdusuario();
-    }
-
-    //Recupera dados da nova ocorrencia
-    private function recuperaDadosNovaOcorrencia(&$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao){
-        $unidade = $this->input->post("selCriUnidade");
-        $setor = $this->input->post("selCriSetor");
-        $problema = $this->input->post("selCriProblema");
-        $area = $this->input->post("selCriArea");
-        $usuario = $this->input->post("iptCriUsuario");
-        $vnc = $this->input->post("iptCriVnc");
-        $ramal = $this->input->post("iptCriRamal");
-        $descricao = $this->input->post("iptCriDesc");
-        
-        //pegar unidade
-        if (isset($unidade)){
-            $unidade = $this->geraUnidade($unidade);
-        }
-        //pegar setor
-        if (isset($setor)){
-            $setor = $this->geraSetor($setor);
-        }
-        //pegar problema
-        if (isset($problema)){
-            $problema = $this->geraProblema($problema);
-        }
-        //pegar area
-        if (isset($area)){
-            $area = $this->geraArea($area);
-        }
-        //primeira letra maiuscula
-        if (isset($usuario)){
-            $usuario = ucfirst(strtolower($usuario));
-        }
-    }
-    
-    //Recupera dados da nova ocorrencia
-    private function recuperaDadosEditaOcorrencia(&$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal){
-        $unidade = $this->input->post("selEdtUnidade");
-        $setor = $this->input->post("selEdtSetor");
-        $problema = $this->input->post("selEdtProblema");
-        $area = $this->input->post("selEdtArea");
-        $usuario = $this->input->post("iptEdtUsuario");
-        $vnc = $this->input->post("iptEdtVnc");
-        $ramal = $this->input->post("iptEdtRamal");
-        $descricao = $this->input->post("iptEdtDesc");
-        
-        //pegar unidade
-        if (isset($unidade)){
-            $unidade = $this->geraUnidade($unidade);
-        }
-        //pegar setor
-        if (isset($setor)){
-            $setor = $this->geraSetor($setor);
-        }
-        //pegar problema
-        if (isset($problema)){
-            $problema = $this->geraProblema($problema);
-        }
-        //pegar area
-        if (isset($area)){
-            $area = $this->geraArea($area);
-        }
-        //primeira letra maiuscula
-        if (isset($usuario)){
-            $usuario = ucfirst(strtolower($usuario));
-        }
+    //Paginação Admin
+    public function listarOcorrenciaUsua($tipo, $url, $usuario){
+        //Configuração da paginação codeigniter
+        $config = array(
+            "base_url" => base_url('ocorrencia/'.$url),
+            "per_page" => 6,
+            "num_links" => 5,
+            "uri_segment" => 3,
+            "total_rows" => $this->ocorrencia->contarTodosUsua($tipo, $usuario),
+            "full_tag_open" => "<ul class='pagination'>",
+            "full_tag_close" => "</ul>",
+            "first_link" => FALSE,
+            "last_link" => FALSE,
+            "first_tag_open" => "<li>",
+            "first_tag_close" => "</li>",
+            "prev_link" => "<span aria-hidden='true'>&laquo;</span>",
+            "prev_tag_open" => "<li class='prev'>",
+            "prev_tag_close" => "</li>",
+            "next_link" => "<span aria-hidden='true'>&raquo;</span>",
+            "next_tag_open" => "<li class='next'>",
+            "next_tag_close" => "</li>",
+            "last_tag_open" => "<li>",
+            "last_tag_close" => "</li>",
+            "cur_tag_open" => "<li class='active'> <a href='#'>",
+            "cur_tag_close" => "</a></li>",
+            "num_tag_open" => "<li>",
+            "num_tag_close" => "<li>"
+        );
+        //Inicializar biblioteca pagination
+        $this->pagination->initialize($config);
+        //html completo dos links
+        $paginas = $this->pagination->create_links();
+        return $paginas;
     }
     
     //Cria nova ocorrencia
     public function novaOcorrencia(){
-        $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $descricao;
+        $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $descricao; $url;
         try {
             //recuperda dados
-            $this->recuperaDadosNovaOcorrencia($unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao);
+            $this->recuperaDadosNovaOcorrencia($unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao, $url);
             //gera ocorrencia //data abertura
             $data = date('Y-m-d H:i:s');
             $this->ocorrencia->newOcorrencia($descricao, $vnc, $ramal, $data, $usuario, 
@@ -404,7 +526,7 @@ class Ocorrencia extends CI_Controller {
             //log
             $this->gravaLog("chamado aberto", "usuario: ".$this->session->userdata("nome")." - chamado: ".$this->ocorrencia->recuperaUltima($this->session->userdata("id"))->getIdocorrencia());
             //mensagem
-            $this->mensagem("Chamado ".$id." aberto!", "ocorrencia");
+            $this->mensagem("Chamado <strong>".$id."</strong> aberto!", $url);
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
@@ -412,53 +534,23 @@ class Ocorrencia extends CI_Controller {
         }        
     }
     
-    //Salva anexo no servidor
-    private function salvaAnexo($nome, $idchamado){
-        if ($_FILES[$nome]['error'] == 0){
-            //inicia biblioteca do codeigniter
-            $this->load->library('upload');
-            //configuração
-            $config = array(
-                'upload_path' => './document/helpdesk/',
-                'allowed_types' => 'gif|jpg|png',
-                'file_name' => uniqid(md5($idchamado))
-            );
-            //inicializa
-            $this->upload->initialize($config);
-            //salvar e verifica erro
-            if ($this->upload->do_upload($nome)){
-                //salva no bd newArquivo($nome, $local, $nome_antigo, $idocorrencia)
-                $arquivo = $this->upload->data();
-                $local = 'document/helpdesk/';
-                $this->arquivo->newArquivo($arquivo["file_name"], $local, $arquivo["client_name"], $idchamado);
-                $this->arquivo->addArquivo();
-                return TRUE;
-            } else {
-                //Log erro foto
-                $this->gravaLog("erro anexo chamado", "usuario: ".$this->session->userdata("id")."Erro: ".$this->upload->display_errors());
-                return FALSE;
-            }
-        }
-        //Não existe arquivo
-        return TRUE;
-    }
-    
     //Atender ocorrencia
     public function atender(){
-        //recupera id
-        $id = trim($this->input->post("iptAtdId"));
         try {
+            $id; $url;
+            //Recupera inputs
+            $this->recuperaDadosAtender($id, $url);
             //verifica se existe e esta em aberto
             if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->aberto($id)){
                 //atende ocorrencia
                 $this->ocorrencia->atende($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 2);
                 //log
                 $this->gravaLog("chamado em atendimento", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
-                redirect("ocorrencia");
+                $this->mensagem("Agora você está atendendo o chamado: <strong>".$id."</strong>.", $url);
             }else{
                 //log
                 $this->gravaLog("erro chamado em atendimento", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
-                $this->erro("Chamado ".$id." não está em aberto no sistema.");
+                $this->erro("Chamado <strong>".$id."</strong> não está em aberto no sistema.");
             }
         } catch (Exception $exc) {
             //log
@@ -467,13 +559,12 @@ class Ocorrencia extends CI_Controller {
         }  
     }
     
-    //encaminhar ocorrencia
+    //Encaminhar ocorrencia
     public function encaminhar(){
-        //recupera id
-        $id = trim($this->input->post("iptEncId"));
-        $usuario = trim($this->input->post("selEncTecnico"));
-        $comentario = trim($this->input->post("iptEncComentario"));
         try {
+            $id; $usuario; $comentario; $url;
+            //Recuperando dados
+            $this->recuperaDadosEncaminhar($id, $usuario, $comentario, $url);
             //verifica se existe e esta em atendimento
              if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
                 if (!isset($comentario) || $comentario == ""){
@@ -486,13 +577,12 @@ class Ocorrencia extends CI_Controller {
                 $this->ocorrencia->encaminha($id, $this->geraUsuario($usuario), date('Y-m-d H:i:s'));
                 //log
                 $this->gravaLog("chamado emcaminhado", "nome: ".$this->session->userdata("nome")." - chamado: ".$id." para o usuario: ".$usuario);
-                redirect("ocorrencia");
+                $this->mensagem("Chamado <strong>".$id."</strong> encaminhado para <strong>".$usuario."</strong>.", $url);
             }else{
                 //log
                 $this->gravaLog("erro chamado emcaminhado", "nome: ".$this->session->userdata("nome")." - chamado: ".$id." para o usuario: ".$usuario);
-                $this->erro("Chamado ".$id." não está em atendimento no sistema.");
-            }
-            
+                $this->erro("Chamado <strong>".$id."</strong> não está em atendimento no sistema.");
+            } 
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
@@ -500,48 +590,15 @@ class Ocorrencia extends CI_Controller {
         }
     }
     
-    //Gerar comentarios das ocorrencias
-    private function gerarComentarios($id){
-        //busca todos comentarios da ocorrencia
-        $comentarios = $this->comentario->buscaIdOcorrencia($id);
-        //verifica se existe comentarios
-        if (isset($comentarios)){
-            $coments = array();
-            foreach ($comentarios as $comentario) {
-                $coments[] = date("d/m - H:m", strtotime($comentario->getData())).
-                    " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
-                    ": ".
-                    $comentario->getDescricao().
-                    "\n";
-            }
-            return $coments;
-        } else {
-            return NULL;
-        }
-    }
-    
-    //Gera arquivos das ocorrencias
-    private function geraArquivos($id){
-        //busca todos arquivos
-        $arquivos = $this->arquivo->buscaOcorrencia($id);
-        //verifica se existe arquivos
-        if (isset($arquivos)){
-            foreach ($arquivos as $value) {
-                $arquivo[] = base_url($value->getLocal().$value->getNome()); 
-            }
-            return $arquivo;
-        } else {
-            return NULL;
-        }
-    }
-
     //Imprimir ocorrencia
     public function imprimir(){
-        //carregando a biblioteca
-        $this->load->library('pdf');
-        //recupera id
-        $id = trim($this->input->post("iptImpId"));
-        try {          
+        try {
+            //carregando a biblioteca
+            $this->load->library('pdf');
+            $id; $url;
+            //Recupera dados
+            $this->recuperaDadosImprimir($id, $url);
+            //Gera pagina em html
             $paginas = $this->load->view("helpdesk/impressao-chamado", array( 
                 "assetsUrl" => base_url("assets"),
                 "chamado" => $this->ocorrencia->buscaId($id),
@@ -554,6 +611,7 @@ class Ocorrencia extends CI_Controller {
                 "solucao" => $this->comentario->buscaSolucao($id),
                 "anexos" =>  $this->geraArquivos($id),
                 "estado" => new Ocorrencia_estado_model()), TRUE);
+            //Busca arquivo de estilo
             $css = file_get_contents(base_url('assets/css/sistemapic.impressao.css')); 
             //gera pdf
             $this->pdf->geraPdf($paginas, $css);
@@ -566,22 +624,127 @@ class Ocorrencia extends CI_Controller {
     
     //Remover ocorrencia
     public function remover(){
-        //recupera id
-        $id = $this->input->post("iptRmvId");
-        //verifica se existe
-        if ($this->ocorrencia->verificaExiste($id)){
-            //remover ocorrencia
-            $this->ocorrencia->remove($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 2);
+        try {
+            $id; $url;
+            //recupera dados
+            $this->recuperaDadosRemover($id, $url);
+            //verifica se existe
+            if ($this->ocorrencia->verificaExiste($id)){
+                //remover ocorrencia
+                $this->ocorrencia->remove($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 2);
+                //log
+                $this->gravaLog("chamado removido", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
+                $this->mensagem("Chamado <strong>".$id."</strong> removido.", $url);
+            }else{
+                //log
+                $this->gravaLog("erro chamado removido", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
+                $this->erro("Chamado <strong>".$id."</strong> não existe.");
+            }
+        } catch (Exception $exc) {
             //log
-            $this->gravaLog("chamado removido", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
-        }else{
-            //erro
-            //log
-            $this->gravaLog("erro chamado removido", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao remover chamado. Favor tentar novamente.");
         }
-        redirect("ocorrencia");
-    }
 
+        
+    }
+    
+    //Editar ocorrencia
+    public function editar(){        
+        try {
+            $id; $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $comentario; $url;
+            //Recupera dados
+            $this->recuperaDadosEditar($id, $unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $comentario, $url);
+            //verifica se existe e se ocorrencia esta em atendimento
+            if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
+                if ($comentario != ""){
+                    //adiciona comentario
+                    $this->comentario->newComentario($comentario, date('Y-m-d H:i:s'), $id, $this->session->userdata("id"));
+                    $this->comentario->addComentario();
+                }
+                //atualiza chamado
+                $this->ocorrencia->atualiza($id, $vnc, $ramal, $usuario, date('Y-m-d H:i:s'), $unidade, $area, $setor, $problema);
+                //log
+                $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->gravaLog("atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->mensagem("Chamado <strong>".$id."</strong> atualizado.", $url);
+            }else{
+                //log
+                $this->gravaLog("erro comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->gravaLog("erro atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->erro("Chamado <strong>".$id."</strong> já foi fechado ou não existe!");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao editar chamado. Favor tentar novamente.");
+        }
+    }
+    
+     //fechar ocorrencia
+    public function fechar(){
+        try {
+            $id; $comentario; $url;
+            //recupera dados
+            $this->recuperaDadosFechar($id, $comentario, $url);
+            //verifica se existe
+            if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
+                if (isset($comentario) && $comentario == ""){
+                    $comentario = "Chamado fechado sem descrição do fechamento por ".$this->session->userdata("nome");
+                }
+                //adiciona comentario
+                $this->comentario->newComentario($comentario, date('Y-m-d H:i:s'), $id, $this->session->userdata("id"));
+                $this->comentario->addComentario();
+                //fecha chamado
+                $this->ocorrencia->fecha($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 3);
+                //log
+                $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->gravaLog("fechamento", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->mensagem("Chamado <strong>".$id."</strong> fechado!", $url);
+            }else{
+                //log
+                $this->gravaLog("erro fechamento", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->erro("Erro ao fechar o chamado <strong>".$id."</strong>.");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao fechar chamado. Favor tentar novamente.");
+        }
+    }   
+       
+    //Busca por ocorrencia
+    public function buscar(){
+        //recupera dados da busca
+        $busca = strtolower(trim($this->input->post("iptBusca")));
+        try {
+            //verifica se foi digitado algo
+            //usuario todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+            if (isset($busca) && $this->session->userdata("nivel") == 2){
+                //busca por numero do chamado
+                $numeros = $this->ocorrencia->todasPorBuscaNumero($busca, $this->session->userdata("id"));
+                $this->resultado($busca, $numeros);
+            } elseif (isset($busca)){
+                //busca por numero do chamado todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+                $numeros = $this->ocorrencia->todasPorBuscaNumero($busca);
+                //busca por problema todasPorBuscaProblema($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+                $problemas = $this->ocorrencia->todasPorBuscaProblema($busca);
+                //busca por descricao todasPorBuscaDescricao($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+                $descricao = $this->ocorrencia->todasPorBuscaDescricao($busca);
+                //chamando a view
+                $this->resultado($busca, $numeros, $problemas, $descricao);
+            } else {
+                $this->resultado("'vazio'");
+            }                       
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na busca. Favor tentar novamente.");
+        }
+    }
+    
+    /*----------------Funções AJAX---------------*/
+    
     //Atender ocorrencia ajax
     public function atenderChamado(){
         //Recupera Id 
@@ -651,11 +814,10 @@ class Ocorrencia extends CI_Controller {
             if (isset($comentarios)){
                 $coments = array();
                 foreach ($comentarios as $comentario) {
-                    $coments[] = date("d/m - H:m", strtotime($comentario->getData())).
+                    $coments[] = "<strong>".date("d/m - H:m", strtotime($comentario->getData())).
                         " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
-                        ": ".
-                        $comentario->getDescricao().
-                        "\n";
+                        ": </strong>".
+                        $comentario->getDescricao();
                 }
                 $msg["comentarios"] = $coments;
             }
@@ -746,11 +908,10 @@ class Ocorrencia extends CI_Controller {
             if (isset($comentarios)){
                 $coments = array();
                 foreach ($comentarios as $comentario) {
-                    $coments[] = date("d/m - H:m", strtotime($comentario->getData())).
+                    $coments[] = "<strong>".date("d/m - H:m", strtotime($comentario->getData())).
                         " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
-                        ": ".
-                        $comentario->getDescricao().
-                        "\n";
+                        ": </strong>".
+                        $comentario->getDescricao();
                 }
                 $msg["comentarios"] = $coments;
             }
@@ -769,43 +930,6 @@ class Ocorrencia extends CI_Controller {
         }
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
-    }
-    
-    //editar ocorrencia
-    public function editar(){
-        //recupera id
-        $id = $this->input->post("iptEdtId");
-        $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal;
-        //recuperda dados
-        $this->recuperaDadosEditaOcorrencia($unidade, $setor, $problema, $area, $usuario, $vnc, $ramal);
-        //recupera comentario
-        $comentario = trim($this->input->post("iptEdtComentarioNovo"));
-        try {
-            //verifica se existe e se ocorrencia esta em atendimento
-            if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
-                if ($comentario != ""){
-                    //adiciona comentario
-                    $this->comentario->newComentario($comentario, date('Y-m-d H:i:s'), $id, $this->session->userdata("id"));
-                    $this->comentario->addComentario();
-                }
-                //atualiza chamado
-                $this->ocorrencia->atualiza($id, $vnc, $ramal, $usuario, date('Y-m-d H:i:s'), $unidade, $area, $setor, $problema);
-                //log
-                $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
-                $this->gravaLog("atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
-                $this->mensagem("Chamado salvo.", "ocorrencia");
-            }else{
-                //log
-                $this->gravaLog("erro comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
-                $this->gravaLog("erro atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
-                $this->erro("Chamado já foi fechado!");
-            }
-        } catch (Exception $exc) {
-            //log
-            $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro ao editar chamado. Favor tentar novamente.");
-        }
-
     }
     
     //fechar ocorrencia ajax
@@ -849,66 +973,282 @@ class Ocorrencia extends CI_Controller {
         exit();
     }
     
-    //fechar ocorrencia
-    public function fechar(){
-        //recupera id
-        $id = trim($this->input->post("iptFchId"));
-        //recupera comentario fechamento
-        $comentario = trim($this->input->post("iptFchComentarioNovo"));
-        try {
-            //verifica se existe
-            if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
-                if (isset($comentario) && $comentario == ""){
-                    $comentario = "Chamado fechado sem descrição do fechamento por ".$this->session->userdata("nome");
-                }
-                //adiciona comentario
-                $this->comentario->newComentario($comentario, date('Y-m-d H:i:s'), $id, $this->session->userdata("id"));
-                $this->comentario->addComentario();
-                //fecha chamado
-                $this->ocorrencia->fecha($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 3);
-                //log
-                $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
-                $this->gravaLog("fechamento", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
-                $this->mensagem("Chamado <strong>".$id."</strong> fechado!", "ocorrencia");
-            }else{
-                //log
-                $this->gravaLog("erro fechamento", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
-                $this->erro("Erro ao fechar o chamado <strong>".$id."</strong>.");
-            }
-        } catch (Exception $exc) {
-            //log
-            $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro ao fechar chamado. Favor tentar novamente.");
+    /*---------Funções internas------------*/ 
+    
+    //Grava log no BD
+    private function gravaLog($nome, $descricao){
+        //dados
+        $data = date('Y-m-d H:i:s');
+        $ip =  $this->input->ip_address();
+        if ($this->session->has_userdata("nome")){
+            $idusuario = $this->session->userdata("id");
+        } else {
+            $idusuario = 0;
         }
-    }   
-       
-    //Busca por ocorrencia
-    public function buscar(){
-        //recupera dados da busca
-        $busca = strtolower(trim($this->input->post("iptBusca")));
-        try {
-            //verifica se foi digitado algo
-            //usuario todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-            if (isset($busca) && $this->session->userdata("nivel") == 2){
-                //busca por numero do chamado
-                $numeros = $this->ocorrencia->todasPorBuscaNumero($busca, $this->session->userdata("id"));
-                $this->resultado($busca, $numeros);
-            } elseif (isset($busca)){
-                //busca por numero do chamado todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-                $numeros = $this->ocorrencia->todasPorBuscaNumero($busca);
-                //busca por problema todasPorBuscaProblema($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-                $problemas = $this->ocorrencia->todasPorBuscaProblema($busca);
-                //busca por descricao todasPorBuscaDescricao($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-                $descricao = $this->ocorrencia->todasPorBuscaDescricao($busca);
-                //chamando a view
-                $this->resultado($busca, $numeros, $problemas, $descricao);
-            } else {
-                $this->resultado("'vazio'");
-            }                       
-        } catch (Exception $exc) {
-            //log
-            $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro na busca. Favor tentar novamente.");
+        //carrega model
+        $this->load->model("Log_model", "registro");
+        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
+        $this->registro->addLog();
+    }     
+    
+    //Paginação usuariao, recupera offset
+    private function recuperaOffset(){
+        if ($this->uri->segment(3)){
+            return $this->uri->segment(3);
+        } else{
+            return 0;
         }
     }
+    
+    //Verifica nivel de usuario para acesso ao sistema
+    private function verificaNivel(){
+        //verifica nivel usuario
+        //verifica se tem alguem logado
+        if ($this->session->has_userdata('nivel')){
+            //verifica nivel de acesso
+            if ($this->session->userdata('nivel') == '3'){
+                //grava log
+                $this->gravaLog("tentativa de acesso", "acesso ao controlador Ocorrencia.php");
+                redirect(base_url());
+            } else {
+                //acesso permitido
+            }
+        } else {
+            //grava log
+            $this->gravaLog("tentativa de acesso", "acesso ao controlador Ocorrencia.php");
+            redirect(base_url());
+        }
+    }
+    
+    //Gera unidade
+    private function geraUnidade($nome){
+        return $this->unidade->buscaPorNome($nome)->getIdunidade();
+    }
+    
+    //Gera setor
+    private function geraSetor($nome){
+        return $this->setor->buscaPorNome($nome)->getIdsetor();
+    }
+    
+    //Gera problema
+    private function geraProblema($nome){
+        return $this->problema->buscaPorNome($nome)->getIdproblema();
+    }
+    
+    //Gera area
+    private function geraArea($nome){
+        return $this->area->buscaPorNome($nome)->getIdarea();
+    }
+    
+    //Gera usuario
+    private function geraUsuario($nome){
+        return $this->usuario->buscaUsuarioNome($nome)->getIdusuario();
+    }
+    
+    //primeira letra maiuscula 
+    private function primeiraLetraMaiuscula($texto){
+        return ucfirst(strtolower($texto));
+    }
+    
+    //primeira letra de cada palavra maiuscula 
+    private function palavraLetraMaiuscula($texto){
+        return ucwords(strtolower($texto));
+    }
+
+    //Recupera dados da nova ocorrencia
+    private function recuperaDadosNovaOcorrencia(&$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao, &$url){
+        $unidade = $this->input->post("selCriUnidade");
+        $setor = $this->input->post("selCriSetor");
+        $problema = $this->input->post("selCriProblema");
+        $area = $this->input->post("selCriArea");
+        $usuario = $this->palavraLetraMaiuscula(trim($this->input->post("iptCriUsuario")));
+        $vnc = trim($this->input->post("iptCriVnc"));
+        $ramal = trim($this->input->post("iptCriRamal"));
+        $descricao = $this->input->post("iptCriDesc");
+        $url = trim($this->input->post("iptCriUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "ocorrencia/aberto";
+        }
+        
+        //pegar unidade
+        if (isset($unidade)){
+            $unidade = $this->geraUnidade($unidade);
+        }
+        //pegar setor
+        if (isset($setor)){
+            $setor = $this->geraSetor($setor);
+        }
+        //pegar problema
+        if (isset($problema)){
+            $problema = $this->geraProblema($problema);
+        }
+        //pegar area
+        if (isset($area)){
+            $area = $this->geraArea($area);
+        }
+    }
+    
+    //Recupera dados da editar ocorrencia
+    private function recuperaDadosEditar(&$id, &$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$comentario, &$url){
+        $id = $this->input->post("iptEdtId");
+        $unidade = $this->input->post("selEdtUnidade");
+        $setor = $this->input->post("selEdtSetor");
+        $problema = $this->input->post("selEdtProblema");
+        $area = $this->input->post("selEdtArea");
+        $usuario = $this->palavraLetraMaiuscula(trim($this->input->post("iptEdtUsuario")));
+        $vnc = trim($this->input->post("iptEdtVnc"));
+        $ramal = trim($this->input->post("iptEdtRamal"));
+        //$descricao = $this->input->post("iptEdtDesc");
+        $comentario = trim($this->input->post("iptEdtComentarioNovo"));
+        $url = trim($this->input->post("iptEdtUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)){
+            $url = base_url("ocorrencia/aberto");
+        }
+        
+        //pegar unidade
+        if (isset($unidade)){
+            $unidade = $this->geraUnidade($unidade);
+        }
+        //pegar setor
+        if (isset($setor)){
+            $setor = $this->geraSetor($setor);
+        }
+        //pegar problema
+        if (isset($problema)){
+            $problema = $this->geraProblema($problema);
+        }
+        //pegar area
+        if (isset($area)){
+            $area = $this->geraArea($area);
+        }
+    }
+    
+    //Recupera dados da atender ocorrencia
+    private function recuperaDadosAtender(&$id, &$url){
+        $id = trim($this->input->post("iptAtdId"));
+        $url = trim($this->input->post("iptAtdUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "ocorrencia/aberto";
+        }
+    }
+    
+    //Recupera dados da encaminher ocorrencia
+    private function recuperaDadosEncaminhar(&$id, &$usuario, &$comentario, &$url){
+        $id = trim($this->input->post("iptEncId"));
+        $usuario = trim($this->input->post("selEncTecnico"));
+        $comentario = trim($this->input->post("iptEncComentario"));
+        $url = trim($this->input->post("iptEncUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "ocorrencia/atendimento";
+        }
+    }
+    
+    //Recupera dados da imprimir ocorrencia
+    private function recuperaDadosImprimir(&$id, &$url){
+        $id = trim($this->input->post("iptImpId"));
+        $url = trim($this->input->post("iptImpUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "ocorrencia/aberto";
+        }
+    }
+    
+    //Recupera dados da remover ocorrencia
+    private function recuperaDadosRemover(&$id, &$url){
+        $id = $this->input->post("iptRmvId");
+        $url = trim($this->input->post("iptRmvUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "ocorrencia/aberto";
+        }
+    }
+    
+    //Recupera dados da fechar ocorrencia
+    private function recuperaDadosFechar(&$id, &$comentario, &$url){
+        $id = trim($this->input->post("iptFchId"));
+        $comentario = trim($this->input->post("iptFchComentarioNovo"));
+        $url = trim($this->input->post("iptFchUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "ocorrencia/atendimento";
+        }
+    }
+
+    //Salva anexo no servidor
+    private function salvaAnexo($nome, $idchamado){
+        if ($_FILES[$nome]['error'] == 0){
+            //inicia biblioteca do codeigniter
+            $this->load->library('upload');
+            //configuração
+            $config = array(
+                'upload_path' => './document/helpdesk/',
+                'allowed_types' => 'gif|jpg|png',
+                'file_name' => uniqid(md5($idchamado))
+            );
+            //inicializa
+            $this->upload->initialize($config);
+            //salvar e verifica erro
+            if ($this->upload->do_upload($nome)){
+                //salva no bd newArquivo($nome, $local, $nome_antigo, $idocorrencia)
+                $arquivo = $this->upload->data();
+                $local = 'document/helpdesk/';
+                $this->arquivo->newArquivo($arquivo["file_name"], $local, $arquivo["client_name"], $idchamado);
+                $this->arquivo->addArquivo();
+                return TRUE;
+            } else {
+                //Log erro foto
+                $this->gravaLog("erro anexo chamado", "usuario: ".$this->session->userdata("id")."Erro: ".$this->upload->display_errors());
+                return FALSE;
+            }
+        }
+        //Não existe arquivo
+        return TRUE;
+    }
+    
+    //Gerar comentarios das ocorrencias
+    private function gerarComentarios($id){
+        //busca todos comentarios da ocorrencia
+        $comentarios = $this->comentario->buscaIdOcorrencia($id);
+        //verifica se existe comentarios
+        if (isset($comentarios)){
+            $coments = array();
+            foreach ($comentarios as $comentario) {
+                $coments[] = date("d/m - H:m", strtotime($comentario->getData())).
+                    " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
+                    ": ".
+                    $comentario->getDescricao().
+                    "\n";
+            }
+            return $coments;
+        } else {
+            return NULL;
+        }
+    }
+    
+    //Gera arquivos das ocorrencias
+    private function geraArquivos($id){
+        //busca todos arquivos
+        $arquivos = $this->arquivo->buscaOcorrencia($id);
+        //verifica se existe arquivos
+        if (isset($arquivos)){
+            foreach ($arquivos as $value) {
+                $arquivo[] = base_url($value->getLocal().$value->getNome()); 
+            }
+            return $arquivo;
+        } else {
+            return NULL;
+        }
+    }
+   
 }

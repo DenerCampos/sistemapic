@@ -19,10 +19,6 @@ body{
     padding-right: 10px;
 }
 
-.home-pic{
-    /*background-color: #31b0d5;*/
-}
-
 .popover{
     width: 300px;
     max-width: 300px;
@@ -37,6 +33,10 @@ body{
 }
 
 .opcoes a{
+    text-decoration: none;
+}
+
+a:hover, a:focus{
     text-decoration: none;
 }
 
@@ -124,6 +124,10 @@ body{
     text-decoration: none;
 }
 
+.texto-comentario{
+    margin: 0 0 2px;
+}
+
 /*Anexos*/
 .imagem-anexo-preview{
     float: left;
@@ -193,7 +197,7 @@ body{
     margin-top: 30px;
 }
 
-.text-center{
+.texto-mensagem{
     padding-left: 10px;
     padding-right: 10px;
 }
@@ -228,4 +232,32 @@ input[type=file] {
 
 .form-usuario{
     padding-top: 50px;
+}
+
+/***Home***/
+
+.home-pic{
+    /*background-color: #31b0d5;*/
+    margin-top: 20px;
+}
+
+.img-home{
+    width: 200px;
+    border: none;
+    margin-top: 20px;
+    position: relative;
+    left: -1000px;
+    opacity: 0;
+    background-color: none;
+}
+
+.titulo-home{
+    display: none;
+}
+
+.versao{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 10px;
 }

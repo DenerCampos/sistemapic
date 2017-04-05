@@ -637,6 +637,7 @@ class Manutencao extends CI_Controller {
     
    
     /*---------Funções internas------------*/ 
+    
     //Paginação, recupera offset
     private function recuperaOffset(){
         if ($this->uri->segment(3)){

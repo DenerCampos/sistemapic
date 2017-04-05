@@ -167,7 +167,7 @@ class Maquina_model extends CI_Model {
                 "SELECT *
                 FROM maquina 
                 WHERE nome = '$nome'");
-        if ($query->num_rows() == 1){
+        if ($query->num_rows() >= 1){
             return TRUE;
         } else {
             return FALSE;
@@ -191,6 +191,21 @@ class Maquina_model extends CI_Model {
             return TRUE;
         } else{
             return FALSE;
+        }
+    }
+    
+    //Busca maquinas
+    public function busca($texto){
+        $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE nome LIKE '%$texto%' OR 
+                    ip LIKE '%$texto%'");
+        //retorna objeto usuario
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
         }
     }
 

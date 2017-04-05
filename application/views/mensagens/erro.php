@@ -14,7 +14,7 @@
                 </div>
                 <br/>
                 <div>
-                    <p class="text-center text-danger">
+                    <p class="text-center text-danger texto-mensagem">
                         <?php echo $msgerro ?>
                         <br/>
                     </p>

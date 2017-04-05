@@ -67,7 +67,10 @@ $route['admin/tipo_maquina_admin/(:num)'] = 'Admin/Tipo_maquina_admin';
 $route['admin/maquina_admin/(:num)'] = 'Admin/Maquina_admin';
 
 //Ocorrencia
-$route['ocorrencia/(:num)'] = 'Ocorrencia';
+$route['ocorrencia/buscar/(:num)'] = 'Ocorrencia/buscar';
+$route['ocorrencia/aberto/(:num)'] = 'Ocorrencia/aberto';
+$route['ocorrencia/atendimento/(:num)'] = 'Ocorrencia/atendimento';
+$route['ocorrencia/fechado/(:num)'] = 'Ocorrencia/fechado';
 
 //Plantão
 $route['plantao/(:num)'] = 'Plantao';

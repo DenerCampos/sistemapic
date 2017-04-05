@@ -14,13 +14,13 @@
                 </div>
                 <br/>
                 <div>
-                    <p class="text-center text-success">
+                    <p class="text-center text-success texto-mensagem">
                         <?php echo $msg ?>
                         <br/>
                     </p>
                     <br/>
                     <p class="text-center">
-                        <a class="btn btn-primary" href="<?php echo base_url($uri); ?>" role="button">Voltar</a>
+                        <a class="btn btn-primary" href="<?php echo base_url($uri); ?>" role="button">OK</a>
                     </p>
                 </div>
             </div>
