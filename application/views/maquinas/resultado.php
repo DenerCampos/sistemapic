@@ -65,14 +65,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <a href="#" title="Editar" role="button" href="#mdlEditarMaquina" 
                                    data-toggle="modal" data-target="#mdlEditarMaquina"
                                    data-id="<?php echo $maquina->getIdmaquina(); ?>"
-                                   onclick="editarMaquina(this)">
+                                   onclick="editarMaquinaIp(this)">
                                     <i class="fa fa-pencil-square-o" ></i>
-                                </a>   
-                                <a href="#" title="Remover" role="button" href="#mdlRemoverMaquina" 
-                                   data-toggle="modal" data-target="#mdlRemoverMaquina"
-                                   data-id="<?php echo $maquina->getIdmaquina(); ?>"
-                                   onclick="removerMaquina(this)">
-                                    <i class="fa fa-remove" ></i>
                                 </a>
                             </td>
                         </tr>

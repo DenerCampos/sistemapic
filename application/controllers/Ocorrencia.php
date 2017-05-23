@@ -506,10 +506,10 @@ class Ocorrencia extends CI_Controller {
     
     //Cria nova ocorrencia
     public function novaOcorrencia(){
-        $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $descricao; $url;
+        $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $descricao; $url; $emailarea; $emailusuario;
         try {
             //recuperda dados
-            $this->recuperaDadosNovaOcorrencia($unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao, $url);
+            $this->recuperaDadosNovaOcorrencia($unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao, $url, $emailarea, $emailusuario);
             //gera ocorrencia //data abertura
             $data = date('Y-m-d H:i:s');
             $this->ocorrencia->newOcorrencia($descricao, $vnc, $ramal, $data, $usuario, 
@@ -523,6 +523,19 @@ class Ocorrencia extends CI_Controller {
                     $this->gravaLog("anexo chamado", "usuario: ".$this->session->userdata("id")."Nome original: ".$value["name"]);  
                 }
             }
+            //Enviando e-mail
+            if ($emailarea){
+                //criando corpo da mensagem
+                $corpo = $this->emailAberturaArea($this->ocorrencia->recuperaUltima($this->session->userdata("id"))->getIdocorrencia());
+                //Envia e-mail
+                $this->envioEmail($this->area->buscaId($area)->getEmail(), "Abertura chamado (Sistema PIC)", $corpo);
+            }
+            if ($emailusuario){
+                //criando corpo da mensagem
+                $corpo = $this->emailAberturaUsuario($this->ocorrencia->recuperaUltima($this->session->userdata("id"))->getIdocorrencia());
+                //Envia e-mail
+                $this->envioEmail($this->session->userdata("login"), "Abertura chamado (Sistema PIC)", $corpo);
+            }                      
             //log
             $this->gravaLog("chamado aberto", "usuario: ".$this->session->userdata("nome")." - chamado: ".$this->ocorrencia->recuperaUltima($this->session->userdata("id"))->getIdocorrencia());
             //mensagem
@@ -652,9 +665,9 @@ class Ocorrencia extends CI_Controller {
     //Editar ocorrencia
     public function editar(){        
         try {
-            $id; $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $comentario; $url;
+            $id; $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $comentario; $url; $email;
             //Recupera dados
-            $this->recuperaDadosEditar($id, $unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $comentario, $url);
+            $this->recuperaDadosEditar($id, $unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $comentario, $url, $email);
             //verifica se existe e se ocorrencia esta em atendimento
             if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
                 if ($comentario != ""){
@@ -664,6 +677,22 @@ class Ocorrencia extends CI_Controller {
                 }
                 //atualiza chamado
                 $this->ocorrencia->atualiza($id, $vnc, $ramal, $usuario, date('Y-m-d H:i:s'), $unidade, $area, $setor, $problema);
+                //salva anexos
+                foreach ($_FILES as $key => $value) {
+                    if ($this->salvaAnexo($key, $id)){
+                        //Log
+                        $this->gravaLog("anexo chamado", "usuario: ".$this->session->userdata("id")."Nome original: ".$value["name"]);  
+                    }
+                }
+                //Enviando e-mail
+                if ($email){
+                    //criando corpo da mensagem
+                    $corpo = $this->emailEdicaoChamado($id, $comentario);
+                    //Envia e-mail para usuario do chamado
+                    $this->envioEmail($this->usuario->buscaId($this->ocorrencia->buscaId($id)->getUsuario_abre())->getLogin(), "Edição chamado (Sistema PIC)", $corpo);
+                    //Envia e-mail para tecnico do chamado
+                    $this->envioEmail($this->usuario->buscaId($this->ocorrencia->buscaId($id)->getUsuario_atende())->getLogin(), "Edição chamado (Sistema PIC)", $corpo);
+                }
                 //log
                 $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
                 $this->gravaLog("atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
@@ -684,9 +713,9 @@ class Ocorrencia extends CI_Controller {
      //fechar ocorrencia
     public function fechar(){
         try {
-            $id; $comentario; $url;
+            $id; $comentario; $url; $email;
             //recupera dados
-            $this->recuperaDadosFechar($id, $comentario, $url);
+            $this->recuperaDadosFechar($id, $comentario, $url, $email);
             //verifica se existe
             if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
                 if (isset($comentario) && $comentario == ""){
@@ -697,6 +726,20 @@ class Ocorrencia extends CI_Controller {
                 $this->comentario->addComentario();
                 //fecha chamado
                 $this->ocorrencia->fecha($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 3);
+                //salva anexos
+                foreach ($_FILES as $key => $value) {
+                    if ($this->salvaAnexo($key, $id)){
+                        //Log
+                        $this->gravaLog("anexo chamado", "usuario: ".$this->session->userdata("id")."Nome original: ".$value["name"]);  
+                    }
+                }
+                //Enviando e-mail
+                if ($email){
+                    //criando corpo da mensagem
+                    $corpo = $this->emailFechaChamado($id, $comentario);
+                    //Envia e-mail para usuario do chamado
+                    $this->envioEmail($this->usuario->buscaId($this->ocorrencia->buscaId($id)->getUsuario_abre())->getLogin(), "Fechamento de chamado (Sistema PIC)", $corpo);
+                }
                 //log
                 $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
                 $this->gravaLog("fechamento", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
@@ -814,10 +857,10 @@ class Ocorrencia extends CI_Controller {
             if (isset($comentarios)){
                 $coments = array();
                 foreach ($comentarios as $comentario) {
-                    $coments[] = "<strong>".date("d/m - H:m", strtotime($comentario->getData())).
+                    $coments[] = "<strong>".date("d/m - H:i", strtotime($comentario->getData())).
                         " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
-                        ": </strong>".
-                        $comentario->getDescricao();
+                        ": </strong><br/>".
+                        str_replace("\r\n", "<br/>", $comentario->getDescricao());
                 }
                 $msg["comentarios"] = $coments;
             }
@@ -908,10 +951,10 @@ class Ocorrencia extends CI_Controller {
             if (isset($comentarios)){
                 $coments = array();
                 foreach ($comentarios as $comentario) {
-                    $coments[] = "<strong>".date("d/m - H:m", strtotime($comentario->getData())).
+                    $coments[] = "<strong>".date("d/m - H:i", strtotime($comentario->getData())).
                         " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
-                        ": </strong>".
-                        $comentario->getDescricao();
+                        ": </strong><br/>".
+                        str_replace("\r\n", "<br/>", $comentario->getDescricao());
                 }
                 $msg["comentarios"] = $coments;
             }
@@ -938,6 +981,7 @@ class Ocorrencia extends CI_Controller {
         $id = trim($this->input->post("idocorrencia"));
         $chamado = $this->ocorrencia->buscaId($id);
         $comentarios = $this->comentario->buscaIdOcorrencia($id);
+        $arquivos = $this->arquivo->buscaOcorrencia($id);
 
         if (isset($chamado)){
             $msg = array(
@@ -954,13 +998,18 @@ class Ocorrencia extends CI_Controller {
             if (isset($comentarios)){
                 $coments = array();
                 foreach ($comentarios as $comentario) {
-                    $coments[] = date("d/m - H:m", strtotime($comentario->getData())).
+                    $coments[] = "<strong>".date("d/m - H:i", strtotime($comentario->getData())).
                         " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
-                        ": ".
-                        $comentario->getDescricao().
-                        "\n";
+                        ": </strong><br/>".
+                        str_replace("\r\n", "<br/>", $comentario->getDescricao());
                 }
                 $msg["comentarios"] = $coments;
+            }
+            if (isset($arquivos)){
+                foreach ($arquivos as $value) {
+                    $arquivo[] = base_url($value->getLocal().$value->getNome()); 
+                }
+                $msg["arquivos"] = $arquivo;
             }
             echo json_encode($msg);
         } else {
@@ -1056,7 +1105,7 @@ class Ocorrencia extends CI_Controller {
     }
 
     //Recupera dados da nova ocorrencia
-    private function recuperaDadosNovaOcorrencia(&$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao, &$url){
+    private function recuperaDadosNovaOcorrencia(&$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao, &$url, &$emailarea, &$emailusuario){
         $unidade = $this->input->post("selCriUnidade");
         $setor = $this->input->post("selCriSetor");
         $problema = $this->input->post("selCriProblema");
@@ -1065,8 +1114,10 @@ class Ocorrencia extends CI_Controller {
         $vnc = trim($this->input->post("iptCriVnc"));
         $ramal = trim($this->input->post("iptCriRamal"));
         $descricao = $this->input->post("iptCriDesc");
+        $emailarea = $this->input->post("iptCriEnviarArea");
+        $emailusuario = $this->input->post("iptCriEnviarUsuario");
         $url = trim($this->input->post("iptCriUrl"));
-        
+               
         //verifica URL existe
         if (!isset($url)|| $url === ""){
             $url = "ocorrencia/aberto";
@@ -1088,10 +1139,22 @@ class Ocorrencia extends CI_Controller {
         if (isset($area)){
             $area = $this->geraArea($area);
         }
+        //Verifica se manda email para area de atendimento
+        if (isset($emailarea)){
+            $emailarea = TRUE;
+        } else{
+            $emailarea = FALSE;
+        }
+        //Verifica se manda email para usuario
+        if (isset($emailusuario)){
+            $emailusuario = TRUE;
+        } else{
+            $emailusuario = FALSE;
+        }
     }
     
     //Recupera dados da editar ocorrencia
-    private function recuperaDadosEditar(&$id, &$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$comentario, &$url){
+    private function recuperaDadosEditar(&$id, &$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$comentario, &$url, &$email){
         $id = $this->input->post("iptEdtId");
         $unidade = $this->input->post("selEdtUnidade");
         $setor = $this->input->post("selEdtSetor");
@@ -1103,12 +1166,12 @@ class Ocorrencia extends CI_Controller {
         //$descricao = $this->input->post("iptEdtDesc");
         $comentario = trim($this->input->post("iptEdtComentarioNovo"));
         $url = trim($this->input->post("iptEdtUrl"));
+        $email = $this->input->post("iptEdtAcompanharEmail");
         
         //verifica URL existe
         if (!isset($url)){
             $url = base_url("ocorrencia/aberto");
-        }
-        
+        }        
         //pegar unidade
         if (isset($unidade)){
             $unidade = $this->geraUnidade($unidade);
@@ -1124,6 +1187,12 @@ class Ocorrencia extends CI_Controller {
         //pegar area
         if (isset($area)){
             $area = $this->geraArea($area);
+        }
+        //Verifica acompanhamento por email
+        if (isset($email)){
+            $email = TRUE;
+        } else{
+            $email = FALSE;
         }
     }
     
@@ -1174,14 +1243,21 @@ class Ocorrencia extends CI_Controller {
     }
     
     //Recupera dados da fechar ocorrencia
-    private function recuperaDadosFechar(&$id, &$comentario, &$url){
+    private function recuperaDadosFechar(&$id, &$comentario, &$url, &$email){
         $id = trim($this->input->post("iptFchId"));
         $comentario = trim($this->input->post("iptFchComentarioNovo"));
         $url = trim($this->input->post("iptFchUrl"));
+        $email = $this->input->post("iptFchAcompanharEmail");
         
         //verifica URL existe
         if (!isset($url)|| $url === ""){
             $url = "ocorrencia/atendimento";
+        }
+        //Verifica acompanhamento por email
+        if (isset($email)){
+            $email = TRUE;
+        } else{
+            $email = FALSE;
         }
     }
 
@@ -1193,7 +1269,7 @@ class Ocorrencia extends CI_Controller {
             //configuração
             $config = array(
                 'upload_path' => './document/helpdesk/',
-                'allowed_types' => 'gif|jpg|png',
+                'allowed_types' => 'gif|jpg|png|pdf',
                 'file_name' => uniqid(md5($idchamado))
             );
             //inicializa
@@ -1224,7 +1300,7 @@ class Ocorrencia extends CI_Controller {
         if (isset($comentarios)){
             $coments = array();
             foreach ($comentarios as $comentario) {
-                $coments[] = date("d/m - H:m", strtotime($comentario->getData())).
+                $coments[] = date("d/m - H:i", strtotime($comentario->getData())).
                     " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
                     ": ".
                     $comentario->getDescricao().
@@ -1248,6 +1324,122 @@ class Ocorrencia extends CI_Controller {
             return $arquivo;
         } else {
             return NULL;
+        }
+    }
+    
+    //Corpo do e-mail para abertura de chamado de area
+    private function emailAberturaArea($id){
+        //recupera ocorrencia
+        $ocorrencia = $this->ocorrencia->buscaId($id);
+        //gera dados para view
+        if (isset($ocorrencia)){
+            $dados['id'] = $ocorrencia->getIdocorrencia();
+            $dados['area'] = $this->area->buscaId($ocorrencia->getIdarea())->getNome();
+            $dados['usuario'] = $this->usuario->buscaId($ocorrencia->getUsuario_abre())->getNome();
+            $dados['problema'] = $this->problema->buscaId($ocorrencia->getIdproblema())->getNome();
+            $dados['descricao'] = str_replace("\r\n", "<br/>", $ocorrencia->getDescricao());
+        } else{
+            return "Erro ao gerar e-mail do chamado!";
+        }
+        //Carrega view
+        return $this->load->view("helpdesk/email/mensagem-email-area", $dados, TRUE);
+    }
+    
+    //Corpo do e-mail para abertura de chamado de usuario
+    private function emailAberturaUsuario($id){
+        //recupera ocorrencia
+        $ocorrencia = $this->ocorrencia->buscaId($id);
+        //gera dados para view
+        if (isset($ocorrencia)){
+            $dados['id'] = $ocorrencia->getIdocorrencia();
+            $dados['usuario'] = $this->usuario->buscaId($ocorrencia->getUsuario_abre())->getNome();
+            $dados['problema'] = $this->problema->buscaId($ocorrencia->getIdproblema())->getNome();
+            $dados['descricao'] = str_replace("\r\n", "<br/>", $ocorrencia->getDescricao());
+        } else{
+            return "Erro ao gerar e-mail do chamado!";
+        }
+        //Carrega view
+        return $this->load->view("helpdesk/email/mensagem-email-usuario", $dados, TRUE);
+    }
+    
+    //Corpo do e-mail para ediçao de chamado
+    private function emailEdicaoChamado($id, $comentario){
+        //recupera ocorrencia
+        $ocorrencia = $this->ocorrencia->buscaId($id);
+        
+        //gera dados para view
+        if (isset($ocorrencia)){
+            $dados['id'] = $ocorrencia->getIdocorrencia();
+            $dados['estado'] = "Em atendimento";
+            $dados['area'] = $this->area->buscaId($ocorrencia->getIdarea())->getNome();
+            $dados['tecnico'] = $this->usuario->buscaId($ocorrencia->getUsuario_atende())->getNome();
+            $dados['usuario'] = $this->usuario->buscaId($ocorrencia->getUsuario_abre())->getNome();
+            $dados['problema'] = $this->problema->buscaId($ocorrencia->getIdproblema())->getNome();
+            $dados['descricao'] = str_replace("\r\n", "<br/>", $ocorrencia->getDescricao());
+            $dados['comentario'] = str_replace("\r\n", "<br/>", $comentario);
+        } else{
+            return "Erro ao gerar e-mail do chamado!";
+        }
+        //Carrega view
+        return $this->load->view("helpdesk/email/mensagem-email-atualiza", $dados, TRUE);
+    }
+    
+    //Corpo do e-mail para ediçao de chamado
+    private function emailFechaChamado($id, $solucao){
+        //recupera ocorrencia
+        $ocorrencia = $this->ocorrencia->buscaId($id);
+        
+        //gera dados para view
+        if (isset($ocorrencia)){
+            $dados['id'] = $ocorrencia->getIdocorrencia();
+            $dados['estado'] = "Fechado";
+            $dados['area'] = $this->area->buscaId($ocorrencia->getIdarea())->getNome();
+            $dados['tecnico'] = $this->usuario->buscaId($ocorrencia->getUsuario_atende())->getNome();
+            $dados['usuario'] = $this->usuario->buscaId($ocorrencia->getUsuario_abre())->getNome();
+            $dados['problema'] = $this->problema->buscaId($ocorrencia->getIdproblema())->getNome();
+            $dados['descricao'] = str_replace("\r\n", "<br/>", $ocorrencia->getDescricao());
+            $dados['solucao'] = str_replace("\r\n", "<br/>", $solucao);
+        } else{
+            return "Erro ao gerar e-mail do chamado!";
+        }
+        //Carrega view
+        return $this->load->view("helpdesk/email/mensagem-email-fechamento", $dados, TRUE);
+    }
+
+    //enviar email
+    private function envioEmail($para, $assunto, $texto, $anexo = NULL){
+        try {
+            //carregando biblioteca de email
+            $this->load->library("email");
+            //pegando configuração
+            $this->load->model("email_conf_model", "configuracao");
+            $config = $this->configuracao->busca("text");
+            //preparando o email
+            $this->email->initialize($config);
+            $this->email->from($config["smtp_user"], "Sistema PIC (help-desk)");
+            $this->email->to($para);
+            $this->email->subject($assunto);
+            $this->email->message($texto);
+            $this->email->set_mailtype("html");
+            //anexo
+            if (isset($anexo)){
+                $this->email->attach($anexo);
+            }
+            if ($this->email->send()) {
+                //email enviado com sucesso
+                return TRUE;
+            } else {
+                $head = $this->email->print_debugger(array('headers'));
+                $subject = $this->email->print_debugger(array('subject'));;
+                $body = $this->email->print_debugger(array('body'));
+                $this->gravaLog("erro enviar email plantao", "Usuario: ".$this->session->userdata("id").". Erro: ".$head." - ".$subject." - ".$body);
+                //$this->erro($teste);
+                return FALSE;
+            }
+            //enviando email
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
         }
     }
    

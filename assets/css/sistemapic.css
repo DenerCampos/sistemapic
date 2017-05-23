@@ -19,6 +19,17 @@ body{
     padding-right: 10px;
 }
 
+/*.nav-link{
+    border-bottom: 2px solid #f8f8f8;
+    padding-bottom: 15px;
+}*/
+
+.nav-link:hover{
+    border-bottom: 2px solid #e7e7e7;
+    padding-bottom: 13px;
+/*    transition: border-bottom 1s;*/
+}
+
 .popover{
     width: 300px;
     max-width: 300px;
@@ -98,6 +109,10 @@ a:hover, a:focus{
 
 
 /*Ocorrencia*/
+.nav-tabs-chamado{
+    margin-bottom: 15px;
+}
+
 .novo-chamado{
     margin-bottom: 20px;
 }
@@ -135,8 +150,8 @@ a:hover, a:focus{
 }
 
 .imagem-anexo{
-    width: 40px;
-    height: 35px;
+    width: 100px;
+    height: 100px;
 }
 
 .anexo{
@@ -160,8 +175,8 @@ a:hover, a:focus{
 }
 
 .img-vizualiza-anexo{
-    width: 60px;
-    height: 60px;
+    width: 120px;
+    height: 120px;
 }
 
 .editar-anexo{
@@ -172,6 +187,10 @@ a:hover, a:focus{
 .img-editar-anexo{
     width: 60px;
     height: 60px;
+}
+
+.novo-anexo-edita{
+    margin-top: 10px;
 }
 
 /*Relatorio*/
@@ -252,6 +271,10 @@ input[type=file] {
 }
 
 .titulo-home{
+    display: none;
+}
+
+.rodape-home{
     display: none;
 }
 

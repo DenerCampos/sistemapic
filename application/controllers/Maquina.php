@@ -186,7 +186,7 @@ class Maquina extends CI_Controller {
                 $this->maquina->addMaquina();
                 //Log
                 $this->gravaLog("criação maquina", "maquina criada: ".$nome." ip: ". $ip);
-                redirect(base_url('admin/maquina_admin'));
+                $this->mensagem("Maquina <strong>".$nome."</strong> criada.", $url);
             }else{
                 //Log
                 $this->gravaLog("erro criação maquina", "tentativa de criar maquina: ".$nome." ip: ". $ip);

@@ -3,12 +3,15 @@
 <div class="menu-chamado col-md-12">
     <div class="row"> <!-- row -->
         <div class="novo-chamado col-md-6">
+            <a class="btn btn-warning" href="<?php echo base_url("ocorrencia"); ?>" role="button">
+                Home
+            </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarChamado" 
                     data-toggle="modal" data-target="#mdlCriarChamado" role="button">
                 Novo Chamado
             </button>
         </div>
-        <div class="pesquisar-chamado col-md-6">
+        <div class="pesquisar-chamado col-md-6">            
             <form class="form-buscar" method="post"
                   action="<?php echo base_url("ocorrencia/buscar") ?>">
                 <div class="input-group">

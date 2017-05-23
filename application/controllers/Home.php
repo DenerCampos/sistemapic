@@ -38,6 +38,25 @@ class Home extends CI_Controller {
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets")));
     }
+
+    public function versao(){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('versao', array(
+            "assetsUrl" => base_url("assets")));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets")));
+    }
     
     //Mensagem de erro
     public function erro($msg = NULL){

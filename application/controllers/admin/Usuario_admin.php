@@ -23,8 +23,7 @@ class Usuario_admin extends CI_Controller {
     
     
     /*------Carregamento de views--------*/ 
-    public function index()
-    {
+    public function index()    {
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));

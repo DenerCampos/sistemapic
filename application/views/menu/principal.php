@@ -51,28 +51,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'manutencao')){ echo 'active';} ?>">
                     <a class="navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenção Impressora</a>
                 </li>
+                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'maquina')){ echo 'active';} ?>">
+                    <a class="nav-link navbar-link" href="<?php echo base_url('maquina'); ?>">IP´s maquinas PP</a>
+                </li>
             </ul>
             <?php } ?>
             <!--menu admin-->
             <?php if ($this->session->userdata('nivel') === '0'){ ?>
             <ul class="nav navbar-nav">
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'helpdesk')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('ocorrencia'); ?>">Help-Desk</a>
+                    <a class="nav-link navbar-link" href="<?php echo base_url('ocorrencia'); ?>">Help-Desk</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'plantao')){ echo 'active';} ?>">
-                    <a class="navbar-link " href="<?php echo base_url('plantao'); ?>">Relatório Plantão</a>
+                    <a class="nav-link navbar-link " href="<?php echo base_url('plantao'); ?>">Relatório Plantão</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'caixa')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('caixa'); ?>">Caixas</a>
+                    <a class="nav-link navbar-link" href="<?php echo base_url('caixa'); ?>">Caixas</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'manutencao')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenções</a>
+                    <a class="nav-link navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenções</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'maquina')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('maquina'); ?>">IP´s maquinas PP</a>
+                    <a class="nav-link navbar-link" href="<?php echo base_url('maquina'); ?>">IP´s maquinas PP</a>
                 </li>
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'admin')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('administracao'); ?>">Admin</a>
+                    <a class="nav-link navbar-link" href="<?php echo base_url('administracao'); ?>">Admin</a>
                 </li>
             </ul>
             <?php } ?>

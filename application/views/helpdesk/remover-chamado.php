@@ -6,7 +6,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="formModalLabel">Atender chamado</h4>
+                <h4 class="modal-title" id="formModalLabel">Excluir chamado</h4>
             </div>
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center"><strong>Deseja remover este chamado?</strong></div>

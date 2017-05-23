@@ -66,29 +66,71 @@ $(document).ready(function() {
             $("#selEdtArea").prop({disabled: false})
         }        
     });
-    
+       
     //Fotos usuario perfil
     $('#iptEdtFoto').on("change", function(){
         fotoPerfil(this);
     });
-    
-    //Anexo 1 help-desk
-    $('#iptCriAnexo1').on("change", function(){
-        fotoAnexo(this);
-        $(".ativo").find(".anexo").addClass("hidden");
-        $(".novo-anexo").removeClass("hidden");
+       
+    //Anexar help desk
+    // Criar chamado
+    $('#cria-anexo0').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
+    });
+    $('#cria-anexo1').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
+    });
+    $('#cria-anexo2').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
     });
     
-    //Anexo 2 help-desk
-    $('#iptCriAnexo2').on("change", function(){
-        fotoAnexo(this);
-        $(".ativo").find(".anexo").addClass("hidden");
+    // editar chamado
+    $('#edita-anexo0').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
+    });
+    $('#edita-anexo1').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
+    });
+    $('#edita-anexo2').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
     });
     
-    //Anexo 3 help-desk
-    $('#iptCriAnexo3').on("change", function(){
-        fotoAnexo(this);
-        $(".ativo").find(".anexo").addClass("hidden");
+    // fechar chamado
+    $('#fecha-anexo0').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
+    });
+    $('#fecha-anexo1').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
+    });
+    $('#fecha-anexo2').change(function(){
+        console.log("input teve mudanças");
+        $elemento = $(this).parent().prev();
+        //$elemento.find('.lightview').removeClass("hidden");
+        anexarImagem(this, $elemento);
     });
     
     //Formularios
@@ -103,6 +145,22 @@ $(document).ready(function() {
     
 });
 
+//Anexar imagem
+function anexarImagem(input, elemento){
+    //verifica se existe realmente a imagem
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {            
+            $(elemento).find('.lightview').attr("href", e.target.result);
+            $(elemento).find('img').attr('src', e.target.result);
+            $(elemento).find('.lightview').removeClass("hidden");
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+    else {
+    }
+} 
+
 //Animação home
 function animacaoHome(){
     $(".titulo-home").delay(100).slideDown(300);
@@ -114,6 +172,7 @@ function animacaoHome(){
     $(".img-home").animate({
         width: 250
     });
+    $(".rodape-home").delay(1000).slideDown(1000);
 }
 
 //Esconder tela login
@@ -242,6 +301,13 @@ function editarUsuario(ancor){
                 $("#selEdtNivel").val(msg.nivel);
                 $("#selEdtEstado").val(msg.estado);
                 $("#selEdtArea").val(msg.area);
+                
+                //verifica area se tecnico para habilitar
+                if (msg.nivel === "Técnico"){
+                    $("#selEdtArea").prop({disabled: false});
+                } else {
+                    $("#selEdtArea").prop({disabled: true});
+                }
             }
             else{
                 $("#alert").val(msg.erro).show;
@@ -935,7 +1001,7 @@ function ativarTipo(ancor){
     });
 }
 
-//CRUD MAQUINAS
+//CRUD MAQUINAS ADMIN
 //Edição
 function editarMaquina(ancor){
     
@@ -1022,6 +1088,67 @@ function carregarArquivoMaquina(ancor){
     });
 }
 
+//CRUD MAQUINAS IP
+//Edição
+function editarMaquinaIp(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"maquina/editarMaquina",
+        //Dados
+        data:{
+            "idmaquina":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptEdtId").val(msg.idmaquina);
+                $("#iptEdtNome").val(msg.nome);
+                $("#iptEdtIp").val(msg.ip);
+                $("#iptEdtUser").val(msg.login);
+                $("#iptEdtDesc").val(msg.descricao);
+                $("#selEdtLocal").val(msg.local);
+                $("#selEdtTipo").val(msg.tipo);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
+//Remover
+function removerMaquinaIp(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"maquina/removerMaquina",
+        //Dados
+        data:{
+            "idmaquina":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptRmvId").val(msg.idmaquina);
+                $("#iptRmvNome").val(msg.nome);
+                $("#iptRmvIp").val(msg.ip);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
 //FUNÇÔES DO HELP-DESK (CHAMADOS)
 //Atender Chamado
 function atenderChamado(ancor){
@@ -1083,6 +1210,9 @@ function visualizarChamado(ancor){
     $(".corpo-modal").hide();
     $(".comentario").hide();
     $(".vizualiza-anexo").remove();
+    //remove html dos anexos.
+    $(".corpo-anexo").remove();
+    $("#imagem-anexo-visualiza").remove();
     $.ajax({
         //tipo de requisição
         type:"post",
@@ -1108,20 +1238,29 @@ function visualizarChamado(ancor){
                 $("#iptVslDesc").val(msg.descricao);
                 $("#iptVslComentario").text("");
                 if (msg.comentarios){
+                    $("#visualiza-comentario-badge").html(msg.comentarios.length);
                     for(var i = 0, len = msg.comentarios.length; i < len; ++i){
                         $html = '<p class="texto-comentario">'+msg.comentarios[i]+'</p>';
                         $("#iptVslComentario").append($html);
                     }
                     $(".comentario").show();
+                } else {
+                    $("#visualiza-comentario-badge").html("");
                 }
                 if (msg.arquivos){
-                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){
+                    $("#visualiza-anexo-badge").html(msg.arquivos.length);
+                    $cabecalho = '<div class="col-md-12 corpo-anexo">'+
+                                '<label for="" class="control-label">Anexos:</label></div>'+
+                                '<div class="col-md-12" id="imagem-anexo-visualiza"></div>';
+                    $("#visualiza-anexo").append($cabecalho);
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){                       
                         $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
-                        $("#anexo-vizualiza").append($html);
-                        $(".anexo-grupo").removeClass("hidden");
+                        $("#imagem-anexo-visualiza").append($html);
+                        //$(".anexo-grupo").removeClass("hidden");
                     } 
                 } else {
-                    $(".anexo-grupo").addClass("hidden");
+                    $("#visualiza-anexo-badge").html("");
+                    //$(".anexo-grupo").addClass("hidden");
                 }
             }
             else{
@@ -1193,6 +1332,9 @@ function editarChamado(ancor){
     $(".corpo-modal").hide();
     $(".comentario").hide();
     $(".editar-anexo").remove();
+    //remove html dos anexos.
+    $(".corpo-anexo").remove();
+    $("#imagem-anexo-edita").remove();
     $.ajax({
         //tipo de requisição
         type:"post",
@@ -1217,21 +1359,31 @@ function editarChamado(ancor){
                 $("#iptEdtRamal").val(msg.ramal);
                 $("#iptEdtDesc").val(msg.descricao);
                 $("#iptEdtComentario").text("");
+                
                 if (msg.comentarios){
+                    $("#edita-comentario-badge").html(msg.comentarios.length);
                     for(var i = 0, len = msg.comentarios.length; i < len; ++i){
                         $html = '<p class="texto-comentario">'+msg.comentarios[i]+'</p>';
                         $("#iptEdtComentario").append($html);
                     }
                     $(".comentario").show();
+                } else {
+                    $("#edita-comentario-badge").html("");
                 }
                 if (msg.arquivos){
-                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){
-                        $html = '<div class="editar-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-editar-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
-                        $("#anexo-editar").append($html);
-                        $(".anexo-grupo").removeClass("hidden");
+                    $("#edita-anexo-badge").html(msg.arquivos.length);
+                    $cabecalho = '<div class="col-md-12 corpo-anexo">'+
+                                '<label for="" class="control-label">Anexos:</label></div>'+
+                                '<div class="col-md-12" id="imagem-anexo-edita"></div>';
+                    $("#edita-anexo-antigo").append($cabecalho);
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){                       
+                        $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
+                        $("#imagem-anexo-edita").append($html);
+                        //$(".anexo-grupo").removeClass("hidden");
                     } 
                 } else {
-                    $(".anexo-grupo").addClass("hidden");
+                    $("#edita-anexo-badge").html("");
+                    //$(".anexo-grupo").addClass("hidden");
                 }
             }
             else{
@@ -1247,6 +1399,9 @@ function fecharChamado(ancor){
     $(".carregando-modal").show();
     $(".corpo-modal").hide();
     $(".comentario").hide();
+    //remove html dos anexos.
+    $(".corpo-anexo").remove();
+    $("#imagem-anexo-fecha").remove();
     $.ajax({
         //tipo de requisição
         type:"post",
@@ -1272,10 +1427,29 @@ function fecharChamado(ancor){
                 $("#iptFchDesc").val(msg.descricao);
                 $("#iptFchComentario").text("");
                 if (msg.comentarios){
+                    $("#fecha-comentario-badge").html(msg.comentarios.length);
                     for(var i = 0, len = msg.comentarios.length; i < len; ++i){
-                        $("#iptFchComentario").append(msg.comentarios[i]);
+                        $html = '<p class="texto-comentario">'+msg.comentarios[i]+'</p>';
+                        $("#iptFchComentario").append($html);
                     }
                     $(".comentario").show();
+                } else {
+                    $("#fecha-comentario-badge").html("");
+                }
+                if (msg.arquivos){
+                    $("#fecha-anexo-badge").html(msg.arquivos.length);
+                    $cabecalho = '<div class="col-md-12 corpo-anexo">'+
+                                '<label for="" class="control-label">Anexos:</label></div>'+
+                                '<div class="col-md-12" id="imagem-anexo-fecha"></div>';
+                    $("#fecha-anexo-antigo").append($cabecalho);
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){                       
+                        $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
+                        $("#imagem-anexo-fecha").append($html);
+                        //$(".anexo-grupo").removeClass("hidden");
+                    } 
+                } else {
+                    $("#fecha-anexo-badge").html("");
+                    //$(".anexo-grupo").addClass("hidden");
                 }
             }
             else{
@@ -1285,43 +1459,6 @@ function fecharChamado(ancor){
     $(".carregando-modal").delay(700).hide("slow");
     $(".corpo-modal").delay(1000).show("slow");
 }
-
-//Adicionar novo anexo (HELP-DESK)
-function novoAnexo(){
-    //pegar todos anexos
-    var $ativo = $('.ativo');
-    if ($ativo.next().length > 0){
-        $ativo.removeClass('ativo');
-        $ativo.next().removeClass('hidden');
-        $ativo.next().addClass('ativo');
-    } else {
-        $("#erro").find("p").html("Máximo de <STRONG>3 anexos</STRONG> por chamado");
-        $("#erro").removeClass("hidden");
-        //alert('Maximo de 3 anexo por chamado!');
-    }
-}
-
-//Anexo foto
-function fotoAnexo(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            $link = $(".ativo").find("a");
-            $link.attr("href", e.target.result);
-            $link.removeClass("hidden");
-            $imagem = $(".ativo").find("img");
-            $imagem.attr('src', e.target.result);
-            $imagem.removeClass("hidden");
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-    else {
-        $link = $(".ativo").find("a");
-        $link.addClass("hidden");
-        $imagem = $(".ativo").find("img");
-        $imagem.addClass("hidden");
-    }
-} 
 
 //FUNÇÔES DA MANUTENÇÂO (IMPRESSORAS)
 //Enviar para manutenção

@@ -85,7 +85,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="selEdtArea" class="control-label">Área Atendimento:</label>
-                                <select name="selEdtArea" id="selEdtArea" disabled
+                                <select name="selEdtArea" id="selEdtArea" disabled="true"
                                         class="form-control">
                                     <option>Nenhuma</option>
                                     <!-- Lista todos estados -->

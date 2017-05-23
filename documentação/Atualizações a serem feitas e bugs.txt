@@ -1,0 +1,36 @@
+#bugs
+-ocorrencias
+verificar a função que gera a data mostrada nos comentarios anteriores das ocorrencias, todas estão vindo com 05 minutos. - OK
+
+
+#melhorias
+-ocorrencias
+permitir adicionar 3 fotos na edição e no fechamento das ocorrencias. - OK
+mandar e-mail para quem abriu e para a area de manutenção quando a ocorrencia for aberta, atualizada e fechada. - OK
+
+-manutenção
+criar um botão para aquelas manutenções que não foram concretizadas ou não teve conserto.
+adicionar um campo de fornecedor.
+
+
+#Nova Versão (1.5)
+-Melhorias
+   -Ocorrencias:
+	1- Mudança de layout para criar, editar e fechar chamado, separando os dados do chamado, comentarios e anexos em abas separadas. 				Adicionado contador de anexo e comentarios. 
+	2- Agora pode adicionar fotos/imagens ao editar e fechar chamados(maximo 3 por edição). 
+	3- Agora pode selecionar para mandar e-mail para area de atendimento e para o usuario que abriu o chamado para acompanhamento.
+	4- Ao editar o chamado, pode-se marcar a opção de acomparnhar por email, sendo assim, o tecnico e o usuario que abriu o chamado irão
+		receber e-mail com as atualizações.
+	5- Ao fechar o chamado, pode-se marcar a opção de Enviar e-mail para o usuário que abriu o chamado, o usuario que abriu o chamado ira
+		receber e-mail com os dados do fechamento do chamado.
+   -Sistema:
+	1- Usuário técnico agora tem acesso a tabela de IP.
+
+-Bugs
+   -Ocorrencias:
+	1- Minutos mostrados nos comentários das ocorrencias foi consertado, antes mostrava o mês.
+
+   -Atualizar usuario
+	1- Consertado a atualização dos usuarios técnicos.
+
+	
