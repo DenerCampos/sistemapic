@@ -4,6 +4,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (1.6)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Sistema</u></h3>
+        <p>01- Separação dos arquivos js.</p>
+        <h3><u>Manutenção</u></h3>
+        <p>01- Criado a função de equipamentos que não teve conserto.</p>
+	<p>02- Adicionado nova aba de equipamentos que não obteve conserto.</p>
+	<p>03- Adicionado campo de fornecedor.</p>
+	<p>04- Habilitado edição da data defeito ao mandar para o conserto.</p>
+	<p>05- Validações das regras de datas.</p>
+	<p>06- Adicionado campo descrição do reparo ao retorno da manutenção.</p>
+	<p>07- Adicionado 0 dias de garantia.</p>
+	<p>08- Buscar por fornecedor.</p>
+        <h3><u>Administração</u></h3>
+        <p>01- Implementado busca nas opçoes.</p>
+    </div>
+    <div class="">
+        <h2>-Bugs</h2>
+        <h3><u>Alteração de usuario (ADMIN)</u></h3>
+        <p>01- Ao passar o tecnico para administrador, o sistema não atualiza a area mas aceita como administrador.</p>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (1.5)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>
