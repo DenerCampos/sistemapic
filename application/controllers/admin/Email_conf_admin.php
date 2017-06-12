@@ -55,10 +55,94 @@ class Email_conf_admin extends CI_Controller {
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
     
-    /*------Funções internas--------*/ 
+    //Mensagem de erro
+    public function erro($msg = NULL){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));     
+        //Carrega index
+        $this->load->view('mensagens/erro', array(
+            "assetsUrl" => base_url("assets"),
+            "msgerro" => $msg));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Mensagem sucesso
+    public function mensagem($msg = null, $uri = null){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('mensagens/mensagem', array(
+            "assetsUrl" => base_url("assets"),
+            "msg" => $msg,
+            "uri" => $uri
+                ));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    public function resultado($resultado, $palavra){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));      
+        //Carrega menu
+        $this->load->view('admin/menu', array(
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "email"));
+        //Carrega usuarios
+        $this->load->view('admin/email-conf/email-conf', array(
+            "assetsUrl" => base_url("assets"),
+            "estado" => new Estado_model(),
+            "palavra" => $palavra,
+            "resultados" => $resultado));
+        //Modal
+        $this->load->view('admin/email-conf/criar-email-conf', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/email-conf/editar-email-conf', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/email-conf/remover-email-conf', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/email-conf/ativar-email-conf', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    /*-------------Funções---------------*/
     //Criar
     public function criarEmailConf(){
         //recupera dados
@@ -119,114 +203,6 @@ class Email_conf_admin extends CI_Controller {
         //html completo dos links
         $paginas = $this->pagination->create_links();
         return $paginas;
-    }
-    
-    //Paginação, recupera offset
-    private function recuperaOffset(){
-        if ($this->uri->segment(3)){
-            return $this->uri->segment(3);
-        } else{
-            return 0;
-        }
-    }
-    
-    //busca estado
-    private function geraEstado($estado){
-        return $this->estado->buscaNome($estado)->getIdestado();
-    }
-
-    //Grava log no BD
-    private function gravaLog($nome, $descricao){
-        //dados
-        $data = date('Y-m-d H:i:s');
-        $ip =  $this->input->ip_address();
-        if ($this->session->has_userdata("nome")){
-            $idusuario = $this->session->userdata("id");
-        } else {
-            $idusuario = 0;
-        }
-        //carrega model
-        $this->load->model("Log_model", "registro");
-        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
-        $this->registro->addLog();
-    }
-      
-    //Editar ajax
-    public function editarEmailConf(){
-        //Recupera Id
-        $id = $this->input->post("idemailconf");
-        $emailconf = $this->emailconf->buscaId($id);
-        
-        if (isset($emailconf)){
-            $estado = $this->estado->buscaId($emailconf->getIdestado());
-            $mgs = array(
-                "idemailconf" => $emailconf->getIdemail_conf(),
-                "username" => $emailconf->getUseragent(),
-                "protocol" => $emailconf->getProtocol(),
-                "host" => $emailconf->getSmtp_host(),
-                "user" => $emailconf->getSmtp_user(),
-                "pass" => $emailconf->getSmtp_pass(),
-                "port" => $emailconf->getSmtp_port(),
-                "cryp" => $emailconf->getSmtp_crypto(),
-                "estado" => $estado->getNome()
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Configuração não encontrada"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-    
-    //Remover area ajax
-    public function removerEmailConf(){
-        //Recupera Id 
-        $id = $this->input->post("idemailconf");
-        $emailconf = $this->emailconf->buscaId($id);
-        
-        if (isset($emailconf)){
-            $mgs = array(
-                "idemailconf" => $emailconf->getIdemail_conf(),
-                "username" => $emailconf->getUseragent(),
-                "host" => $emailconf->getSmtp_host(),
-                "user" => $emailconf->getSmtp_user(),
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Configuração não encontrada"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-    
-    //Ativar ajax
-    public function ativarEmailConf(){
-        //Recupera Id area
-        $id = $this->input->post("idemailconf");
-        $emailconf = $this->emailconf->buscaId($id);
-        
-        if (isset($emailconf)){
-            $mgs = array(
-                "idemailconf" => $emailconf->getIdemail_conf(),
-                "username" => $emailconf->getUseragent(),
-                "host" => $emailconf->getSmtp_host(),
-                "user" => $emailconf->getSmtp_user(),
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Configuração não encontrada"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
     }
     
     //Atualiza
@@ -294,7 +270,137 @@ class Email_conf_admin extends CI_Controller {
         }
     }
     
-    //verifica nivel de usuario para acesso ao sistema
+    //buscar
+    public function busca(){
+        try {
+            //recupera dados
+            $texto = trim($this->input->post("iptBusca"));
+            //busca pelo texto
+            if (isset($texto) && $texto != ""){
+                $this->resultado($this->emailconf->buscar($texto), $texto);
+            } else if ($texto == "") {
+                $this->resultado($this->emailconf->buscar($texto, 100), $texto);
+            } else {
+                $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
+            }            
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de email: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>");
+        }
+    }
+    
+    /*----------------Funções AJAX---------------*/
+    //Editar ajax
+    public function editarEmailConf(){
+        //Recupera Id
+        $id = $this->input->post("idemailconf");
+        $emailconf = $this->emailconf->buscaId($id);
+        
+        if (isset($emailconf)){
+            $estado = $this->estado->buscaId($emailconf->getIdestado());
+            $mgs = array(
+                "idemailconf" => $emailconf->getIdemail_conf(),
+                "username" => $emailconf->getUseragent(),
+                "protocol" => $emailconf->getProtocol(),
+                "host" => $emailconf->getSmtp_host(),
+                "user" => $emailconf->getSmtp_user(),
+                "pass" => $emailconf->getSmtp_pass(),
+                "port" => $emailconf->getSmtp_port(),
+                "cryp" => $emailconf->getSmtp_crypto(),
+                "estado" => $estado->getNome()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Configuração não encontrada"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Remover ajax
+    public function removerEmailConf(){
+        //Recupera Id 
+        $id = $this->input->post("idemailconf");
+        $emailconf = $this->emailconf->buscaId($id);
+        
+        if (isset($emailconf)){
+            $mgs = array(
+                "idemailconf" => $emailconf->getIdemail_conf(),
+                "username" => $emailconf->getUseragent(),
+                "host" => $emailconf->getSmtp_host(),
+                "user" => $emailconf->getSmtp_user(),
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Configuração não encontrada"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Ativar ajax
+    public function ativarEmailConf(){
+        //Recupera Id area
+        $id = $this->input->post("idemailconf");
+        $emailconf = $this->emailconf->buscaId($id);
+        
+        if (isset($emailconf)){
+            $mgs = array(
+                "idemailconf" => $emailconf->getIdemail_conf(),
+                "username" => $emailconf->getUseragent(),
+                "host" => $emailconf->getSmtp_host(),
+                "user" => $emailconf->getSmtp_user(),
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Configuração não encontrada"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    /*------Funções internas--------*/ 
+    //Paginação, recupera offset
+    private function recuperaOffset(){
+        if ($this->uri->segment(3)){
+            return $this->uri->segment(3);
+        } else{
+            return 0;
+        }
+    }
+    
+    //busca estado
+    private function geraEstado($estado){
+        return $this->estado->buscaNome($estado)->getIdestado();
+    }
+
+    //Grava log no BD
+    private function gravaLog($nome, $descricao){
+        //dados
+        $data = date('Y-m-d H:i:s');
+        $ip =  $this->input->ip_address();
+        if ($this->session->has_userdata("nome")){
+            $idusuario = $this->session->userdata("id");
+        } else {
+            $idusuario = 0;
+        }
+        //carrega model
+        $this->load->model("Log_model", "registro");
+        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
+        $this->registro->addLog();
+    }
+         
+//verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado

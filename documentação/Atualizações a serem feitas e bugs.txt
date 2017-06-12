@@ -1,18 +1,48 @@
 #bugs
--ocorrencias
-verificar a função que gera a data mostrada nos comentarios anteriores das ocorrencias, todas estão vindo com 05 minutos. - OK
-
 
 #melhorias
--ocorrencias
-permitir adicionar 3 fotos na edição e no fechamento das ocorrencias. - OK
-mandar e-mail para quem abriu e para a area de manutenção quando a ocorrencia for aberta, atualizada e fechada. - OK
+- Manutenção
+01- Validar todos os campos front-end e back-end.
 
--manutenção
-criar um botão para aquelas manutenções que não foram concretizadas ou não teve conserto.
-adicionar um campo de fornecedor.
+- Helpdesk
+01- Criar campo de data abertura, data atendimento (se estiver em atendimento) e data de fechamento (se estiver fechado) na impressão do chamado.
+02- Na impressão do chamado, so pode aparecer solução se estiver fechado o chamado, e a solução não deve aparecer nos comentarios.
+03- Na vizualização, aparecer a solução separado dos comentarios, quando o chamado estiver fechado.
+04- Na impressão do chamado, dar quebra de linha nos textos dos comentarios. (adiciona <br/> nos \r\n)
+05- Na busca, seperar dos chamados abertos, atendimento e fechados. Dar as opcções de cada um. Colocar a busca como get para poder recuperar o url apos alterações.
+
+- Nivel de acesso
+1- Implementar nivel de acesso por controle.
 
 
+#Nova Versão (1.7)
+-Melhorias
+
+-Bugs
+---------------------------------------------------------------------------------------------------------------------------------------------
+#Nova Versão (1.6)
+-Melhorias
+    - Sistema
+       1- Separação dos arquivos js.
+
+    - Manutenção
+	01- Criado a função de equipamentos que não teve conserto.
+	02- Adicionado nova aba de equipamentos que não obteve conserto.
+	03- Adicionado campo de fornecedor.
+	04- Habilitado edição da data defeito ao mandar para o conserto.
+	05- Validações das regras de datas.
+	06- Adicionado campo descrição do reparo ao retorno da manutenção.
+	07- Adicionado 0 dias de garantia.
+	08- Buscar por fornecedor.
+
+    - Administração
+	01- Implementado busca nas opçoes.
+
+-Bugs
+-Alteração de usuario (ADMIN)
+Ao passar o tecnico para administrador, o sistema não atualiza a area mas aceita como administrador.
+
+----------------------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (1.5)
 -Melhorias
    -Ocorrencias:

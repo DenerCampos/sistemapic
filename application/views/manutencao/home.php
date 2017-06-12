@@ -16,7 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   action="<?php echo base_url("manutencao/buscar") ?>">
                 <div class="input-group">
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
-                           placeholder="Busca por equipamento...">
+                           placeholder="Busca por equipamento ou fornecedor...">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Buscar!</button>
                     </span>
@@ -47,6 +47,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li class="<?php if((isset($aba)) && ($aba == "garantia")) {echo "active";} ?>" role="presentation">
                         <a href="<?php echo base_url('manutencao/garantia'); ?>">
                             Em garantia
+                        </a>
+                    </li>
+                    <li class="<?php if((isset($aba)) && ($aba == "semconserto")) {echo "active";} ?>" role="presentation">
+                        <a href="<?php echo base_url('manutencao/semconserto'); ?>">
+                            Não teve conserto
                         </a>
                     </li>
                 </ul>

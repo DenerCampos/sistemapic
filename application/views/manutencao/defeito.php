@@ -13,9 +13,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <tr>
                                     <th>Equipamento</th>
                                     <th>Defeito</th>
+                                    <th>Fornecedor</th>
                                     <th>Data defeito</th>                           
                                     <th>Patrimônio</th>
-                                    <th>Unidade</th>
                                     <th>Setor</th>
                                     <th class="text-right">Ações</th>
                                 </tr>
@@ -27,9 +27,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td><?php echo $defeito->getEquipamento(); ?></td>
                                     <td title="<?php echo $defeito->getDefeito(); ?>">
                                         <?php echo $defeito->reduzirDescricao($defeito->getDefeito()); ?></td>
+                                    <td><?php echo $defeito->getFornecedor(); ?></td>
                                     <td><?php echo date("d/m/Y", strtotime($defeito->getData_defeito())); ?></td>
                                     <td><?php echo $defeito->getPatrimonio(); ?></td>
-                                    <td><?php echo $unidade->buscaId($defeito->getIdunidade())->getNome(); ?></td>
                                     <td><?php echo $setor->buscaId($defeito->getIdsetor())->getNome(); ?></td>
                                     <td class="text-right opcoes">
                                         <a href="#" title="Enviar manutenção" role="button" href="#mdlEnviarManutencao" 
@@ -43,7 +43,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            data-id="<?php echo $defeito->getIdmanutencao(); ?>"
                                            onclick="editarManutencao(this)">
                                             <i class="fa fa-pencil-square-o" ></i>
-                                        </a>   
+                                        </a> 
+                                        <a href="#" title="Visualizar" role="button" href="#mdlVisualizarManutencao" 
+                                           data-toggle="modal" data-target="#mdlVisualizarManutencao"
+                                           data-id="<?php echo $defeito->getIdmanutencao(); ?>"
+                                           onclick="visualizarManutencao(this)">
+                                            <i class="fa fa-search-plus" ></i>
+                                        </a> 
                                         <a href="#" title="Remover" role="button" href="#mdlRemoverManutencao" 
                                            data-toggle="modal" data-target="#mdlRemoverManutencao"
                                            data-id="<?php echo $defeito->getIdmanutencao(); ?>"

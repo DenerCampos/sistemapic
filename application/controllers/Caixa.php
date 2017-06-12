@@ -47,7 +47,8 @@ class Caixa extends CI_Controller {
             "locais" => $this->local->todosLocaisCaixas()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "caixa.js"));
     }
     
     //Mensagem de erro
@@ -68,7 +69,8 @@ class Caixa extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "caixa.js"));
     }
     
     //Mensagem de erro
@@ -90,7 +92,8 @@ class Caixa extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "caixa.js"));
     }
     
     /*------Funções internas--------*/ 

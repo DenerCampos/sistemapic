@@ -208,6 +208,33 @@ class Maquina_model extends CI_Model {
             return NULL;
         }
     }
+    
+    //Busca
+    public function buscar($texto, $limite = null){
+        //Seleção
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE nome LIKE '%$texto%' OR 
+                    ip LIKE '%$texto%'
+                ORDER BY nome ASC
+                LIMIT $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE nome LIKE '%$texto%' OR 
+                    ip LIKE '%$texto%'
+                ORDER BY nome ASC");
+        }
+        
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
 
 
     /*------Funções internas--------*/ 

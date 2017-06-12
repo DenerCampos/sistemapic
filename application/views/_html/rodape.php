@@ -13,6 +13,10 @@
         
         <!-- Scripts pessoal -->
         <script src="<?php echo $assetsUrl; ?>/js/sistemapic.js"></script>
+        <!-- Scripts controle -->
+        <?php if (isset($arquivoJS)) {?>
+        <script src="<?php echo $assetsUrl; ?>/js/<?php echo $arquivoJS;?>"></script>
+        <?php }?>
     </body>
 </html>
 <!-- Fim sitema -->

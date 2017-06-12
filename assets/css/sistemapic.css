@@ -284,3 +284,29 @@ input[type=file] {
     bottom: 10px;
     font-size: 10px;
 }
+
+/* Administração sistema PIC */
+/*links*/
+.menu-admin a{
+    color: #8a6d3b;
+}
+
+.menu-admin>.nav-pills>li.active>a,.menu-admin>.nav-pills>li.active>a:focus, .menu-admin>.nav-pills>li.active>a:hover{
+    color: #fff;
+    background-color: #f0ad4e;
+}
+
+/*links da cor amarela nos paineis admin*/
+.panel-admin a{
+    color: #8a6d3b;
+}
+/*link da paginacao*/
+.nav-admin>.pagination>.active>a, .nav-admin>.pagination>.active>a:focus, .nav-admin>.pagination>.active>a:hover, .nav-admin>.pagination>.active>span, .nav-admin>.pagination>.active>span:focus, .nav-admin>.pagination>.active>span:hover{
+    background-color: #f0ad4e;
+    border-color: #f0ad4e;
+    color: #fff;
+}
+/*link navegacao sem ativo*/
+.nav-admin>.pagination>li>a, .nav-admin>.pagination>li>a:focus, .nav-admin>.pagination>li>a:hover, .nav-admin>.pagination>li>span:focus, .nav-admin>.pagination>li>span:hover{
+    color: #8a6d3b;
+}

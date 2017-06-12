@@ -185,6 +185,31 @@ class Setor_model extends CI_Model {
         }
     }
     
+    //Busca
+    public function busca($texto, $limite = null){
+        //Seleção
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM setor
+                WHERE nome LIKE '%$texto%'
+                ORDER BY nome ASC
+                LIMIT $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM setor
+                WHERE nome LIKE '%$texto%'
+                ORDER BY nome ASC");
+        }
+        
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
     /*------Funções internas--------*/ 
     //Retorna objeto
     private function getObjByRow($r){

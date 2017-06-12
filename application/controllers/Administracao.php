@@ -16,12 +16,13 @@ class Administracao extends CI_Controller {
         //verifica nivel usuario
         $this->verificaNivel();
         //carregando modelo
+        $this->load->model("Log_model", "logs");
+        $this->load->model("Usuario_model", "usuario");
     }
     
     
     /*------Carregamento de views--------*/ 
-    public function index()
-    {
+    public function index(){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -34,11 +35,39 @@ class Administracao extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega home
         $this->load->view('admin/home', array(
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"),
+            "usuario" => $this->usuario,
+            "logs" => $this->logs->recuperaLogs(6)));
         //Modal
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Resultado da busca
+    public function resultado($busca, $palavra){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));      
+        //Carrega menu
+        $this->load->view('admin/menu', array(
+            "assetsUrl" => base_url("assets")));
+        //Carrega home
+        $this->load->view('admin/home', array(
+            "assetsUrl" => base_url("assets"),
+            "usuario" => $this->usuario,
+            "palavra" => $palavra,
+            "resultados" => $busca));
+        //Modal
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
     
     //Mensagem de erro
@@ -49,20 +78,21 @@ class Administracao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => ""));     
+            "ativo" => "admin"));     
         //Carrega index
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
-            "msgerro" => 'teste de ero'));
+            "msgerro" => $msg));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
     
-    //Mensagem de erro
+    //Mensagem sucesso
     public function mensagem($msg = null, $uri = null){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
@@ -74,15 +104,43 @@ class Administracao extends CI_Controller {
         //Carrega index
         $this->load->view('mensagens/mensagem', array(
             "assetsUrl" => base_url("assets"),
-            "msg" => 'teste de mensagem',
-            "uri" => 'home'));
+            "msg" => $msg,
+            "uri" => $uri
+                ));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
+    
+     /*-------------Funções----------------*/   
+    
+    //Busca por logs
+    public function busca(){
+        try {
+            //recupera dados
+            $texto = trim($this->input->post("iptBusca"));
+            //Log
+            $this->gravaLog("ADMIN", "pesquisa de log: ".$texto." Usuario: ".$this->session->userdata('id'));
+            //busca pelo texto
+            if (isset($texto) && $texto != ""){
+                $this->resultado($this->logs->busca($texto), $texto);
+            } else if ($texto == "") {
+                $this->resultado($this->logs->busca($texto, 100), $texto);
+            } else {
+                $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
+            }            
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de log: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>");
+        }
+    }
+
+    /*----------------Funções AJAX---------------*/
     
     /*------Funções internas--------*/ 
 
@@ -124,4 +182,5 @@ class Administracao extends CI_Controller {
             redirect(base_url());
         }
     }
+    
 }

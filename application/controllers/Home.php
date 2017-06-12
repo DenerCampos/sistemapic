@@ -36,7 +36,8 @@ class Home extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "home.js"));
     }
 
     public function versao(){
@@ -55,7 +56,8 @@ class Home extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "home.js"));
     }
     
     //Mensagem de erro
@@ -76,7 +78,8 @@ class Home extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "home.js"));
     }
     
     //Mensagem de erro
@@ -98,7 +101,8 @@ class Home extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "home.js"));
     }
 
 

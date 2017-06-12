@@ -41,7 +41,8 @@ class Login extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "login.js"));
     }
     
     //Mensagem de erro
@@ -63,7 +64,8 @@ class Login extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "login.js"));
     }
     
     /*------Funções internas--------*/

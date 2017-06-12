@@ -56,7 +56,8 @@ class Maquina extends CI_Controller {
             "tipos" => $this->tipo->todosTipos()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "maquina.js"));
     }
     
     //Mensagem de erro
@@ -77,7 +78,8 @@ class Maquina extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "maquina.js"));
     }
     
     //Mensagem de erro
@@ -99,7 +101,8 @@ class Maquina extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "maquina.js"));
     }
     
     //Resultado da busca
@@ -133,7 +136,8 @@ class Maquina extends CI_Controller {
             "tipos" => $this->tipo->todosTipos()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "maquina.js"));
     }
     
     /*----------------Funções---------------*/

@@ -55,10 +55,95 @@ class Tipo_maquina_admin extends CI_Controller {
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
     
-    /*------Funções internas--------*/ 
+    //Mensagem de erro
+    public function erro($msg = NULL){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));     
+        //Carrega index
+        $this->load->view('mensagens/erro', array(
+            "assetsUrl" => base_url("assets"),
+            "msgerro" => $msg));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Mensagem sucesso
+    public function mensagem($msg = null, $uri = null){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('mensagens/mensagem', array(
+            "assetsUrl" => base_url("assets"),
+            "msg" => $msg,
+            "uri" => $uri
+                ));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //resultado da busca
+    public function resultado($resultado, $palavra){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));      
+        //Carrega menu
+        $this->load->view('admin/menu', array(
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "tipomaquinas"));
+        //Carrega usuarios
+        $this->load->view('admin/tipo-maquina/tipos-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estado" => new Estado_model(),
+            "palavra" => $palavra,
+            "resultados" => $resultado));
+        //Modal
+        $this->load->view('admin/tipo-maquina/criar-tipos-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/tipo-maquina/editar-tipos-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/tipo-maquina/remover-tipos-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/tipo-maquina/ativar-tipos-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    /*-------------Funções---------------*/
     //Criar
     public function criarTipo(){
         //recupera dados
@@ -115,36 +200,89 @@ class Tipo_maquina_admin extends CI_Controller {
         return $paginas;
     }
     
-    //Paginação, recupera offset
-    private function recuperaOffset(){
-        if ($this->uri->segment(3)){
-            return $this->uri->segment(3);
-        } else{
-            return 0;
+    //Atualiza
+    public function atualizaTipo(){
+        //recuperando dados
+        $id = $this->input->post("iptEdtId");
+        $nome = $this->input->post("iptEdtNome");
+        $estado = $this->input->post("selEdtEstado");
+        $url = $this->input->post("iptEdtUrl");
+        
+        //verifica dados
+        if (!$this->tipo->verificaTipoAtualiza($id, $nome)){
+            //atualiza
+            $this->tipo->atualizaTipo($id, $nome, $this->geraEstado($estado));
+            //Log
+            $this->gravaLog("ADMIN alteração tipo", "tipo alterado: ".$nome);
+            redirect($url);
+        }else{
+            //Log
+            $this->gravaLog("ADMIN erro alteração tipo", "tentativa de alterar tipo: ".$nome);
+            echo'erro ao alterar tipo';
+        }            
+    }
+    
+    //Desabilitar 
+    public function desabilitaTipo(){
+        //recupera id
+        $id = $this->input->post("iptRmvId");
+        $url = $this->input->post("iptRmvUrl");
+        
+        //verifica se existe e esta ativo
+        if ($this->tipo->verificaAtivo($id)){
+            //desativa 
+            $this->tipo->desativaTipo($id);
+            //Log
+            $this->gravaLog("ADMIN desabilita tipo", "tipo desabilitado id: ".$id);
+            redirect($url);
+        }else {
+            //Log
+            $this->gravaLog("ADMIN erro desabilitar tipo", "tentativa de desabilitar tipo id: ".$id);
+            echo'erro ao desabilitar tipo';
         }
     }
     
-    //busca estado
-    private function geraEstado($estado){
-        return $this->estado->buscaNome($estado)->getIdestado();
-    }
-
-    //Grava log no BD
-    private function gravaLog($nome, $descricao){
-        //dados
-        $data = date('Y-m-d H:i:s');
-        $ip =  $this->input->ip_address();
-        if ($this->session->has_userdata("nome")){
-            $idusuario = $this->session->userdata("id");
-        } else {
-            $idusuario = 0;
+    //Ativar 
+    public function ativaTipo(){
+        //recupera id 
+        $id = $this->input->post("iptAtvId");
+        $url = $this->input->post("iptAtvUrl");
+        
+        //verifica se existe e esta ativo
+        if ($this->tipo->verificaDesativo($id)){
+            //desativa 
+            $this->tipo->ativaTipo($id);
+            //Log
+            $this->gravaLog("ADMIN ativa tipo", "tipo ativado id: ".$id);
+            redirect($url);
+        }else {
+            //Log
+            $this->gravaLog("ADMIN erro ativar tipo", "tentativa de ativar tipo id: ".$id);
+            echo'erro ao ativar tipo';
         }
-        //carrega model
-        $this->load->model("Log_model", "registro");
-        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
-        $this->registro->addLog();
     }
-      
+    
+    //buscar
+    public function busca(){
+        try {
+            //recupera dados
+            $texto = trim($this->input->post("iptBusca"));
+            //busca pelo texto
+            if (isset($texto) && $texto != ""){
+                $this->resultado($this->tipo->busca($texto), $texto);
+            } else if ($texto == "") {
+                $this->resultado($this->tipo->busca($texto, 100), $texto);
+            } else {
+                $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
+            }            
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de tipo de maquina: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>");
+        }
+    }
+    
+    /*----------------Funções AJAX---------------*/
     //Editar area ajax
     public function editarTipo(){
         //Recupera Id 
@@ -212,70 +350,39 @@ class Tipo_maquina_admin extends CI_Controller {
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
     }
-    
-    //Atualiza
-    public function atualizaTipo(){
-        //recuperando dados
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $estado = $this->input->post("selEdtEstado");
-        $url = $this->input->post("iptEdtUrl");
-        
-        //verifica dados
-        if (!$this->tipo->verificaTipoAtualiza($id, $nome)){
-            //atualiza
-            $this->tipo->atualizaTipo($id, $nome, $this->geraEstado($estado));
-            //Log
-            $this->gravaLog("ADMIN alteração tipo", "tipo alterado: ".$nome);
-            redirect($url);
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro alteração tipo", "tentativa de alterar tipo: ".$nome);
-            echo'erro ao alterar tipo';
-        }            
-    }
-    
-    //Desabilitar 
-    public function desabilitaTipo(){
-        //recupera id
-        $id = $this->input->post("iptRmvId");
-        $url = $this->input->post("iptRmvUrl");
-        
-        //verifica se existe e esta ativo
-        if ($this->tipo->verificaAtivo($id)){
-            //desativa 
-            $this->tipo->desativaTipo($id);
-            //Log
-            $this->gravaLog("ADMIN desabilita tipo", "tipo desabilitado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro desabilitar tipo", "tentativa de desabilitar tipo id: ".$id);
-            echo'erro ao desabilitar tipo';
+       
+    /*------Funções internas--------*/ 
+    //Paginação, recupera offset
+    private function recuperaOffset(){
+        if ($this->uri->segment(3)){
+            return $this->uri->segment(3);
+        } else{
+            return 0;
         }
     }
     
-    //Ativar 
-    public function ativaTipo(){
-        //recupera id 
-        $id = $this->input->post("iptAtvId");
-        $url = $this->input->post("iptAtvUrl");
-        
-        //verifica se existe e esta ativo
-        if ($this->tipo->verificaDesativo($id)){
-            //desativa 
-            $this->tipo->ativaTipo($id);
-            //Log
-            $this->gravaLog("ADMIN ativa tipo", "tipo ativado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro ativar tipo", "tentativa de ativar tipo id: ".$id);
-            echo'erro ao ativar tipo';
-        }
+    //busca estado
+    private function geraEstado($estado){
+        return $this->estado->buscaNome($estado)->getIdestado();
     }
-    
-    //verifica nivel de usuario para acesso ao sistema
+
+    //Grava log no BD
+    private function gravaLog($nome, $descricao){
+        //dados
+        $data = date('Y-m-d H:i:s');
+        $ip =  $this->input->ip_address();
+        if ($this->session->has_userdata("nome")){
+            $idusuario = $this->session->userdata("id");
+        } else {
+            $idusuario = 0;
+        }
+        //carrega model
+        $this->load->model("Log_model", "registro");
+        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
+        $this->registro->addLog();
+    }
+      
+//verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado

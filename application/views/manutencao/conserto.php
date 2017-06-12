@@ -18,7 +18,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <th>Data do retorno</th>
                                     <th>Garantia</th>
                                     <th>Patrimônio</th>
-                                    <th>Unidade</th>
                                     <th>Setor</th>
                                     <th class="text-right">Ações</th>
                                 </tr>
@@ -35,21 +34,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td><?php echo date("d/m/Y", strtotime($fechada->getData_retorno())); ?></td>
                                     <td><?php echo date("d/m/Y", strtotime($fechada->getData_garantia())); ?></td>
                                     <td><?php echo $fechada->getPatrimonio(); ?></td>
-                                    <td><?php echo $unidade->buscaId($fechada->getIdunidade())->getNome(); ?></td>
                                     <td><?php echo $setor->buscaId($fechada->getIdsetor())->getNome(); ?></td>
                                     <td class="text-right opcoes">
-                                        <a href="#" title="Editar" role="button" href="#mdlEditarManutencao" 
-                                           data-toggle="modal" data-target="#mdlEditarManutencao"
+                                        <a href="#" title="Visualizar" role="button" href="#mdlVisualizarManutencao" 
+                                           data-toggle="modal" data-target="#mdlVisualizarManutencao"
                                            data-id="<?php echo $fechada->getIdmanutencao(); ?>"
-                                           onclick="editarManutencao(this)">
-                                            <i class="fa fa-pencil-square-o" ></i>
-                                        </a>   
+                                           onclick="visualizarManutencao(this)">
+                                            <i class="fa fa-search-plus" ></i>
+                                        </a>
+                                        <?php if ($this->session->userdata("nivel") == 0){ //somenta admin ?>
                                         <a href="#" title="Remover" role="button" href="#mdlRemoverManutencao" 
                                            data-toggle="modal" data-target="#mdlRemoverManutencao"
                                            data-id="<?php echo $fechada->getIdmanutencao(); ?>"
                                            onclick="removerManutencao(this)">
                                             <i class="fa fa-remove" ></i>
                                         </a>
+                                        <?php }?>
                                     </td>
                                 </tr>
                                 <?php } //foreach manutencaos?>

@@ -61,13 +61,18 @@ class Manutencao extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
+        $this->load->view('manutencao/visualizar-manutencao', array(
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "setores" => $this->setor->todosSetores()));
         $this->load->view('manutencao/remover-manutencao', array(
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
     }
     
     //Exibe view manutencao
@@ -99,6 +104,12 @@ class Manutencao extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
+        $this->load->view('manutencao/semconserto-manutencao', array(
+            "assetsUrl" => base_url("assets")));
+        $this->load->view('manutencao/visualizar-manutencao', array(
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "setores" => $this->setor->todosSetores()));
         $this->load->view('manutencao/remover-manutencao', array(
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
@@ -109,7 +120,8 @@ class Manutencao extends CI_Controller {
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
     }
     
     //Exibe view conserto
@@ -137,7 +149,7 @@ class Manutencao extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
-        $this->load->view('manutencao/editar-manutencao', array(
+        $this->load->view('manutencao/visualizar-manutencao', array(
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
@@ -147,7 +159,8 @@ class Manutencao extends CI_Controller {
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
     }
     
     //Exibe view garantia
@@ -175,7 +188,7 @@ class Manutencao extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
-        $this->load->view('manutencao/editar-manutencao', array(
+        $this->load->view('manutencao/visualizar-manutencao', array(
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
@@ -189,8 +202,48 @@ class Manutencao extends CI_Controller {
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
     }   
+    
+    //Exibe view sem conserto
+    public function semconserto(){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "manutencao"));   
+        //Carrega
+        $this->load->view('manutencao/home', array(
+            "assetsUrl" => base_url("assets"),
+            "aba" => "semconserto",
+        ));
+        $this->load->view('manutencao/semconserto', array(
+            "assetsUrl" => base_url("assets"),
+            "unidade" => new Unidade_model(),
+            "setor" => new Setor_model(),
+            "paginas" => $this->listarManutencoes("semconserto", "semconserto"), 
+            "semconserto" => $this->manutencao->buscaTodasSemConserto(6, $this->recuperaOffset())));
+        //Modal
+        $this->load->view('manutencao/criar-manutencao', array(
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "setores" => $this->setor->todosSetores()));
+        $this->load->view('manutencao/visualizar-manutencao', array(
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "setores" => $this->setor->todosSetores()));
+        $this->load->view('manutencao/remover-manutencao', array(
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "setores" => $this->setor->todosSetores()));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
+    }
         
     //Exibe mensagem de erro
     public function erro($msg = NULL){
@@ -208,7 +261,8 @@ class Manutencao extends CI_Controller {
         //Modal
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
     }
     
     //Exibe mensagem de erro
@@ -228,11 +282,12 @@ class Manutencao extends CI_Controller {
         //Modal
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
     }
     
     //Exibe Resultado
-    public function resultado($palavra, $defeitos = NULL, $manutencoes = NULL, $fechadas = NULL, $garantia = NULL){
+    public function resultado($palavra, $defeitos = NULL, $manutencoes = NULL, $fechadas = NULL, $garantia = NULL, $semconserto = NULL, $total = NULL){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -249,7 +304,8 @@ class Manutencao extends CI_Controller {
             "fechadas" => $fechadas,
             "garantias" => $garantia,
             "palavra" => $palavra,
-        ));
+            "semconserto" => $semconserto,
+            "total" => $total));
         //Modal
         $this->load->view('manutencao/criar-manutencao', array(
             "assetsUrl" => base_url("assets"),
@@ -260,6 +316,10 @@ class Manutencao extends CI_Controller {
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
         $this->load->view('manutencao/editar-manutencao', array(
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "setores" => $this->setor->todosSetores()));
+        $this->load->view('manutencao/visualizar-manutencao', array(
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
             "setores" => $this->setor->todosSetores()));
@@ -277,7 +337,8 @@ class Manutencao extends CI_Controller {
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "manutencao.js"));
     }
     
     
@@ -322,14 +383,19 @@ class Manutencao extends CI_Controller {
     public function criarManutencao(){
         try {
             //recupera dados
-            $equipamento; $defeito; $ddefeito; $patrimonio; $descricao; $unidade; $setor; $url;
-            $this->recuperaCriarManutencao($equipamento, $defeito, $ddefeito, $patrimonio, $descricao, $unidade, $setor, $url);
-            //adiciona manutenção ($equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $data_reincidencia, $garantia, $data_garantia, $patrimonio, $descricao, $idunidade, $idsetor)
-            $this->manutencao->newManutencao($equipamento, $defeito, $ddefeito, NULL, NULL, NULL, NULL, NULL, $patrimonio, $descricao, $this->geraUnidade($unidade), $this->geraSetor($setor));
-            $this->manutencao->addManutencao();
-            //Log
-            $this->gravaLog("criação manutencao", "manutencao criada: ".$equipamento." data: ".$ddefeito);
-            $this->mensagem("Manutenção <strong>".$equipamento."</strong> criado(a) com sucesso!", $url);
+            $equipamento; $defeito; $ddefeito; $patrimonio; $descricao; $unidade; $setor; $url; $fornecedor;
+            $this->recuperaCriarManutencao($equipamento, $defeito, $ddefeito, $patrimonio, $descricao, $unidade, $setor, $url, $fornecedor);
+            //verifica data maior que data atual
+            if (date("Y-m-d", strtotime($ddefeito)) > date("Y-m-d", strtotime($this->dataAtual()))){
+                $this->erro("<strong>Data inválida.</strong><br/>A data tem que ser menor ou igual a data atual.");
+            } else {
+                //adiciona manutenção $equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $garantia, $data_garantia, $data_reincidencia, $data_sem_conserto, $patrimonio, $descricao, $fornecedor, $motivo, $solucao, $idunidade, $idsetor)
+                $this->manutencao->newManutencao($equipamento, $defeito, $ddefeito, NULL, NULL, NULL, NULL, NULL, NULL, $patrimonio, $descricao, $fornecedor, NULL, NULL, $this->geraUnidade($unidade), $this->geraSetor($setor));
+                $this->manutencao->addManutencao();
+                //Log
+                $this->gravaLog("criação manutencao", "manutencao criada: ".$equipamento." data: ".$ddefeito);
+                $this->mensagem("Manutenção <strong>".$equipamento."</strong> criado(a) com sucesso!", $url);
+            }
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
             //Log
@@ -341,22 +407,27 @@ class Manutencao extends CI_Controller {
     //Enviar para manutenção
     public function enviarManutencao(){
         try {
-            $id; $url;
+            $id; $url; $dataenvio;
             //recupera dados
-            $this->recuperaEnviarManutencao($id, $url);            
-            //envia para manutenção
+            $this->recuperaEnviarManutencao($id, $url, $dataenvio);            
+            //envia para manutenção, verifica se a manutenção esta no estado de em defeito, ou seja, aguardando envio para manutenção.
             if ($this->manutencao->verificaEmDefeito($id)){
                 //busca manutenção
                 $manutencao = $this->manutencao->buscaId($id);
-                //enviarManutencao($id, $data_entrega)
-                $this->manutencao->enviarManutencao($id, date('Y-m-d H:i:s'));
-                //Log
-                $this->gravaLog("envia manutencao", "manutencao enviada: ".$id." - ".$manutencao->getEquipamento()." data: ".$manutencao->getData_defeito());
-                $this->mensagem("<strong>".$manutencao->getEquipamento()."</strong> enviado(a) para manutenção.", $url);
+                //verifica data se menor que a de criação da manutenção
+                if ((date("Y-m-d", strtotime($dataenvio)) >= date("Y-m-d", strtotime($manutencao->getData_defeito()))) && ((date("Y-m-d", strtotime($dataenvio)) <= date("Y-m-d")))){
+                    //enviarManutencao($id, $data_entrega)
+                    $this->manutencao->enviarManutencao($id, date('Y-m-d H:i:s', strtotime($dataenvio)));
+                    //Log
+                    $this->gravaLog("envia manutencao", "manutencao enviada: ".$id." - ".$manutencao->getEquipamento()." data: ".$manutencao->getData_defeito());
+                    $this->mensagem("<strong>".$manutencao->getEquipamento()."</strong> enviado(a) para manutenção.", $url);
+                } else{
+                    $this->erro("<strong>Data inválida.</strong><br/>A data de envio deve ser maior ou igual a data de criação da manutenção e menor ou igual a data atual.");
+                }   
             } else {
                 //Log
                 $this->gravaLog("erro envia manutencao", "erro manutencao enviada: ".$id);
-                $this->erro("Erro ao enviar equipamento para manutenção. ID:<strong>".$id."</strong>");
+                $this->erro("Erro ao enviar equipamento para manutenção. ID:<strong>".$id."</strong><br/>Entre em contato com Administrador.");
             }
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
@@ -369,20 +440,20 @@ class Manutencao extends CI_Controller {
     public function atualizaManutencao(){        
         try {
             //recupera dados
-            $id;$equipamento; $defeito; $ddefeito; $patrimonio; $descricao; $unidade; $setor; $url;
-            $this->recuperaEditaManutencao($id, $equipamento, $defeito, $ddefeito, $patrimonio, $descricao, $unidade, $setor, $url);
+            $id; $equipamento; $defeito; $ddefeito; $patrimonio; $descricao; $unidade; $setor; $url; $fornecedor;
+            $this->recuperaEditaManutencao($id, $equipamento, $defeito, $ddefeito, $patrimonio, $descricao, $unidade, $setor, $url, $fornecedor);
             if ($this->manutencao->existe($id)){
                 //busca manutenção
                 $manutencao = $this->manutencao->buscaId($id);
-                //atualizaManutencao($id, $equipamento, $defeito, $patrimonio, $idunidade, $idsetor)
-                $this->manutencao->atualizaManutencao($id, $equipamento, $defeito, $patrimonio, $descricao, $this->geraUnidade($unidade), $this->geraSetor($setor));
+                //atualizaManutencao($id, $equipamento, $defeito, $patrimonio, $descricao, $fornecedor, $idunidade, $idsetor)
+                $this->manutencao->atualizaManutencao($id, $equipamento, $defeito, $patrimonio, $descricao, $fornecedor, $this->geraUnidade($unidade), $this->geraSetor($setor));
                 //Log
                 $this->gravaLog("atualiza manutencao", "manutencao atualizada: ".$id." - ".$equipamento);
                 $this->mensagem("<strong>".$manutencao->getEquipamento()."</strong> atualizado(a).", $url);
             } else {
                 //Log
                 $this->gravaLog("erro atualiza manutencao", "erro manutencao atualizada: ".$id." - ".$equipamento);
-                $this->erro("Erro ao atualizar manutenção do ID: <strong>".$id."</strong>.");
+                $this->erro("Erro ao atualizar manutenção do ID: <strong>".$id."</strong>.<br/>Entre em contato com Administrador.");
             }            
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
@@ -408,7 +479,7 @@ class Manutencao extends CI_Controller {
             } else {
                 //Log
                 $this->gravaLog("erro remove manutencao", "erro manutencao removida: ".$id);
-                $this->erro("Erro ao remover manutenção ID: <strong>".$id."</strong>.");
+                $this->erro("Erro ao remover manutenção ID: <strong>".$id."</strong>.<br/>Entre em contato com Administrador.");
             }            
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
@@ -422,20 +493,25 @@ class Manutencao extends CI_Controller {
     public function retornoManutencao(){    
         try {
             //recupera dados
-            $id; $url; $garantia; $retorno;
-            $this->recuperaRetornoManutencao($id, $url, $garantia, $retorno); 
+            $id; $url; $garantia; $retorno; $solucao;
+            $this->recuperaRetornoManutencao($id, $url, $garantia, $retorno, $solucao);
+            //busca manutenção
+            $manutencao = $this->manutencao->buscaId($id);
             if ($this->manutencao->verificaEmManutencao($id)){
-                //busca manutenção
-                $manutencao = $this->manutencao->buscaId($id);
-                //retornoManutencao($id, $data_retorno, $garantia, $data_garantia)
-                $this->manutencao->retornoManutencao($id, date('Y-m-d H:i:s', strtotime($retorno)), $garantia, $this->geraGarantia(date('Y-m-d H:i:s', strtotime($retorno)), $garantia));
-                //Log
-                $this->gravaLog("retorno manutencao", "manutencao: ".$id);
-                $this->mensagem("<strong>".$manutencao->getEquipamento()."</strong> retornado(a) do fornecedor.", $url);
+                //verifica data maior que a data de envio para manutenção e menor ou igual a data atual
+                if ((date("Y-m-d", strtotime($retorno))) >= (date("Y-m-d", strtotime($manutencao->getData_entrega()))) && (date("Y-m-d", strtotime($retorno))) <= (date("Y-m-d", strtotime($this->dataAtual())))){
+                    //retornoManutencao($id, $data_retorno, $garantia, $data_garantia, $solucao)
+                    $this->manutencao->retornoManutencao($id, date('Y-m-d H:i:s', strtotime($retorno)), $garantia, $this->geraGarantia(date('Y-m-d H:i:s', strtotime($retorno)), $garantia), $solucao);
+                    //Log
+                    $this->gravaLog("retorno manutencao", "manutencao: ".$id);
+                    $this->mensagem("<strong>".$manutencao->getEquipamento()."</strong> retornado(a) do fornecedor.", $url);                    
+                } else {
+                    $this->erro("<strong>Data inválida.</strong><br/>A data tem que ser maior que a data do envio e menor ou igual a data atual.");
+                }                   
             } else {
                 //Log
                 $this->gravaLog("erro retorno manutencao", "erro manutencao: ".$id);
-                $this->erro("Erro ao fazer o retorna da manutenção do ID: <strong>".$id."</strong>");
+                $this->erro("Erro ao fazer o retorna da manutenção do ID: <strong>".$id."</strong><br/>Entre em contato com Administrador.");
             }            
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
@@ -449,16 +525,16 @@ class Manutencao extends CI_Controller {
     public function defeitoManutencao(){            
         try {
             //recupera dados
-            $equipamento; $defeito; $ddefeito; $patrimonio; $descricao; $unidade; $setor; $id; $url;
-            $this->recuperaDefeitoManutencao($equipamento, $defeito, $ddefeito, $patrimonio, $descricao, $unidade, $setor, $id, $url);    
+            $equipamento; $defeito; $ddefeito; $patrimonio; $descricao; $unidade; $setor; $id; $url; $fornecedor;
+            $this->recuperaDefeitoManutencao($equipamento, $defeito, $ddefeito, $patrimonio, $descricao, $unidade, $setor, $id, $url, $fornecedor);    
             //verifrica se existe manutenção em garantia
             if ($this->manutencao->verificaEmGarantia($id)){
                 //grava reindicio de manutenção em garantia
                 $this->manutencao->reindicio($id, $ddefeito);
                 //Log
                 $this->gravaLog("reindicio manutencao", "manutencao em garantia: ".$equipamento." data: ".$ddefeito." Id: ".$id);
-                //adiciona nova manutenção ($equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $data_reincidencia, $garantia, $data_garantia, $patrimonio, $descricao, $idunidade, $idsetor)
-                $this->manutencao->newManutencao($equipamento, $defeito, $ddefeito, NULL, NULL, NULL, NULL, NULL, $patrimonio, $descricao, $this->geraUnidade($unidade), $this->geraSetor($setor));
+                //adiciona manutenção $equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $garantia, $data_garantia, $data_reincidencia, $data_sem_conserto, $patrimonio, $descricao, $fornecedor, $motivo, $idunidade, $idsetor)
+                $this->manutencao->newManutencao($equipamento, $defeito, $ddefeito, NULL, NULL, NULL, NULL, NULL, NULL, $patrimonio, $descricao, $fornecedor, NULL, $this->geraUnidade($unidade), $this->geraSetor($setor));
                 $this->manutencao->addManutencao();
                 //Log
                 $this->gravaLog("criação manutencao", "manutencao criada: ".$equipamento." data: ".$ddefeito);
@@ -476,6 +552,32 @@ class Manutencao extends CI_Controller {
         }
     }
     
+    //Não obteve conserto
+    public function semConsertoManutencao(){
+        try {
+            $id; $url; $motivo;
+            //recupera dados
+            $this->recuperaSemConsertoManutencao($id, $url, $motivo);
+            //busca manutenção
+            $manutencao = $this->manutencao->buscaId($id);
+            if ($this->manutencao->verificaEmManutencao($id)){
+                //salva como sem conserto
+                //semConsertoManutencao($id, $data_retorno, $data_sem_conserto, $motivo)
+                $this->manutencao->semConsertoManutencao($manutencao->getIdmanutencao(), date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $motivo);
+                //Log
+                $this->gravaLog("sem conserto manutencao", "manutencao: ".$id);
+                $this->mensagem("<strong>".$manutencao->getEquipamento()."</strong> não tem conserto.", $url); 
+            } else{
+                //Log
+                $this->gravaLog("erro sem conserto manutencao", "erro manutencao: ".$id);
+                $this->erro("Erro ao salvar manutenção como sem conserto. ID: <strong>".$id."</strong><br/>Entre em contato com Administrador.");
+            }
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral sem conserto manutencao", "erro manutencao sem conserto: ".$exc->getTraceAsString());
+        }
+        }
+
     //Busca por manutenção (equipamento)
     public function buscar(){ //criar rota para que depois da uri buscar o numero ser a pesquisa
         //recupera dados da busca
@@ -492,8 +594,11 @@ class Manutencao extends CI_Controller {
                 $manutencoes = $this->manutencao->buscaPorManutecao($busca);
                 $fechadas = $this->manutencao->buscaPorFechada($busca);
                 $garantia =$this->manutencao->buscaPorGarantia($busca);
+                $semconserto = $this->manutencao->buscaPorSemconserto($busca);
+                //total
+                $total = count($defeitos)+count($manutencoes)+count($fechadas)+count($garantia)+count($semconserto);
                 //view resultado resultado($palavra, $defeitos = NULL, $manutencoes = NULL, $fechadas = NULL, $garantia = NULL)
-                $this->resultado($busca, $defeitos, $manutencoes, $fechadas, $garantia);
+                $this->resultado($busca, $defeitos, $manutencoes, $fechadas, $garantia, $semconserto, $total);
             } else {
                 $this->resultado("'vazio'");
             }                       
@@ -516,7 +621,8 @@ class Manutencao extends CI_Controller {
             $mgs = array(
                 "idmanutencao" => $manutencao->getIdmanutencao(),
                 "equipamento" => $manutencao->getEquipamento(),
-                "data" => date("Y-m-d", strtotime($manutencao->getData_defeito()))
+                "data" => date("Y-m-d"),
+                "fornecedor" => $manutencao->getFornecedor()
             );
             echo json_encode($mgs);
         } else {
@@ -545,8 +651,11 @@ class Manutencao extends CI_Controller {
                 "data" => date("Y-m-d", strtotime($manutencao->getData_defeito())),
                 "patrimonio" => $manutencao->getPatrimonio(),
                 "descricao" => $manutencao->getDescricao(),
+                "fornecedor" => $manutencao->getFornecedor(),
                 "unidade" => $unidade->getNome(),
-                "setor" => $setor->getNome()
+                "setor" => $setor->getNome(),
+                "motivo" => $manutencao->getMotivo(),
+                "solucao" => $manutencao->getSolucao()
             );
             echo json_encode($mgs);
         } else {
@@ -592,7 +701,8 @@ class Manutencao extends CI_Controller {
             $mgs = array(
                 "idmanutencao" => $manutencao->getIdmanutencao(),
                 "equipamento" => $manutencao->getEquipamento(),
-                "data" => date("Y-m-d", strtotime($manutencao->getData_defeito()))
+                "data" => date("Y-m-d", strtotime($manutencao->getData_defeito())),
+                "dataenvio" => date("Y-m-d", strtotime($manutencao->getData_entrega()))
             );
             echo json_encode($mgs);
         } else {
@@ -635,6 +745,30 @@ class Manutencao extends CI_Controller {
         exit();
     }
     
+    //Sem conserto manutenção ajax
+    public function semConsManutencao(){
+        //Recupera Id manutencao
+        $id = $this->input->post("idmanutencao");
+        $manutencao = $this->manutencao->buscaId($id);
+        
+        if (isset($manutencao)){
+            $unidade = $this->unidade->buscaId($manutencao->getIdunidade());
+            $setor = $this->setor->buscaId($manutencao->getIdsetor());
+            $mgs = array(
+                "idmanutencao" => $manutencao->getIdmanutencao(),
+                "equipamento" => $manutencao->getEquipamento(),
+                "data" => date("Y-m-d", strtotime($manutencao->getData_defeito()))
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Manutencao não encontrada"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
    
     /*---------Funções internas------------*/ 
     
@@ -688,10 +822,11 @@ class Manutencao extends CI_Controller {
     }
     
     //recupera dados criar manutenção
-    private function recuperaCriarManutencao(&$equipamento, &$defeito, &$ddefeito, &$patrimonio, &$descricao, &$unidade, &$setor, &$url){
+    private function recuperaCriarManutencao(&$equipamento, &$defeito, &$ddefeito, &$patrimonio, &$descricao, &$unidade, &$setor, &$url, &$fornecedor){
         $equipamento = $this->primeiraLetraMaiuscula(trim($this->input->post("iptCriEquipamento")));
         $defeito = $this->primeiraLetraMaiuscula(trim($this->input->post("iptCriDefeito")));
         $ddefeito = trim($this->input->post("iptCriDataDefeito"));
+        $fornecedor = trim($this->input->post("iptCriFornecedor"));
         $patrimonio = trim($this->input->post("iptCriPatrimonio"));
         $descricao = $this->primeiraLetraMaiuscula(trim($this->input->post("iptCriDescricao")));
         $unidade = trim($this->input->post("selCriUnidade"));
@@ -704,11 +839,12 @@ class Manutencao extends CI_Controller {
     }
     
     //recupera dados edita manutenção
-    private function recuperaEditaManutencao(&$id, &$equipamento, &$defeito, &$ddefeito, &$patrimonio, &$descricao, &$unidade, &$setor, &$url){
+    private function recuperaEditaManutencao(&$id, &$equipamento, &$defeito, &$ddefeito, &$patrimonio, &$descricao, &$unidade, &$setor, &$url, &$fornecedor){
         $id = trim($this->input->post("iptEdtId"));
         $equipamento = $this->primeiraLetraMaiuscula(trim($this->input->post("iptEdtEquipamento")));
         $defeito = $this->primeiraLetraMaiuscula(trim($this->input->post("iptEdtDefeito")));
         $ddefeito = trim($this->input->post("iptEdtDataDefeito"));
+        $fornecedor = trim($this->input->post("iptEdtFornecedor"));
         $patrimonio = trim($this->input->post("iptEdtPatrimonio"));
         $descricao = trim($this->input->post("iptEdtDescricao"));
         $unidade = trim($this->input->post("selEdtUnidade"));
@@ -722,10 +858,11 @@ class Manutencao extends CI_Controller {
     }
 
     //recupera dados defeito manutenção (em garantia)
-    private function recuperaDefeitoManutencao(&$equipamento, &$defeito, &$ddefeito, &$patrimonio, &$descricao, &$unidade, &$setor, &$id, &$url){
+    private function recuperaDefeitoManutencao(&$equipamento, &$defeito, &$ddefeito, &$patrimonio, &$descricao, &$unidade, &$setor, &$id, &$url, &$fornecedor){
         $equipamento = $this->primeiraLetraMaiuscula(trim($this->input->post("iptDftEquipamento")));
         $defeito = $this->primeiraLetraMaiuscula(trim($this->input->post("iptDftDefeito")));
-        $ddefeito = trim($this->input->post("iptDftDataDefeito"));
+        $ddefeito = trim($this->input->post("iptDftDataDefeito"));        
+        $fornecedor = trim($this->input->post("iptDftFornecedor"));
         $patrimonio = trim($this->input->post("iptDftPatrimonio"));
         $descricao = $this->primeiraLetraMaiuscula(trim($this->input->post("iptDftDescricao")));
         $unidade = trim($this->input->post("selDftUnidade"));
@@ -739,9 +876,10 @@ class Manutencao extends CI_Controller {
     }
     
     //recupera dados enviarManutencao
-    private function recuperaEnviarManutencao(&$id, &$url){
+    private function recuperaEnviarManutencao(&$id, &$url, &$dataenvio){
         $id = trim($this->input->post("iptEnvId"));
         $url = trim($this->input->post("iptEnvUrl"));
+        $dataenvio = $this->input->post("iptEnvDataEnvio");
         
         if (!isset($url)){
             $url = base_url("manutencao");
@@ -759,11 +897,23 @@ class Manutencao extends CI_Controller {
     }
     
     //recupera dados removeManutencao
-    private function recuperaRetornoManutencao(&$id, &$url, &$garantia, &$retorno){
+    private function recuperaRetornoManutencao(&$id, &$url, &$garantia, &$retorno, &$solucao){
         $id = trim($this->input->post("iptRtnId"));
         $garantia = trim($this->input->post("selRtnGarantia"));
         $retorno = trim($this->input->post("iptRtnDataRetorno"));
+        $solucao = trim($this->input->post("iptRtnSolucao"));
         $url = trim($this->input->post("iptRtnUrl"));
+        
+        if (!isset($url)){
+            $url = base_url("manutencao/manutencao");
+        }
+    }
+    
+    //recupera dados semConsertoManutencao
+    private function recuperaSemConsertoManutencao(&$id, &$url, &$motivo){
+        $id = trim($this->input->post("iptScmId"));
+        $url = trim($this->input->post("iptScmUrl"));
+        $motivo = $this->input->post("iptScmMotivo");
         
         if (!isset($url)){
             $url = base_url("manutencao/manutencao");
@@ -803,5 +953,10 @@ class Manutencao extends CI_Controller {
     //primeira letra maiuscula 
     private function primeiraLetraMaiuscula($texto){
         return ucfirst(strtolower($texto));
+    }
+    
+    //retorna a data atual
+    private function dataAtual(){
+        return date("Y-m-d");
     }
 }

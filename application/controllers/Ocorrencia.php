@@ -124,7 +124,8 @@ class Ocorrencia extends CI_Controller {
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "ocorrencia.js"));
     }
     
     //Exibe a view atendimento
@@ -217,7 +218,8 @@ class Ocorrencia extends CI_Controller {
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "ocorrencia.js"));
     }
     
     //Exibe a view fechado
@@ -310,7 +312,8 @@ class Ocorrencia extends CI_Controller {
             "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "ocorrencia.js"));
     }   
     
     //Exibe a view resultado da busca
@@ -351,7 +354,8 @@ class Ocorrencia extends CI_Controller {
                 "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "ocorrencia.js"));
     }
     
     //Mensagem de erro
@@ -372,7 +376,8 @@ class Ocorrencia extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "ocorrencia.js"));
     }   
     
     //Mensagem de erro
@@ -394,7 +399,8 @@ class Ocorrencia extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "ocorrencia.js"));
     }
     
     /*----------------Funções---------------*/

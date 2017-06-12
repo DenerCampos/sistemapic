@@ -4,7 +4,7 @@
     <div class="row"> <!-- row -->
         <div class="novo-chamado col-md-6">
             <a class="btn btn-warning" href="<?php echo base_url("ocorrencia"); ?>" role="button">
-                Home
+                <i class="fa fa-arrow-circle-o-left"></i> Voltar
             </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarChamado" 
                     data-toggle="modal" data-target="#mdlCriarChamado" role="button">

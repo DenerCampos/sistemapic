@@ -40,7 +40,8 @@ class Usuario extends CI_Controller {
         //Modal
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "usuario.js"));
     }
 
 
@@ -63,7 +64,8 @@ class Usuario extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "usuario.js"));
     }
     
     //Mensagem de erro
@@ -83,9 +85,10 @@ class Usuario extends CI_Controller {
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
-        //Carrega fechamento html
+        ///Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "usuario.js"));
     }
     
     /*------Funções internas--------*/ 

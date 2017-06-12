@@ -17,7 +17,7 @@ class Base extends CI_Controller {
     }
     
     
-    /*------Carregamento de views--------*/ 
+    /*------------Carregamento de views------------*/ 
     public function index(){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
@@ -34,7 +34,8 @@ class Base extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => NULL));
     }
     
     //Mensagem de erro
@@ -55,7 +56,8 @@ class Base extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => NULL));
     }
     
     //Mensagem de erro
@@ -77,8 +79,17 @@ class Base extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => NULL));
     }
     
-    /*------Funções internas--------*/ 
+    /*------------------Funções------------------*/   
+    
+    
+    
+    /*----------------Funções AJAX---------------*/
+    
+    
+    
+    /*------------Funções internas---------------*/ 
 }

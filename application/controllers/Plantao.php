@@ -43,7 +43,8 @@ class Plantao extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "plantao.js"));
     }
     
     //Resultado
@@ -68,7 +69,8 @@ class Plantao extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "plantao.js"));
     }
     
     //Mensagem de erro
@@ -89,7 +91,8 @@ class Plantao extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "plantao.js"));
     }
     
     //Mensagem de erro
@@ -111,7 +114,8 @@ class Plantao extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "plantao.js"));
     }
     
     //Mensagem de sucesso do relatorio
@@ -133,8 +137,9 @@ class Plantao extends CI_Controller {
         $this->load->view("usuario/criar-usuario", array(
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
-        $this->load->view("_html/rodape", array(
-            "assetsUrl" => base_url("assets")));
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "plantao.js"));
     }
 
     /*------Funções internas--------*/ 

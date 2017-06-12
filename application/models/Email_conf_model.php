@@ -216,6 +216,31 @@ class Email_conf_model extends CI_Model {
         }
     }
     
+    //Busca
+    public function buscar($texto, $limite = null){
+        //Seleção
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM email_conf
+                WHERE useragent LIKE '%$texto%'
+                ORDER BY useragent ASC
+                LIMIT $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM email_conf
+                WHERE useragent LIKE '%$texto%'
+                ORDER BY useragent ASC");
+        }
+        
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
     /*------Funções internas--------*/ 
     //Retorna objeto
     private function getObjByRow($r){

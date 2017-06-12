@@ -38,17 +38,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td><?php echo $unidade->buscaId($garantia->getIdunidade())->getNome(); ?></td>
                                     <td><?php echo $setor->buscaId($garantia->getIdsetor())->getNome(); ?></td>
                                     <td class="text-right opcoes">
-                                        <a href="#" title="Defeito" role="button" href="#mdlDefeitoManutencao" 
+                                        <a href="#" title="Apresentou defeito" role="button" href="#mdlDefeitoManutencao" 
                                            data-toggle="modal" data-target="#mdlDefeitoManutencao"
                                            data-id="<?php echo $garantia->getIdmanutencao(); ?>"
                                            onclick="defeitoManutencao(this)">
                                             <i class="fa fa-wrench" ></i>
                                         </a> 
-                                        <a href="#" title="Editar" role="button" href="#mdlEditarManutencao" 
-                                           data-toggle="modal" data-target="#mdlEditarManutencao"
+                                        <a href="#" title="Visualizar" role="button" href="#mdlVisualizarManutencao" 
+                                           data-toggle="modal" data-target="#mdlVisualizarManutencao"
                                            data-id="<?php echo $garantia->getIdmanutencao(); ?>"
-                                           onclick="editarManutencao(this)">
-                                            <i class="fa fa-pencil-square-o" ></i>
+                                           onclick="visualizarManutencao(this)">
+                                            <i class="fa fa fa-search-plus" ></i>
                                         </a>   
                                         <a href="#" title="Remover" role="button" href="#mdlRemoverManutencao" 
                                            data-toggle="modal" data-target="#mdlRemoverManutencao"

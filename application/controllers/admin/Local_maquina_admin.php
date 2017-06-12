@@ -55,10 +55,95 @@ class Local_maquina_admin extends CI_Controller {
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
     
-    /*------Funções internas--------*/ 
+    //Mensagem de erro
+    public function erro($msg = NULL){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));     
+        //Carrega index
+        $this->load->view('mensagens/erro', array(
+            "assetsUrl" => base_url("assets"),
+            "msgerro" => $msg));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Mensagem sucesso
+    public function mensagem($msg = null, $uri = null){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('mensagens/mensagem', array(
+            "assetsUrl" => base_url("assets"),
+            "msg" => $msg,
+            "uri" => $uri
+                ));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Resultado
+    public function resultado($resultados, $palavra){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));      
+        //Carrega menu
+        $this->load->view('admin/menu', array(
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "localmaquinas"));
+        //Carrega usuarios
+        $this->load->view('admin/local-maquina/locais-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estado" => new Estado_model(),
+            "palavra" => $palavra,
+            "resultados" => $resultados));
+        //Modal
+        $this->load->view('admin/local-maquina/criar-locais-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/local-maquina/editar-locais-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/local-maquina/remover-locais-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/local-maquina/ativar-locais-maquina', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    /*-------------Funções---------------*/
     //Criar
     public function criarLocal(){
         //recupera dados
@@ -123,107 +208,6 @@ class Local_maquina_admin extends CI_Controller {
         //html completo dos links
         $paginas = $this->pagination->create_links();
         return $paginas;
-    }
-    
-    //Paginação, recupera offset
-    private function recuperaOffset(){
-        if ($this->uri->segment(3)){
-            return $this->uri->segment(3);
-        } else{
-            return 0;
-        }
-    }
-    
-    //busca estado
-    private function geraEstado($estado){
-        return $this->estado->buscaNome($estado)->getIdestado();
-    }
-
-    //Grava log no BD
-    private function gravaLog($nome, $descricao){
-        //dados
-        $data = date('Y-m-d H:i:s');
-        $ip =  $this->input->ip_address();
-        if ($this->session->has_userdata("nome")){
-            $idusuario = $this->session->userdata("id");
-        } else {
-            $idusuario = 0;
-        }
-        //carrega model
-        $this->load->model("Log_model", "registro");
-        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
-        $this->registro->addLog();
-    }
-      
-    //Editar area ajax
-    public function editarLocal(){
-        //Recupera Id 
-        $id = $this->input->post("idlocal");
-        $local = $this->local->buscaId($id);
-        
-        if (isset($local)){
-            $estado = $this->estado->buscaId($local->getIdestado());
-            $mgs = array(
-                "idlocal" => $local->getIdlocal(),
-                "nome" => $local->getNome(),
-                "shape" => $local->getShape(),
-                "coords" => $local->getCoords(),
-                "caixa" => $local->getCaixa(),
-                "estado" => $estado->getNome()
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Local não encontrado"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-    
-    //Remover area ajax
-    public function removerLocal(){
-        //Recupera Id 
-        $id = $this->input->post("idlocal");
-        $local = $this->local->buscaId($id);
-        
-        if (isset($local)){
-            $mgs = array(
-                "idlocal" => $local->getIdlocal(),
-                "nome" => $local->getNome()
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Local não encontrado"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-    
-    //Ativar area ajax
-    public function ativarLocal(){
-        //Recupera Id 
-        $id = $this->input->post("idlocal");
-        $local = $this->local->buscaId($id);
-        
-        if (isset($local)){
-            $mgs = array(
-                "idlocal" => $local->getIdlocal(),
-                "nome" => $local->getNome()
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Local não encontrado"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
     }
     
     //Atualiza
@@ -296,6 +280,130 @@ class Local_maquina_admin extends CI_Controller {
         }
     }
     
+    //buscar
+    public function busca(){
+        try {
+            //recupera dados
+            $texto = trim($this->input->post("iptBusca"));
+            //busca pelo texto
+            if (isset($texto) && $texto != ""){
+                $this->resultado($this->local->busca($texto), $texto);
+            } else if ($texto == "") {
+                $this->resultado($this->local->busca($texto, 100), $texto);
+            } else {
+                $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
+            }            
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de local: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>");
+        }
+    }
+    
+    /*----------------Funções AJAX---------------*/
+    //Editar area ajax
+    public function editarLocal(){
+        //Recupera Id 
+        $id = $this->input->post("idlocal");
+        $local = $this->local->buscaId($id);
+        
+        if (isset($local)){
+            $estado = $this->estado->buscaId($local->getIdestado());
+            $mgs = array(
+                "idlocal" => $local->getIdlocal(),
+                "nome" => $local->getNome(),
+                "shape" => $local->getShape(),
+                "coords" => $local->getCoords(),
+                "caixa" => $local->getCaixa(),
+                "estado" => $estado->getNome()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Local não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Remover area ajax
+    public function removerLocal(){
+        //Recupera Id 
+        $id = $this->input->post("idlocal");
+        $local = $this->local->buscaId($id);
+        
+        if (isset($local)){
+            $mgs = array(
+                "idlocal" => $local->getIdlocal(),
+                "nome" => $local->getNome()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Local não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Ativar area ajax
+    public function ativarLocal(){
+        //Recupera Id 
+        $id = $this->input->post("idlocal");
+        $local = $this->local->buscaId($id);
+        
+        if (isset($local)){
+            $mgs = array(
+                "idlocal" => $local->getIdlocal(),
+                "nome" => $local->getNome()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Local não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    
+    /*------Funções internas--------*/ 
+    //Paginação, recupera offset
+    private function recuperaOffset(){
+        if ($this->uri->segment(3)){
+            return $this->uri->segment(3);
+        } else{
+            return 0;
+        }
+    }
+    
+    //busca estado
+    private function geraEstado($estado){
+        return $this->estado->buscaNome($estado)->getIdestado();
+    }
+
+    //Grava log no BD
+    private function gravaLog($nome, $descricao){
+        //dados
+        $data = date('Y-m-d H:i:s');
+        $ip =  $this->input->ip_address();
+        if ($this->session->has_userdata("nome")){
+            $idusuario = $this->session->userdata("id");
+        } else {
+            $idusuario = 0;
+        }
+        //carrega model
+        $this->load->model("Log_model", "registro");
+        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
+        $this->registro->addLog();
+    }
+      
     //verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario

@@ -3,17 +3,24 @@
      aria-labelledby="mdlDefeitoManutencao" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
+            <!-- Cabeçalho -->
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Apresentou defeito em garantia</h4>
             </div>
+            
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center" hidden=""></div>
+            
+            <!-- Formulario criar manutenção -->
             <form class="formulario" method="post" 
                   action="<?php echo base_url("manutencao/defeitoManutencao") ?>">
+                <!-- Corpo da modal -->
                 <div class="modal-body">
                     <div class="row">
+                        <!-- Campo id -->
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptDftId" class="control-label">Id:</label>
@@ -21,6 +28,7 @@
                                        class="form-control">
                             </div>
                         </div>
+                        <!-- Campo url -->
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptDftUrl" class="control-label">Url:</label>
@@ -28,20 +36,31 @@
                                        class="form-control" placeholder="" required="true">
                             </div>
                         </div>
+                        <!-- Campo equipamento -->
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptDftEquipamento" class="control-label">Equipamento:</label>
                                 <input type="text" name="iptDftEquipamento" id="iptDftEquipamento" 
-                                       class="form-control" placeholder="Equipamento" required="true">
+                                       class="form-control" placeholder="Nome do equipamento." required="true">
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <!-- Campo defeito -->
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptDftDefeito" class="control-label">Defeito:</label>
                                 <input type="text" name="iptDftDefeito" id="iptDftDefeito" 
-                                       class="form-control" placeholder="Provavel defeito">
+                                       class="form-control" placeholder="Provável defeito">
                             </div>
-                        </div>                        
+                        </div>
+                        <!-- Campo fornecedor -->
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="iptDftFornecedor" class="control-label">Fornecedor:</label>
+                                <input type="text" name="iptDftFornecedor" id="iptDftFornecedor" 
+                                       class="form-control" placeholder="Nome do fornecedor">
+                            </div>
+                        </div> 
+                        <!-- Campo data do defeito -->
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptDftDataDefeito" class="control-label">Data defeito:</label>
@@ -49,20 +68,23 @@
                                        class="form-control" value="<?php echo date("Y-m-d");?>">
                             </div>
                         </div>
+                        <!-- Campo descrição -->
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptDftDescricao" class="control-label">Descrição:</label>
                                 <textarea class="form-control" id="iptDftDescricao" maxlength="200" name="iptDftDescricao"
-                                  placeholder="Breve descrição do equipamento" rows="2"></textarea>
+                                  placeholder="Dados do equipamento. &NewLine;Ex: Serial do equipamento..." rows="2"></textarea>
                             </div>
                         </div>
+                        <!-- Campo patrimonio do pic -->
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="iptDftPatrimonio" class="control-label">Patrimônio:</label>
                                 <input type="text" name="iptDftPatrimonio" id="iptDftPatrimonio" 
-                                       class="form-control" placeholder="Patrimonio">
+                                       class="form-control" placeholder="0000">
                             </div>
                         </div>
+                        <!-- Campo unidade -->
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="selDftUnidade" class="control-label">Unidade:</label>
@@ -77,6 +99,7 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- Campo setor -->
                         <div class="col-md-5">
                             <div class="form-group">
                                 <label for="selDftSetor" class="control-label">Setor:</label>
@@ -92,7 +115,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div><!-- Fim corpo modal -->
+                
+                <!-- rodape da modal -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
@@ -101,6 +126,7 @@
                         Salvar
                     </button>
                 </div>
+                
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

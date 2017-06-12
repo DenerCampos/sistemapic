@@ -20,8 +20,12 @@ class Manutencao_model extends CI_Model {
     var $garantia; //tempo de garantia em dias
     var $data_garantia; //data do fim da garantia
     var $data_reincidencia; //data do envio para manutenção em caso de garantia
+    var $data_sem_conserto; //data de retorno da manutenção que não obteve conserto
     var $patrimonio; //numero de patrimonio PIC
     var $descricao; //descricao do equipamento (dados como numero de serie e etc)
+    var $fornecedor; //nome do fornecedor que foi enviado para manutenção
+    var $motivo; //motivo no qual não houver conserto
+    var $solucao; //solução do reparo
     var $idunidade; //unidade
     var $idsetor; //setor
     
@@ -32,7 +36,8 @@ class Manutencao_model extends CI_Model {
     
     /*------Requisições--------*/
     //instancia novo 
-    public function newManutencao($equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $data_reincidencia, $garantia, $data_garantia, $patrimonio, $descricao, $idunidade, $idsetor){
+    public function newManutencao($equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $garantia, 
+            $data_garantia, $data_reincidencia, $data_sem_conserto, $patrimonio, $descricao, $fornecedor, $motivo, $solucao, $idunidade, $idsetor){
         $this->setEquipamento($equipamento);
         $this->setDefeito($defeito);
         $this->setData_defeito($data_defeito);
@@ -41,24 +46,29 @@ class Manutencao_model extends CI_Model {
         $this->setGarantia($garantia);
         $this->setData_garantia($data_garantia);
         $this->setData_reincidencia($data_reincidencia);
+        $this->setData_sem_conserto($data_sem_conserto);
         $this->setPatrimonio($patrimonio);
         $this->setDescricao($descricao);
+        $this->setFornecedor($fornecedor);
+        $this->setMotivo($motivo);
+        $this->setSolucao($solucao);
         $this->setIdunidade($idunidade);
         $this->setIdsetor($idsetor);
     }
     
-    //Insere manutencao
+    //Inseri manutencao
     public function addManutencao(){
         $this->db->insert("manutencao", $this);
     }
 
     //atualiza manutencao
-    public function atualizaManutencao($id, $equipamento, $defeito, $patrimonio, $descricao, $idunidade, $idsetor){
+    public function atualizaManutencao($id, $equipamento, $defeito, $patrimonio, $descricao, $fornecedor, $idunidade, $idsetor){
         $dados = array(
             "equipamento" => $equipamento,
             "defeito" => $defeito,
             "patrimonio" => $patrimonio,
             "descricao" => $descricao,
+            "fornecedor" => $fornecedor,
             "idunidade" => $idunidade,
             "idsetor" => $idsetor            
         );
@@ -69,11 +79,12 @@ class Manutencao_model extends CI_Model {
     }
     
     //retorna manutencao
-    public function retornoManutencao($id, $data_retorno, $garantia, $data_garantia){
+    public function retornoManutencao($id, $data_retorno, $garantia, $data_garantia, $solucao){
         $dados = array(
             "data_retorno" => $data_retorno,
             "garantia" => $garantia,
-            "data_garantia" => $data_garantia,          
+            "data_garantia" => $data_garantia,
+            "solucao" => $solucao,
         );
         //atualiza no db
         $this->db->set($dados);
@@ -102,6 +113,19 @@ class Manutencao_model extends CI_Model {
     public function reindicio($id, $data){
         $dados = array(
             "data_reincidencia" => $data        
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idmanutencao', $id);
+        $this->db->update('manutencao');
+    }
+    
+    //sem conserto manutenção
+    public function semConsertoManutencao($id, $data_retorno, $data_sem_conserto, $motivo){
+        $dados = array(
+            "data_retorno" => $data_retorno,
+            "data_sem_conserto" => $data_sem_conserto,
+            "motivo" => $motivo,          
         );
         //atualiza no db
         $this->db->set($dados);
@@ -270,14 +294,16 @@ class Manutencao_model extends CI_Model {
             $query = $this->db->query(
                 "SELECT *
                 FROM manutencao 
-                WHERE data_retorno IS NOT NULL
+                WHERE data_retorno IS NOT NULL AND
+                    data_sem_conserto IS NULL
                 ORDER BY data_retorno DESC
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
                 "SELECT *
                 FROM manutencao 
-                WHERE data_retorno IS NOT NULL
+                WHERE data_retorno IS NOT NULL AND
+                    data_sem_conserto IS NULL
                 ORDER BY data_retorno DESC");
         }
         //retorna objeto ip
@@ -310,6 +336,36 @@ class Manutencao_model extends CI_Model {
                     data_garantia >= '$hoje' AND
                     data_reincidencia IS NULL
                 ORDER BY data_garantia");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todas em garantia
+    public function buscaTodasSemConserto($limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM manutencao 
+                WHERE data_retorno IS NOT NULL AND
+                    data_reincidencia IS NULL AND 
+                    data_sem_conserto IS NOT NULL AND
+                    motivo IS NOT NULL
+                ORDER BY data_sem_conserto DESC
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM manutencao 
+                WHERE data_retorno IS NOT NULL AND
+                    data_reincidencia IS NULL AND 
+                    data_sem_conserto IS NOT NULL AND
+                    motivo IS NOT NULL
+                ORDER BY data_sem_conserto DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -364,6 +420,15 @@ class Manutencao_model extends CI_Model {
                         data_garantia >= '$hoje' AND
                         data_reincidencia IS NULL");
                 break;
+            case "semconserto":
+                $query = $this->db->query(
+                    "SELECT *
+                    FROM manutencao 
+                    WHERE data_retorno IS NOT NULL AND
+                        data_reincidencia IS NULL AND 
+                        data_sem_conserto IS NOT NULL AND
+                        motivo IS NOT NULL");
+                break;
             default:
                 $query = $this->db->query(
                     "SELECT *
@@ -380,7 +445,8 @@ class Manutencao_model extends CI_Model {
                 "SELECT *
                 FROM  manutencao
                 WHERE data_entrega IS NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_defeito DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -388,7 +454,8 @@ class Manutencao_model extends CI_Model {
                 "SELECT *
                 FROM  manutencao
                 WHERE data_entrega IS NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_defeito DESC");
         }
         //retorna objeto ip
@@ -407,7 +474,8 @@ class Manutencao_model extends CI_Model {
                 FROM  manutencao
                 WHERE data_entrega IS NOT NULL AND
                     data_retorno IS NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_entrega DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -416,7 +484,8 @@ class Manutencao_model extends CI_Model {
                 FROM  manutencao
                 WHERE data_entrega IS NOT NULL AND
                     data_retorno IS NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_entrega DESC");
         }
         //retorna objeto ip
@@ -434,7 +503,9 @@ class Manutencao_model extends CI_Model {
                 "SELECT *
                 FROM  manutencao
                 WHERE data_retorno IS NOT NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    data_sem_conserto IS NULL AND
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_retorno DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -442,7 +513,9 @@ class Manutencao_model extends CI_Model {
                 "SELECT *
                 FROM  manutencao
                 WHERE data_retorno IS NOT NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    data_sem_conserto IS NULL AND
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_retorno DESC");
         }
         //retorna objeto ip
@@ -464,7 +537,8 @@ class Manutencao_model extends CI_Model {
                     data_garantia IS NOT NULL AND
                     data_garantia >= '$hoje' AND
                     data_reincidencia IS NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_retorno DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -475,8 +549,43 @@ class Manutencao_model extends CI_Model {
                     data_garantia IS NOT NULL AND
                     data_garantia >= '$hoje' AND
                     data_reincidencia IS NULL AND
-                    equipamento LIKE '%$equipamento%'
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
                 ORDER BY data_retorno DESC");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos por equipamento sem conserto
+    public function buscaPorSemconserto($equipamento, $limite = NULL, $ponteiro = NULL){
+        if (isset ($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM manutencao 
+                WHERE data_retorno IS NOT NULL AND
+                    data_reincidencia IS NULL AND 
+                    data_sem_conserto IS NOT NULL AND
+                    motivo IS NOT NULL AND
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
+                ORDER BY data_sem_conserto DESC
+                LIMIT $ponteiro, $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM manutencao 
+                WHERE data_retorno IS NOT NULL AND
+                    data_reincidencia IS NULL AND 
+                    data_sem_conserto IS NOT NULL AND
+                    motivo IS NOT NULL AND
+                    (equipamento LIKE '%$equipamento%' OR
+                    fornecedor LIKE '%$equipamento%')
+                ORDER BY data_sem_conserto DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -501,8 +610,12 @@ class Manutencao_model extends CI_Model {
         $manutencao->setGarantia($r->garantia);
         $manutencao->setData_garantia($r->data_garantia);
         $manutencao->setData_reincidencia($r->data_reincidencia);
+        $manutencao->setData_sem_conserto($r->data_sem_conserto);
         $manutencao->setPatrimonio($r->patrimonio);
         $manutencao->setDescricao($r->descricao);
+        $manutencao->setFornecedor($r->fornecedor);
+        $manutencao->setMotivo($r->motivo);
+        $manutencao->setSolucao($r->solucao);
         $manutencao->setIdunidade($r->idunidade);
         $manutencao->setIdsetor($r->idsetor);
         
@@ -521,6 +634,16 @@ class Manutencao_model extends CI_Model {
         }
         else{   
             return array($this->getObjByRow($result[0]));
+        }
+    }
+    
+    //reduzir descrição de uma manutenção
+    public function reduzirDescricao($descricao){
+        $tamanho = strlen($descricao);
+        if ($tamanho > 20){
+            return substr($descricao, 0, 30)."...";
+        } else {
+            return $descricao;
         }
     }
     
@@ -561,12 +684,28 @@ class Manutencao_model extends CI_Model {
         return $this->data_reincidencia;
     }
 
+    function getData_sem_conserto() {
+        return $this->data_sem_conserto;
+    }
+
     function getPatrimonio() {
         return $this->patrimonio;
     }
 
     function getDescricao() {
         return $this->descricao;
+    }
+
+    function getFornecedor() {
+        return $this->fornecedor;
+    }
+
+    function getMotivo() {
+        return $this->motivo;
+    }
+
+    function getSolucao() {
+        return $this->solucao;
     }
 
     function getIdunidade() {
@@ -613,6 +752,10 @@ class Manutencao_model extends CI_Model {
         $this->data_reincidencia = $data_reincidencia;
     }
 
+    function setData_sem_conserto($data_sem_conserto) {
+        $this->data_sem_conserto = $data_sem_conserto;
+    }
+
     function setPatrimonio($patrimonio) {
         $this->patrimonio = $patrimonio;
     }
@@ -621,22 +764,24 @@ class Manutencao_model extends CI_Model {
         $this->descricao = $descricao;
     }
 
+    function setFornecedor($fornecedor) {
+        $this->fornecedor = $fornecedor;
+    }
+
+    function setMotivo($motivo) {
+        $this->motivo = $motivo;
+    }
+
+    function setSolucao($solucao) {
+        $this->solucao = $solucao;
+    }
+
     function setIdunidade($idunidade) {
         $this->idunidade = $idunidade;
     }
 
     function setIdsetor($idsetor) {
         $this->idsetor = $idsetor;
-    }
-    
-    //reduzir descrição de uma manutenção
-    public function reduzirDescricao($descricao){
-        $tamanho = strlen($descricao);
-        if ($tamanho > 20){
-            return substr($descricao, 0, 20)."...";
-        } else {
-            return $descricao;
-        }
     }
 }
 

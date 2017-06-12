@@ -37,7 +37,53 @@ class Log_model extends CI_Model {
     public function addLog(){
         $this->db->insert("log", $this);
     }
+    
+    //Recupera ultimos logs por limite
+    public function recuperaLogs($limite){
+        //Seleção
+        $query = $this->db->query(
+                "SELECT *
+                FROM log
+                WHERE nome != 'acesso'
+                ORDER BY idlog DESC
+                LIMIT $limite");
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca por logs
+    public function busca($texto, $limite = null){
+        //Seleção
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM log
+                WHERE nome LIKE '%$texto%' OR
+                    descricao LIKE '%$texto%' OR
+                    ip LIKE '%$texto%'
+                ORDER BY idlog DESC
+                LIMIT $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM log
+                WHERE nome LIKE '%$texto%' OR
+                    descricao LIKE '%$texto%' OR
+                    ip LIKE '%$texto%'
+                    ORDER BY idlog DESC");
+        }
         
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+
+
 
     /*------Funções internas--------*/ 
     //Retorna objeto

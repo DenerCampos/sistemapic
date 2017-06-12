@@ -50,7 +50,8 @@ class Usuario_model extends CI_Model {
             "login" => $login,
             "senha" => $senha,
             "nivel" => $nivel,
-            "idestado" => $idestado
+            "idestado" => $idestado,
+            "idarea" => null
         );
         if (isset($idarea)){
             $dados["idarea"] = $idarea;
@@ -269,6 +270,31 @@ class Usuario_model extends CI_Model {
     //Contar todos registros
     public function contarTodos(){
         return $this->db->count_all('usuario');
+    }
+    
+    //Busca
+    public function busca($texto, $limite = null){
+        //Seleção
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM usuario
+                WHERE nome LIKE '%$texto%'
+                ORDER BY nome ASC
+                LIMIT $limite");
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM usuario
+                WHERE nome LIKE '%$texto%'
+                ORDER BY nome ASC");
+        }
+        
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
     }
 
 

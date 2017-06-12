@@ -45,10 +45,86 @@ class Ocorrencia_estado_admin extends CI_Controller {
             "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
     
-    /*------Funções internas--------*/ 
+    //Mensagem de erro
+    public function erro($msg = NULL){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));     
+        //Carrega index
+        $this->load->view('mensagens/erro', array(
+            "assetsUrl" => base_url("assets"),
+            "msgerro" => $msg));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Mensagem sucesso
+    public function mensagem($msg = null, $uri = null){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('mensagens/mensagem', array(
+            "assetsUrl" => base_url("assets"),
+            "msg" => $msg,
+            "uri" => $uri
+                ));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Busca
+    public function resultado($resultado, $palavra){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));     
+        //Carrega menu
+        $this->load->view('admin/menu', array(
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "estado ocorrencia"));
+        //Carrega estadoes
+        $this->load->view('admin/ocorrencia/ocorrencia', array(
+            "assetsUrl" => base_url("assets"),
+            "palavra" => $palavra,
+            "resultados" => $resultado));
+        //Modal
+        $this->load->view('admin/ocorrencia/criar-ocorrencia', array(
+            "assetsUrl" => base_url("assets")));
+        $this->load->view('admin/ocorrencia/editar-ocorrencia', array(
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    /*-------------Funções---------------*/
     //Criar
     public function criarEstado(){
         //recupera dados
@@ -105,6 +181,73 @@ class Ocorrencia_estado_admin extends CI_Controller {
         return $paginas;
     }
     
+    //Atualiza estado
+    public function atualizaEstado(){
+        //recuperando dados do estado
+        $id = $this->input->post("iptEdtId");
+        $nome = $this->input->post("iptEdtNome");
+        $descricao = $this->input->post("iptEdtDesc");
+        $url = $this->input->post("iptEdtUrl");
+        
+        //verifica dados
+        if (!$this->estado->verificaEstadoAtualiza($id, $nome)){
+            //atualiza estado
+            $this->estado->atualizaEstado($id, $nome, $descricao);
+            //Log
+            $this->gravaLog("ADMIN alteração estado de ocorrencia", "estado alterado: ".$nome);
+            redirect($url);
+        }else{
+            //Log
+            $this->gravaLog("ADMIN erro alteração estado de ocorrencia", "tentativa de alterar estado: ".$nome);
+            echo'erro ao alterar estado';
+        }            
+    }
+    
+    //buscar
+    public function busca(){
+        try {
+            //recupera dados
+            $texto = trim($this->input->post("iptBusca"));
+            //busca pelo texto
+            if (isset($texto) && $texto != ""){
+                $this->resultado($this->estado->busca($texto), $texto);
+            } else if ($texto == "") {
+                $this->resultado($this->estado->busca($texto, 100), $texto);
+            } else {
+                $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
+            }            
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de estado de ocorrencia: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>");
+        }
+    }
+    
+    /*----------------Funções AJAX---------------*/
+    //Editar estado ajax
+    public function editarEstado(){
+        //Recupera Id estado
+        $id = $this->input->post("idestado");
+        $estado = $this->estado->buscaId($id);
+        
+        if (isset($estado)){
+            $mgs = array(
+                "idestado" => $estado->getIdocorrencia_estado(),
+                "nome" => $estado->getNome(),
+                "descricao" => $estado->getDescricao()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Estado de ocorrencia não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    /*------Funções internas--------*/ 
     //Paginação usuariao, recupera offset
     private function recuperaOffset(){
         if ($this->uri->segment(3)){
@@ -130,52 +273,7 @@ class Ocorrencia_estado_admin extends CI_Controller {
         $this->registro->addLog();
     }
       
-    //Editar estado ajax
-    public function editarEstado(){
-        //Recupera Id estado
-        $id = $this->input->post("idestado");
-        $estado = $this->estado->buscaId($id);
-        
-        if (isset($estado)){
-            $mgs = array(
-                "idestado" => $estado->getIdocorrencia_estado(),
-                "nome" => $estado->getNome(),
-                "descricao" => $estado->getDescricao()
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Estado de ocorrencia não encontrado"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-      
-    //Atualiza estado
-    public function atualizaEstado(){
-        //recuperando dados do estado
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $descricao = $this->input->post("iptEdtDesc");
-        $url = $this->input->post("iptEdtUrl");
-        
-        //verifica dados
-        if (!$this->estado->verificaEstadoAtualiza($id, $nome)){
-            //atualiza estado
-            $this->estado->atualizaEstado($id, $nome, $descricao);
-            //Log
-            $this->gravaLog("ADMIN alteração estado de ocorrencia", "estado alterado: ".$nome);
-            redirect($url);
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro alteração estado de ocorrencia", "tentativa de alterar estado: ".$nome);
-            echo'erro ao alterar estado';
-        }            
-    }
-    
-    //verifica nivel de usuario para acesso ao sistema
+//verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado

@@ -23,7 +23,7 @@ class Usuario_admin extends CI_Controller {
     
     
     /*------Carregamento de views--------*/ 
-    public function index()    {
+    public function index(){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -58,10 +58,97 @@ class Usuario_admin extends CI_Controller {
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
-            "assetsUrl" => base_url("assets")));
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
     }
     
-    /*------Funções internas--------*/ 
+    //Mensagem de erro
+    public function erro($msg = NULL){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));     
+        //Carrega index
+        $this->load->view('mensagens/erro', array(
+            "assetsUrl" => base_url("assets"),
+            "msgerro" => $msg));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //Mensagem sucesso
+    public function mensagem($msg = null, $uri = null){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('mensagens/mensagem', array(
+            "assetsUrl" => base_url("assets"),
+            "msg" => $msg,
+            "uri" => $uri
+                ));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    //resultado da busca
+    public function resultado($resultados, $palavra){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "admin"));      
+        //Carrega menu
+        $this->load->view('admin/menu', array(
+            "assetsUrl" => base_url("assets"),
+            "ativo" => "usuarios"));
+        //Carrega usuarios
+        $this->load->view('admin/usuarios/usuarios', array(
+            "assetsUrl" => base_url("assets"),
+            "estado" => new Estado_model(),
+            "area" => new Area_model(),
+            "palavra" => $palavra,
+            "resultados" => $resultados));
+        //Modal
+        $this->load->view('admin/usuarios/criar-usuarios', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados(),
+            "areas" => $this->area->todasAreas()));
+        $this->load->view('admin/usuarios/editar-usuarios', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/usuarios/remover-usuarios', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/usuarios/ativar-usuarios', array(
+            "assetsUrl" => base_url("assets"),
+            "estados" => $this->estado->todosEstados()));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "administracao.js"));
+    }
+    
+    /*-------------Funções---------------*/
     //Criar usuario
     public function criarUsuario(){
         //recupera dados
@@ -130,6 +217,195 @@ class Usuario_admin extends CI_Controller {
         return $paginas;
     }
     
+    //Atualiza usuario
+    public function atualizaUsuario(){
+        //recuperando dados do usuario
+        $id = $this->input->post("iptEdtId");
+        $nome = $this->input->post("iptEdtNome");
+        $login = $this->input->post("iptEdtEmail");
+        $senha = $this->input->post("iptEdtSenha");
+        $rsenha = $this->input->post("iptEdtRSenha");
+        $nivel = $this->input->post("selEdtNivel");
+        $estado = $this->input->post("selEdtEstado");
+        $url = $this->input->post("iptEdtUrl");
+        //recupera area - somente tecnico
+        $area = $this->input->post("selEdtArea");
+        
+        if ($senha == ""){
+            $senha = NULL;
+        }
+        //verifica dados
+        if ($this->atualizaLogin($id, $login, $senha, $rsenha)){
+            //atualiza usuario
+            //verifica se é tecnico
+            if ($this->verificaTecnico($nivel)){
+                if (isset($senha)){
+                    $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));            
+                } else {
+                    $usuario = $this->usuario->buscaId($id);
+                    $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));
+                }
+            } else {
+                //Não é tecnico
+                if (isset($senha)){
+                    $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado));            
+                } else {
+                    $usuario = $this->usuario->buscaId($id);
+                    $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado));
+                }
+            }           
+            //Log
+            $this->gravaLog("ADMIN alteração usuario", "usuario alterado: ".$nome." Email: ". $login);
+            redirect($url);
+        }else{
+            //Log
+            $this->gravaLog("ADMIN erro alteração usuario", "tentativa de alterar usuario: ".$nome." Email: ". $login);
+            echo'erro ao alterar usuario';
+        }            
+    }
+    
+    //Desabilitar usuario
+    public function desabilitaUsuario(){
+        //recupera id usuario
+        $id = $this->input->post("iptRmvId");
+        $url = $this->input->post("iptRmvUrl");
+        
+        //verifica se usuario existe e esta ativo
+        if ($this->usuario->verificaAtivo($id)){
+            //desativa usuario
+            $this->usuario->desativaUsuario($id);
+            //Log
+            $this->gravaLog("ADMIN desabilita usuario", "usuario desabilitado id: ".$id);
+            redirect($url);
+        }else {
+            //Log
+            $this->gravaLog("ADMIN erro desabilitar usuario", "tentativa de desabilitar usuario id: ".$id);
+            echo'erro ao desabilitar usuario';
+        }
+    }
+    
+    //Ativar usuario
+    public function ativaUsuario(){
+        //recupera id usuario
+        $id = $this->input->post("iptAtvId");
+        $url = $this->input->post("iptAtvUrl");
+        
+        //verifica se usuario existe e esta ativo
+        if ($this->usuario->verificaDesativo($id)){
+            //ativar usuario
+            $this->usuario->ativaUsuario($id);
+            //Log
+            $this->gravaLog("ADMIN ativar usuario", "usuario ativado id: ".$id);
+            redirect($url);
+        }else {
+            //Log
+            $this->gravaLog("ADMIN erro ativar usuario", "tentativa de ativar usuario id: ".$id);
+            echo'erro ao ativar usuario';
+        }
+    }
+        
+    //buscar
+    public function busca(){
+        try {
+            //recupera dados
+            $texto = trim($this->input->post("iptBusca"));
+            //busca pelo texto
+            if (isset($texto) && $texto != ""){
+                $this->resultado($this->usuario->busca($texto), $texto);
+            } else if ($texto == "") {
+                $this->resultado($this->usuario->busca($texto, 100), $texto);
+            } else {
+                $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
+            }            
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de usuario: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>");
+        }
+    }
+    
+    /*----------------Funções AJAX---------------*/
+    //Editar usuario ajax
+    public function editarUsuario(){
+        //Recupera Id usuario
+        $id = $this->input->post("idusuario");
+        $usuario = $this->usuario->buscaId($id);
+        
+        if (isset($usuario)){
+            $estado = $this->estado->buscaId($usuario->getIdestado());
+            //verifica area de atendimento usuario
+            if ($usuario->getIdarea() != NULL){
+                $area = $this->area->buscaId($usuario->getIdarea())->getNome();
+            }else{
+                $area = "Nenhuma";
+            }
+            $mgs = array(
+                "idusuario" => $usuario->getIdusuario(),
+                "nome" => $usuario->getNome(),
+                "login" => $usuario->getLogin(),
+                "nivel" =>  $this->buscaNivel($usuario->getNivel()),
+                "estado" => $estado->getNome(),
+                "area" => $area
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Usuário não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Ativar usuario ajax
+    public function ativarUsuario(){
+        //Recupera Id usuario
+        $id = $this->input->post("idusuario");
+        $usuario = $this->usuario->buscaId($id);
+        
+        if (isset($usuario)){
+            $mgs = array(
+                "idusuario" => $usuario->getIdusuario(),
+                "nome" => $usuario->getNome(),
+                "login" => $usuario->getLogin(),
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Usuário não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Remover usuario ajax
+    public function removerUsuario(){
+        //Recupera Id usuario
+        //Recupera Id usuario
+        $id = $this->input->post("idusuario");
+        $usuario = $this->usuario->buscaId($id);
+        
+        if (isset($usuario)){
+            $mgs = array(
+                "idusuario" => $usuario->getIdusuario(),
+                "nome" => $usuario->getNome(),
+                "login" => $usuario->getLogin(),
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Usuário não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }    
+    
+    /*------Funções internas--------*/      
     //Paginação usuariao, recupera offset
     private function recuperaOffset(){
         if ($this->uri->segment(3)){
@@ -240,173 +516,6 @@ class Usuario_admin extends CI_Controller {
             }
         } else{
             return TRUE;
-        }
-    }
-    
-    //Editar usuario ajax
-    public function editarUsuario(){
-        //Recupera Id usuario
-        $id = $this->input->post("idusuario");
-        $usuario = $this->usuario->buscaId($id);
-        
-        if (isset($usuario)){
-            $estado = $this->estado->buscaId($usuario->getIdestado());
-            //verifica area de atendimento usuario
-            if ($usuario->getIdarea() != NULL){
-                $area = $this->area->buscaId($usuario->getIdarea())->getNome();
-            }else{
-                $area = "Nenhuma";
-            }
-            $mgs = array(
-                "idusuario" => $usuario->getIdusuario(),
-                "nome" => $usuario->getNome(),
-                "login" => $usuario->getLogin(),
-                "nivel" =>  $this->buscaNivel($usuario->getNivel()),
-                "estado" => $estado->getNome(),
-                "area" => $area
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Usuário não encontrado"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-    
-    //Ativar usuario ajax
-    public function ativarUsuario(){
-        //Recupera Id usuario
-        $id = $this->input->post("idusuario");
-        $usuario = $this->usuario->buscaId($id);
-        
-        if (isset($usuario)){
-            $mgs = array(
-                "idusuario" => $usuario->getIdusuario(),
-                "nome" => $usuario->getNome(),
-                "login" => $usuario->getLogin(),
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Usuário não encontrado"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-    
-    //Remover usuario ajax
-    public function removerUsuario(){
-        //Recupera Id usuario
-        //Recupera Id usuario
-        $id = $this->input->post("idusuario");
-        $usuario = $this->usuario->buscaId($id);
-        
-        if (isset($usuario)){
-            $mgs = array(
-                "idusuario" => $usuario->getIdusuario(),
-                "nome" => $usuario->getNome(),
-                "login" => $usuario->getLogin(),
-            );
-            echo json_encode($mgs);
-        } else {
-            $mgs = array(
-                "erro" => "Usuário não encontrado"
-            );
-            echo json_encode($mgs);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
-    }
-    
-    //Atualiza usuario
-    public function atualizaUsuario(){
-        //recuperando dados do usuario
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $login = $this->input->post("iptEdtEmail");
-        $senha = $this->input->post("iptEdtSenha");
-        $rsenha = $this->input->post("iptEdtRSenha");
-        $nivel = $this->input->post("selEdtNivel");
-        $estado = $this->input->post("selEdtEstado");
-        $url = $this->input->post("iptEdtUrl");
-        //recupera area - somente tecnico
-        $area = $this->input->post("selEdtArea");
-        
-        if ($senha == ""){
-            $senha = NULL;
-        }
-        //verifica dados
-        if ($this->atualizaLogin($id, $login, $senha, $rsenha)){
-            //atualiza usuario
-            //verifica se é tecnico
-            if ($this->verificaTecnico($nivel)){
-                if (isset($senha)){
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));            
-                } else {
-                    $usuario = $this->usuario->buscaId($id);
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));
-                }
-            } else {
-                //Não é tecnico
-                if (isset($senha)){
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado));            
-                } else {
-                    $usuario = $this->usuario->buscaId($id);
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado));
-                }
-            }           
-            //Log
-            $this->gravaLog("ADMIN alteração usuario", "usuario alterado: ".$nome." Email: ". $login);
-            redirect($url);
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro alteração usuario", "tentativa de alterar usuario: ".$nome." Email: ". $login);
-            echo'erro ao alterar usuario';
-        }            
-    }
-    
-    //Desabilitar usuario
-    public function desabilitaUsuario(){
-        //recupera id usuario
-        $id = $this->input->post("iptRmvId");
-        $url = $this->input->post("iptRmvUrl");
-        
-        //verifica se usuario existe e esta ativo
-        if ($this->usuario->verificaAtivo($id)){
-            //desativa usuario
-            $this->usuario->desativaUsuario($id);
-            //Log
-            $this->gravaLog("ADMIN desabilita usuario", "usuario desabilitado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro desabilitar usuario", "tentativa de desabilitar usuario id: ".$id);
-            echo'erro ao desabilitar usuario';
-        }
-    }
-    
-    //Ativar usuario
-    public function ativaUsuario(){
-        //recupera id usuario
-        $id = $this->input->post("iptAtvId");
-        $url = $this->input->post("iptAtvUrl");
-        
-        //verifica se usuario existe e esta ativo
-        if ($this->usuario->verificaDesativo($id)){
-            //ativar usuario
-            $this->usuario->ativaUsuario($id);
-            //Log
-            $this->gravaLog("ADMIN ativar usuario", "usuario ativado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro ativar usuario", "tentativa de ativar usuario id: ".$id);
-            echo'erro ao ativar usuario';
         }
     }
     

@@ -44,7 +44,7 @@
                                            data-toggle="modal" data-target="#mdlEncaminharChamado"
                                            data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
                                            onclick="encaminharChamado(this)">
-                                            <i class="fa fa-share" ></i>
+                                            <i class="fa fa-external-link" ></i>
                                         </a>
                                         <a title="Fechar" role="button" href="#mdlFecharChamado" 
                                            data-toggle="modal" data-target="#mdlFecharChamado"
