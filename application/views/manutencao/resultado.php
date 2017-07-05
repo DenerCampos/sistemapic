@@ -8,8 +8,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         
         <!-- nova manutencao  -->
         <div class="novo-chamado col-md-6">
-                <a class="btn btn-warning" href="<?php echo base_url("manutencao"); ?>" role="button">
-                    <i class="fa fa-arrow-circle-o-left"></i> Voltar
+            <a class="btn btn-warning" href="<?php echo base_url("manutencao"); ?>" role="button">
+                <i class="fa fa-arrow-circle-o-left"></i> Voltar
             </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarManutencao" 
                     data-toggle="modal" data-target="#mdlCriarManutencao" role="button">

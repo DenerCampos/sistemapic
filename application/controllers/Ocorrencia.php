@@ -69,7 +69,9 @@ class Ocorrencia extends CI_Controller {
                 "local" => new Local_model(),
                 "estado" => new Ocorrencia_estado_model(),
                 "paginas" => $this->listarOcorrenciaTecn("aberto", "aberto", $this->session->userdata("area")),
-                "abertas" => $this->ocorrencia->todasAbertoPorArea($this->session->userdata("id"), $this->session->userdata("area"), 6, $this->recuperaOffset())));
+                //editado
+                //"abertas" => $this->ocorrencia->todasAbertoPorArea($this->session->userdata("id"), $this->session->userdata("area"), 6, $this->recuperaOffset())));
+                "abertas" => $this->ocorrencia->todasPorEstado(1, 6, $this->recuperaOffset())));
         } else {
             $this->load->view('helpdesk/chamado-aberto-user', array(
                 "usuario" => new Usuario_model(),
@@ -163,7 +165,9 @@ class Ocorrencia extends CI_Controller {
                 "local" => new Local_model(),
                 "estado" => new Ocorrencia_estado_model(),
                 "paginas" => $this->listarOcorrenciaTecn("atendimento", "atendimento", $this->session->userdata("area")),
-                "atendimentos" => $this->ocorrencia->todasAtendimentoPorArea($this->session->userdata("id"), 6, $this->recuperaOffset())));
+                //editado
+                //"atendimentos" => $this->ocorrencia->todasAtendimentoPorArea($this->session->userdata("id"), $this->session->userdata("area"), 6, $this->recuperaOffset())));
+                "atendimentos" => $this->ocorrencia->todasPorEstado(2, 6, $this->recuperaOffset())));
         } else {
             $this->load->view('helpdesk/chamado-atendimento-user', array(
                 "usuario" => new Usuario_model(),
@@ -257,7 +261,9 @@ class Ocorrencia extends CI_Controller {
                 "local" => new Local_model(),
                 "estado" => new Ocorrencia_estado_model(),
                 "paginas" => $this->listarOcorrenciaTecn("fechado", "fechado", $this->session->userdata("area")),
-                "fechadas" => $this->ocorrencia->todasFechadosPorArea($this->session->userdata("id"), 6, $this->recuperaOffset())));
+                //editado
+                //"fechadas" => $this->ocorrencia->todasFechadosPorArea($this->session->userdata("id"), $this->session->userdata("area"), 6, $this->recuperaOffset())));
+                "fechadas" => $this->ocorrencia->todasPorEstado(3, 6, $this->recuperaOffset())));
         } else {
             $this->load->view('helpdesk/chamado-fechado-user', array(
                 "usuario" => new Usuario_model(),
@@ -1275,7 +1281,7 @@ class Ocorrencia extends CI_Controller {
             //configuração
             $config = array(
                 'upload_path' => './document/helpdesk/',
-                'allowed_types' => 'gif|jpg|png|pdf',
+                'allowed_types' => 'gif|jpg|png|pdf|jpeg',
                 'file_name' => uniqid(md5($idchamado))
             );
             //inicializa

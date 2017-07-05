@@ -464,8 +464,8 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 1 AND
                     idestado = 1 AND
-                    idarea = $area OR
-                    usuario_abre = $usuario
+                    (idarea = $area OR
+                    usuario_abre = $usuario)
                 ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");           
         } else {
@@ -474,8 +474,8 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 1 AND
                 idestado = 1 AND
-                    idarea = $area OR
-                    usuario_abre = $usuario
+                    (idarea = $area OR
+                    usuario_abre = $usuario)
                 ORDER BY data_abertura DESC");
         }
         //retorna objeto ip
@@ -487,16 +487,17 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Busca todos em atendimento por area de atendimento do tecnico
-    public function todasAtendimentoPorArea($usuario, $limite = NULL, $ponteiro = NULL){
+    public function todasAtendimentoPorArea($usuario, $area, $limite = NULL, $ponteiro = NULL){
         if (isset($limite)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 2 AND
                     idestado = 1 AND
-                    (usuario_abre = $usuario OR
+                    (idarea = $area OR
+                    usuario_abre = $usuario OR
                     usuario_atende = $usuario)
-                ORDER BY data_abertura DESC
+                ORDER BY data_alteracao DESC
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
@@ -504,9 +505,10 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 2 AND
                     idestado = 1 AND
-                    (usuario_abre = $usuario OR
+                    (idarea = $area OR
+                    usuario_abre = $usuario OR
                     usuario_atende = $usuario)
-                ORDER BY data_abertura DESC");
+                ORDER BY data_alteracao DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -517,14 +519,16 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Busca todos em atendimento por area de atendimento do tecnico
-    public function todasFechadosPorArea($usuario, $limite = NULL, $ponteiro = NULL){
+    public function todasFechadosPorArea($usuario, $area, $limite = NULL, $ponteiro = NULL){
         if (isset($limite)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 3 AND
                     idestado = 1 AND
-                    (usuario_abre =  $usuario  OR usuario_atende = $usuario)
+                    (idarea = $area OR
+                    usuario_abre = $usuario OR
+                    usuario_atende = $usuario)
                 ORDER BY data_fechamento DESC
                 LIMIT $ponteiro, $limite");           
         } else {
@@ -533,8 +537,9 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE idocorrencia_estado = 3 AND
                     idestado = 1 AND
-                    (usuario_abre = $usuario OR
-                    usuario_fecha = $usuario)
+                    (idarea = $area OR
+                    usuario_abre = $usuario OR
+                    usuario_atende = $usuario)
                 ORDER BY data_fechamento DESC");
         }
         //retorna objeto ip
@@ -711,8 +716,8 @@ class Ocorrencia_model extends CI_Model {
                     FROM ocorrencia
                     WHERE idocorrencia_estado = 1 AND
                         idestado = 1 AND
-                        idarea = $area OR
-                        usuario_abre = $usuario");
+                        (idarea = $area OR
+                        usuario_abre = $usuario)");
                 break;
             case "atendimento":
                 $query = $this->db->query(
@@ -720,7 +725,8 @@ class Ocorrencia_model extends CI_Model {
                     FROM ocorrencia
                     WHERE idocorrencia_estado = 2 AND
                         idestado = 1 AND
-                        (usuario_abre = $usuario OR
+                        (idarea = $area OR
+                        usuario_abre = $usuario OR
                         usuario_atende = $usuario)");
                 break;
             case "fechado":
@@ -729,7 +735,8 @@ class Ocorrencia_model extends CI_Model {
                     FROM ocorrencia
                     WHERE idocorrencia_estado = 3 AND
                         idestado = 1 AND
-                        (usuario_abre = $usuario OR
+                        (idarea = $area OR
+                        usuario_abre = $usuario OR
                         usuario_atende = $usuario)");
                 break;            
             default:

@@ -75,8 +75,17 @@ $route['ocorrencia/fechado/(:num)'] = 'Ocorrencia/fechado';
 //Plantão
 $route['plantao/(:num)'] = 'Plantao';
 
-//Maquina
+//Equipamentos
+//Maquinas
 $route['maquina/(:num)'] = 'Maquina';
+//PinPad
+$route['pinpad/(:num)'] = 'Pinpad';
+//Pos
+$route['pos/(:num)'] = 'Pos';
+//Impressora fiscal
+$route['fiscal/(:num)'] = 'Fiscal';
+//Impressoras
+$route['impressora/(:num)'] = 'Impressora';
 
 //Manutenção
 $route['manutencao/defeito/(:num)'] = 'Manutencao/defeito';
@@ -84,3 +93,4 @@ $route['manutencao/manutencao/(:num)'] = 'Manutencao/manutencao';
 $route['manutencao/conserto/(:num)'] = 'Manutencao/conserto';
 $route['manutencao/garantia/(:num)'] = 'Manutencao/garantia';
 $route['manutencao/buscar/(:num)'] = 'Manutencao/buscar';
+$route['manutencao/semconserto/(:num)'] = 'Manutencao/semconserto';

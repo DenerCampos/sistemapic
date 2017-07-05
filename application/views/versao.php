@@ -4,6 +4,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (1.7)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Sistema</u></h3>
+        <p>01- Criado tabela POS, PINPAD, IMPRESSORA_FISCAL, IMPRESSORA e ACESSO.</p>
+        <h3><u>Helpdesk</u></h3>
+        <p>01- Todos chamados abertos, em atendimento e fechados aparece no perfil técnico.</p>
+        <h3><u>IP´s Maquinas PP (Agora equipamentos)</u></h3>
+        <p>01- Troca IP´s Maquinas PP por equipamentos.</p>
+        <p>02- Adicionado pinpads, pos, impressoras fiscais e não fiscais.</p>
+        <p>03- Criado pagina exibir, onde qualquer usuario consegue acessar as tabelas de pinpads, pos, impressoras fiscais e impressoras.</p>
+        <h3><u>Relatório plantão</u></h3>
+        <p>01- Criado menu relatórios.</p>
+    </div>
+    <div class="">
+        <h2>-Bugs</h2>
+        <h3><u>HelpDesk</u></h3>
+        <p>01- O sistema anexo aqruivos .jpeg</p>
+        <p>02- Correção da listagem dos chamados abertos no perfil do técnico.</p>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (1.6)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>

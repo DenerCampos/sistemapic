@@ -1,7 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
+
 <!--Resultados-->
 <div class="menu-chamado col-md-12">
+    
     <div class="row"> <!-- row -->
+        <!-- novo -->
         <div class="novo-chamado col-md-6">
             <a class="btn btn-warning" href="<?php echo base_url("ocorrencia"); ?>" role="button">
                 <i class="fa fa-arrow-circle-o-left"></i> Voltar
@@ -11,6 +14,8 @@
                 Novo Chamado
             </button>
         </div>
+        
+        <!-- busca -->
         <div class="pesquisar-chamado col-md-6">            
             <form class="form-buscar" method="post"
                   action="<?php echo base_url("ocorrencia/buscar") ?>">
@@ -23,7 +28,11 @@
                 </div>
             </form>            
         </div>
+        
     </div><!-- fim row -->
+    
+    
+    
     <?php if (isset($numeros)) { ?>
     <div class="row"> <!-- Numero chamado -->
         <div class="col-md-12">                    

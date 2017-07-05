@@ -36,44 +36,127 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </li>
             </ul>
             <?php } ?>
+            
             <!--menu tecnico-->
             <?php if ($this->session->userdata('nivel') === '1'){ ?>
             <ul class="nav navbar-nav">
-                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'helpdesk')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('ocorrencia'); ?>">Help-Desk</a>
-                </li>
-                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'plantao')){ echo 'active';} ?>">
-                    <a class="navbar-link " href="<?php echo base_url('plantao'); ?>">Relatório Plantão</a>
-                </li>
-                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'caixa')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('caixa'); ?>">Caixas</a>
-                </li>
-                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'manutencao')){ echo 'active';} ?>">
-                    <a class="navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenção Impressora</a>
-                </li>
-                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'maquina')){ echo 'active';} ?>">
-                    <a class="nav-link navbar-link" href="<?php echo base_url('maquina'); ?>">IP´s maquinas PP</a>
-                </li>
-            </ul>
-            <?php } ?>
-            <!--menu admin-->
-            <?php if ($this->session->userdata('nivel') === '0'){ ?>
-            <ul class="nav navbar-nav">
+                <!--Help-desk-->
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'helpdesk')){ echo 'active';} ?>">
                     <a class="nav-link navbar-link" href="<?php echo base_url('ocorrencia'); ?>">Help-Desk</a>
                 </li>
-                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'plantao')){ echo 'active';} ?>">
-                    <a class="nav-link navbar-link " href="<?php echo base_url('plantao'); ?>">Relatório Plantão</a>
+                <!--Relatorios-->
+                <li role="presentation" class="dropdown <?php if (isset($ativo) && ($ativo == 'relatorio')){ echo 'active';} ?>">
+                    <a class="dropdown-toggle nav-link navbar-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        Relatórios <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('plantao'); ?>">Relatório Plantão</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="#" >Relatório Geral</a>
+                        </li> 
+                        <li>
+                            <a class="navbar-link" href="#" >Relatório por setor</a>
+                        </li> 
+                        <li>
+                            <a class="navbar-link" href="#" >Relatório por usuário</a>
+                        </li>
+                    </ul>
                 </li>
+                <!--Caixas-->
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'caixa')){ echo 'active';} ?>">
                     <a class="nav-link navbar-link" href="<?php echo base_url('caixa'); ?>">Caixas</a>
                 </li>
+                <!--Manutencao-->
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'manutencao')){ echo 'active';} ?>">
                     <a class="nav-link navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenções</a>
                 </li>
-                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'maquina')){ echo 'active';} ?>">
-                    <a class="nav-link navbar-link" href="<?php echo base_url('maquina'); ?>">IP´s maquinas PP</a>
+                <!--Equipamentos-->
+                <li role="presentation" class="dropdown <?php if (isset($ativo) && ($ativo == 'equipamento')){ echo 'active';} ?>">
+                    <a class="dropdown-toggle nav-link navbar-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        Equipamentos <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('maquina'); ?>">Maquinas</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('pinpad'); ?>" >PinPads</a>
+                        </li> 
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('pos'); ?>" >POS</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('fiscal'); ?>" >Impressoras Fiscais</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('impressora'); ?>" >Impressoras</a>
+                        </li>
+                    </ul>
                 </li>
+            </ul>
+            <?php } ?>
+            
+            <!--menu admin-->
+            <?php if ($this->session->userdata('nivel') === '0'){ ?>
+            <ul class="nav navbar-nav">
+                <!--Help-desk-->
+                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'helpdesk')){ echo 'active';} ?>">
+                    <a class="nav-link navbar-link" href="<?php echo base_url('ocorrencia'); ?>">Help-Desk</a>
+                </li>
+                <!--Relatorios-->
+                <li role="presentation" class="dropdown <?php if (isset($ativo) && ($ativo == 'relatorio')){ echo 'active';} ?>">
+                    <a class="dropdown-toggle nav-link navbar-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        Relatórios <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('plantao'); ?>">Relatório Plantão</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="#" >Relatório Geral</a>
+                        </li> 
+                        <li>
+                            <a class="navbar-link" href="#" >Relatório por setor</a>
+                        </li> 
+                        <li>
+                            <a class="navbar-link" href="#" >Relatório por usuário</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--Caixas-->
+                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'caixa')){ echo 'active';} ?>">
+                    <a class="nav-link navbar-link" href="<?php echo base_url('caixa'); ?>">Caixas</a>
+                </li>
+                <!--Manutencao-->
+                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'manutencao')){ echo 'active';} ?>">
+                    <a class="nav-link navbar-link" href="<?php echo base_url('manutencao/defeito'); ?>">Manutenções</a>
+                </li>
+                <!--Equipamentos-->
+                <li role="presentation" class="dropdown <?php if (isset($ativo) && ($ativo == 'equipamento')){ echo 'active';} ?>">
+                    <a class="dropdown-toggle nav-link navbar-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        Equipamentos <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('maquina'); ?>">Maquinas</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('pinpad'); ?>" >PinPads</a>
+                        </li> 
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('pos'); ?>" >POS</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('fiscal'); ?>" >Impressoras Fiscais</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('impressora'); ?>" >Impressoras</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--Admin-->
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'admin')){ echo 'active';} ?>">
                     <a class="nav-link navbar-link" href="<?php echo base_url('administracao'); ?>">Admin</a>
                 </li>

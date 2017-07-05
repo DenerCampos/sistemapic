@@ -1,5 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Base_model extends CI_Model {
 
@@ -12,7 +11,6 @@ class Base_model extends CI_Model {
     
      /*------Atributos--------*/
     var $base;
-    var $exemplo;
 
     /*------Construtor--------*/
     public function __construct() {
@@ -50,21 +48,4 @@ class Base_model extends CI_Model {
     }
     
     /*------Gets e Sets--------*/ 
-    function getBase() {
-        return $this->base;
-    }
-
-    function getExemplo() {
-        return $this->exemplo;
-    }
-
-    function setBase($base) {
-        $this->base = $base;
-    }
-
-    function setExemplo($exemplo) {
-        $this->exemplo = $exemplo;
-    }
-
-
 }

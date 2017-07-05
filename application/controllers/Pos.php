@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Maquina extends CI_Controller {
+class Pos extends CI_Controller {
 
     /**
      * Maquina.
-     * @descripition Visualização das maquinas no PIC Pampulha
+     * @descripition Visualização dos pos no PIC Pampulha
      * @author Dener Junio
      * 
      */
@@ -17,8 +17,7 @@ class Maquina extends CI_Controller {
         //verifica nivel usuario
         $this->verificaNivel();
         //carregando modelo
-        $this->load->model('maquina_model', 'maquina');
-        $this->load->model('tipo_model', 'tipo');
+        $this->load->model('pos_model', 'pos');
         $this->load->model('local_model', 'local');
     }
     
@@ -34,30 +33,25 @@ class Maquina extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "ativo" => "equipamento"));   
         //Carrega
-        $this->load->view('maquinas/maquinas', array(
+        $this->load->view('pos/pos', array(
             "assetsUrl" => base_url("assets"),
             "local" => new Local_model(),
-            "tipo" => new Tipo_model(),
-            "maquinas" => $this->maquina->buscaTodas(6, $this->recuperaOffset()),
-            //"maquinas" => $this->maquina->buscaTodas(),
-            "paginas" => $this->listarMaquinas()));
+            "lista" => $this->pos->todos(6, $this->recuperaOffset()),
+            "paginas" => $this->listar()));
         //Modal
-        $this->load->view('maquinas/criar-maquinas', array(
+        $this->load->view('pos/criar-pos', array(
             "assetsUrl" => base_url("assets"),
-            "locais" => $this->local->todosLocais(),
-            "tipos" => $this->tipo->todosTipos()));
-        $this->load->view('maquinas/editar-maquinas', array(
+            "locais" => $this->local->todosLocais()));
+        $this->load->view('pos/editar-pos', array(
             "assetsUrl" => base_url("assets"),
-            "locais" => $this->local->todosLocais(),
-            "tipos" => $this->tipo->todosTipos()));
-        $this->load->view('maquinas/remover-maquinas', array(
+            "locais" => $this->local->todosLocais()));
+        $this->load->view('pos/remover-pos', array(
             "assetsUrl" => base_url("assets"),
-            "locais" => $this->local->todosLocais(),
-            "tipos" => $this->tipo->todosTipos()));
+            "locais" => $this->local->todosLocais()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
-            "arquivoJS" => "maquina.js"));
+            "arquivoJS" => "pos.js"));
     }
     
     //Mensagem de erro
@@ -79,7 +73,7 @@ class Maquina extends CI_Controller {
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
-            "arquivoJS" => "maquina.js"));
+            "arquivoJS" => "pos.js"));
     }
     
     //Mensagem de erro
@@ -102,7 +96,7 @@ class Maquina extends CI_Controller {
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
-            "arquivoJS" => "maquina.js"));
+            "arquivoJS" => "pos.js"));
     }
     
     //Resultado da busca
@@ -115,42 +109,39 @@ class Maquina extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "ativo" => "equipamento"));   
         //Carrega
-        $this->load->view('maquinas/resultado', array(
+        $this->load->view('pos/resultado', array(
             "assetsUrl" => base_url("assets"),
             "local" => new Local_model(),
-            "tipo" => new Tipo_model(),
             "palavra" => $texto,
-            "maquinas" => $resultado));
+            "total" => count($resultado),
+            "lista" => $resultado));
         //Modal
-        $this->load->view('maquinas/criar-maquinas', array(
+        $this->load->view('pos/criar-pos', array(
             "assetsUrl" => base_url("assets"),
-            "locais" => $this->local->todosLocais(),
-            "tipos" => $this->tipo->todosTipos()));
-        $this->load->view('maquinas/editar-maquinas', array(
+            "locais" => $this->local->todosLocais()));
+        $this->load->view('pos/editar-pos', array(
             "assetsUrl" => base_url("assets"),
-            "locais" => $this->local->todosLocais(),
-            "tipos" => $this->tipo->todosTipos()));
-        $this->load->view('maquinas/remover-maquinas', array(
+            "locais" => $this->local->todosLocais()));
+        $this->load->view('pos/remover-pos', array(
             "assetsUrl" => base_url("assets"),
-            "locais" => $this->local->todosLocais(),
-            "tipos" => $this->tipo->todosTipos()));
+            "locais" => $this->local->todosLocais()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
-            "arquivoJS" => "maquina.js"));
+            "arquivoJS" => "pos.js"));
     }
     
     /*----------------Funções---------------*/
     
-    //Paginação usuario
-    public function listarMaquinas(){
+    //Paginação
+    public function listar(){
         //Configuração da paginação codeigniter
         $config = array(
-            "base_url" => base_url('maquina'),
+            "base_url" => base_url('pos'),
             "per_page" => 6,
             "num_links" => 5,
             "uri_segment" => 2,
-            "total_rows" => $this->maquina->contarTodos(),
+            "total_rows" => $this->pos->contarTodos(),
             "full_tag_open" => "<ul class='pagination'>",
             "full_tag_close" => "</ul>",
             "first_link" => FALSE,
@@ -177,78 +168,80 @@ class Maquina extends CI_Controller {
         return $paginas;
     }
     
-    //Criar maquina
-    public function criarMaquina(){
+    //Criar
+    public function criar(){
         try {
-            $nome; $ip; $login; $descricao; $local; $tipo; $url;
+            $nome; $modelo; $serial; $descricao; $local; $url;
             //recupera dados
-            $this->recuperaCriar($nome, $ip, $login, $descricao, $local, $tipo, $url);
+            $this->recuperaCriar($nome, $modelo, $serial, $descricao, $local, $url);
             //verifica dados
-            if (!$this->maquina->existeMaquina($nome)){
-                //cria maquina newMaquina($nome, $ip, $idlocal, $idtipo, $login = NULL, $descricao = NULL)
-                $this->maquina->newMaquina($nome, $ip, $this->geraLocal($local), $this->geraTipo($tipo), $login, $descricao);
-                $this->maquina->addMaquina();
+            if (!$this->pos->existe($serial)){
+                //cria novo($modelo, $serial, $nome, $descricao, $local)
+                $this->pos->novo($modelo, $serial, $nome, $descricao, $this->geraLocal($local));
+                $this->pos->adiciona();
                 //Log
-                $this->gravaLog("criação maquina", "maquina criada: ".$nome." ip: ". $ip);
-                $this->mensagem("Maquina <strong>".$nome."</strong> criada.", $url);
+                $this->gravaLog("criação pos", "pos criado: ".$modelo." serial: ".$serial." usuario: ".$this->session->userdata("id"));
+                $this->mensagem("POS <strong>".$nome."</strong> criado.", $url);
             }else{
                 //Log
-                $this->gravaLog("erro criação maquina", "tentativa de criar maquina: ".$nome." ip: ". $ip);
-                $this->mensagem("O nome <strong>".$nome."</strong> já existe. Tente outro nome ou apague o antigo", $url);
+                $this->gravaLog("erro criação pos", "tentativa de criar pos: ".$modelo." serial: ".$serial." usuario: ".$this->session->userdata("id"));
+                $this->mensagem("O serial <strong>".$serial."</strong> já existe. Tente outro serial ou apague o antigo", $url);
             }
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro na criação de maquina. Tentar novamente.");
+            $this->erro("Erro na criação de pos. Tentar novamente.");
         }  
     }
     
-    //Atualiza maquina
-    public function atualizaMaquina(){
+    //Atualizar
+    public function atualizar(){
         try {
-            $id; $nome; $ip; $login; $descricao; $local; $tipo; $url;
+            $id; $nome; $modelo; $serial; $descricao; $local; $url;
             //Recuperando dados
-            $this->recuperaEditar($id, $nome, $ip, $login, $descricao, $local, $tipo, $url);
+            $this->recuperaEditar($id, $nome, $modelo, $serial, $descricao, $local, $url);
             //verifica dados
-            if (!$this->maquina->verificaMaquinaAtualiza($id, $nome)){
-                //atualiza  atualizaMaquina($id, $nome, $ip, $login, $descricao, $idlocal, $idtipo)
-                $this->maquina->atualizaMaquina($id, $nome, $ip, $login, $descricao, $this->geraLocal($local), $this->geraTipo($tipo));
+            if (!$this->pos->existeAtualiza($id, $serial)){
+                //atualiza  atualiza($id, $modelo, $serial, $nome, $descricao, $local)
+                $this->pos->atualiza($id, $modelo, $serial, $nome, $descricao, $this->geraLocal($local));
                 //Log
-                $this->gravaLog("alteração maquina", "maquina alterado: ".$nome." ip: ". $ip);
-                $this->mensagem("Alteração concluída.", $url);
+                $this->gravaLog("alteração pos", "pos alterado: ".$modelo." serial: ".$serial." usuario: ".$this->session->userdata("id"));
+                $this->mensagem("Alteração salva.", $url);
             }else{
                 //Log
-                $this->gravaLog("erro alteração maquina", "tentativa de alterar maquina: ".$nome." ip: ". $ip);
-                $this->erro("Erro ao alterar a maquina, O nome <strong>".$nome."</strong> já exite.");
+                $this->gravaLog("erro alteração pos", "tentativa de alterar pos: ".$modelo." serial: ".$serial." usuario: ".$this->session->userdata("id"));
+                $this->mensagem("O serial <strong>".$serial."</strong> já existe. Tente outro serial ou apague o antigo", $url);
             }
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro na atualização de maquina. Tentar novamente.");
+            $this->erro("Erro na alteração de pos. Tentar novamente.");
         }           
     }
     
     //Remove maquina
-    public function removeMaquina(){
+    public function remove(){ 
         try {
             $id; $url;
             $this->recuperaRemover($id, $url);
             //verifica se existe
-            if ($this->maquina->existe($id)){
+            if ($this->pos->existeId($id)){
+                //busca pos
+                $pos = $this->pos->buscaId($id);
                 //remove 
-                $this->maquina->removerMaquina($id);
+                $this->pos->remove($id);
                 //Log
-                $this->gravaLog("removeu maquina", "maquina removida id: ".$id);
-                $this->mensagem("Maquina removida.", $url);
+                $this->gravaLog("removeu pos", "pos: id:".$id." Nome: ".$pos->getNome()." Serial: ".$pos->getSerial()." Usuario: ". $this->session->userdata("id"));
+                $this->mensagem("Pinpad <strong>".$pos->getNome()."</strong> removido.", $url);
             }else {
                 //Log
-                $this->gravaLog("erro remover maquina", "tentativa de remover maquina id: ".$id);
-                $this->erro("Não existe está maquina.");
+                $this->gravaLog("erro remover pos", "tentativa de remover pos id: ".$id);
+                $this->erro("Não existe este pos.");
             }
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro na atualização de maquina. Tentar novamente.");
+            $this->erro("Erro ao remover pos. Tente novamente.");
         }
     }
     
@@ -259,12 +252,12 @@ class Maquina extends CI_Controller {
             //Recupera dados
             $this->recuperaBusca($texto);
             //Bucar
-            $resultado = $this->maquina->busca($texto);
+            $resultado = $this->pos->busca($texto);
             $this->resultado($resultado, $texto);
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro na atualização de maquina. Tentar novamente.");
+            $this->erro("Erro na busca por pos. Tente novamente.");
         }
     }
 
@@ -272,27 +265,25 @@ class Maquina extends CI_Controller {
     /*----------------Funções AJAX---------------*/
     
     //Editar ajax
-    public function editarMaquina(){
-        //Recupera Id maquina
-        $id = $this->input->post("idmaquina");
-        $maquina = $this->maquina->buscaMaquinaId($id);
+    public function editarPos(){
+        //Recupera Id
+        $id = $this->input->post("idpos");
+        $equipamento = $this->pos->buscaId($id);
         
-        if (isset($maquina)){
-            $local = $this->local->buscaId($maquina->getIdlocal());
-            $tipo = $this->tipo->buscaId($maquina->getIdtipo());
+        if (isset($equipamento)){
+            $local = $this->local->buscaId($equipamento->getIdlocal());
             $mgs = array(
-                "idmaquina" => $maquina->getIdmaquina(),
-                "nome" => $maquina->getNome(),
-                "ip" => $maquina->getIp(),
-                "login" =>$maquina->getLogin(),
-                "descricao" => $maquina->getDescricao(),
-                "local" => $local->getNome(),
-                "tipo" => $tipo->getNome()
+                "idpos" => $equipamento->getIdpos(),
+                "nome" => $equipamento->getNome(),
+                "modelo" => $equipamento->getModelo(),
+                "serial" =>$equipamento->getSerial(),
+                "descricao" => $equipamento->getDescricao(),
+                "local" => $local->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Maquina não encontrada"
+                "erro" => "POS não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -301,21 +292,25 @@ class Maquina extends CI_Controller {
     }
     
     //Remover ajax
-    public function removerMaquina(){
-        //Recupera Id maquina
-        $id = $this->input->post("idmaquina");
-        $maquina = $this->maquina->buscaMaquinaId($id);
+    public function removerPos(){
+        //Recupera Id
+        $id = $this->input->post("idpos");
+        $equipamento = $this->pos->buscaId($id);
         
-        if (isset($maquina)){
+        if (isset($equipamento)){
+            $local = $this->local->buscaId($equipamento->getIdlocal());
             $mgs = array(
-                "idmaquina" => $maquina->getIdmaquina(),
-                "nome" => $maquina->getNome(),
-                "ip" => $maquina->getIp()
+                "idpos" => $equipamento->getIdpos(),
+                "nome" => $equipamento->getNome(),
+                "modelo" => $equipamento->getModelo(),
+                "serial" =>$equipamento->getSerial(),
+                "descricao" => $equipamento->getDescricao(),
+                "local" => $local->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Maquina não encontrada"
+                "erro" => "POS não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -325,36 +320,34 @@ class Maquina extends CI_Controller {
     
     /*---------------Funções internas------------*/ 
     
-    //Recupera dados de criar maquina
-    private function recuperaCriar(&$nome, &$ip, &$login, &$descricao, &$local, &$tipo, &$url){
-        $nome = strtoupper(trim($this->input->post("iptCriNome")));
-        $ip = trim($this->input->post("iptCriIp"));
-        $login = strtolower(trim($this->input->post("iptCriUser")));
+    //Recupera dados de criar
+    private function recuperaCriar(&$nome, &$modelo, &$serial, &$descricao, &$local, &$url){
+        $nome = trim($this->input->post("iptCriNome"));
+        $modelo = trim($this->input->post("iptCriModelo"));
+        $serial = trim($this->input->post("iptCriSerial"));
         $descricao = trim($this->input->post("iptCriDesc"));
         $local = trim($this->input->post("selCriLocal"));
-        $tipo = trim($this->input->post("selCriTipo"));
         $url = trim($this->input->post("iptCriUrl"));
         
         //verifica URL existe
         if (!isset($url)|| $url === ""){
-            $url = "maquina";
+            $url = "pos";
         }
     }
     
-    //Recupera dados de editar maquina
-    private function recuperaEditar(&$id, &$nome, &$ip, &$login, &$descricao, &$local, &$tipo, &$url){
+    //Recupera dados de editar
+    private function recuperaEditar(&$id, &$nome, &$modelo, &$serial, &$descricao, &$local, &$url){
         $id = trim($this->input->post("iptEdtId"));
-        $nome = strtoupper(trim($this->input->post("iptEdtNome")));
-        $ip = trim($this->input->post("iptEdtIp"));
-        $login = strtolower(trim($this->input->post("iptEdtUser")));
+        $nome = trim($this->input->post("iptEdtNome"));
+        $modelo = trim($this->input->post("iptEdtModelo"));
+        $serial = trim($this->input->post("iptEdtSerial"));
         $descricao = trim($this->input->post("iptEdtDesc"));
         $local = trim($this->input->post("selEdtLocal"));
-        $tipo = trim($this->input->post("selEdtTipo"));
         $url = trim($this->input->post("iptEdtUrl"));
         
         //verifica URL existe
         if (!isset($url)|| $url === ""){
-            $url = "maquina";
+            $url = "pos";
         }
     }
     
@@ -365,12 +358,12 @@ class Maquina extends CI_Controller {
     
     //Recupera dados de remover maquina
     private function recuperaRemover(&$id, &$url){
-        $id = $this->input->post("iptRmvId");
+        $id = trim($this->input->post("iptRmvId"));
         $url = trim($this->input->post("iptRmvUrl"));
         
         //verifica URL existe
         if (!isset($url)|| $url === ""){
-            $url = "maquina";
+            $url = "pos";
         }
     }
 
@@ -423,14 +416,14 @@ class Maquina extends CI_Controller {
             if ($this->session->userdata('nivel') == '2'){
                 //acesso negado
                 //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Maquina.php");
+                $this->gravaLog("tentativa de acesso", "acesso ao controlador Pos.php");
                 redirect(base_url());
             } else {
                 //acesso permitido
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Maquina.php");
+            $this->gravaLog("tentativa de acesso", "acesso ao controlador Pos.php");
             redirect(base_url());
         }
     }

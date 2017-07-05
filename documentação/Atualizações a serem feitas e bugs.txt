@@ -1,7 +1,12 @@
 #bugs
+01- O sistema não anexa .jpeg, verificar no codigo se permite essa extensão. OK
+02- No perfil tecnico, em helpdesk, os chamados abertos está listado os fechados. OK
 
 #melhorias
-- Manutenção
+- Banco de dados
+01- Criado tabela POS, PINPAD, IMPRESSORA_FISCAL, IMPRESSORA e ACESSO - OK
+
+- Sistema
 01- Validar todos os campos front-end e back-end.
 
 - Helpdesk
@@ -10,15 +15,38 @@
 03- Na vizualização, aparecer a solução separado dos comentarios, quando o chamado estiver fechado.
 04- Na impressão do chamado, dar quebra de linha nos textos dos comentarios. (adiciona <br/> nos \r\n)
 05- Na busca, seperar dos chamados abertos, atendimento e fechados. Dar as opcções de cada um. Colocar a busca como get para poder recuperar o url apos alterações.
+06- Colocar, no perfil tecnico, chamados em atendimentos e fechados de todo o sistema. OK
 
 - Nivel de acesso
-1- Implementar nivel de acesso por controle.
+01- Implementar nivel de acesso por controle.
 
+-IP´s Maquinas PP
+01- Troca ip´s maquinas por equipamentos, não é obrigado a ter IP´s e separar por tipos de equipamentos.
+02- Adicionar pinpads, pos, impressoras fiscais e não fiscais. OK
+
+-Relatório plantão
+01- Criar menu relatórios e dentro desse menu uma lista com os relatório possiveis de imprimir. OK
+02- Criar relatorio geral, por setor e por usuario.
 
 #Nova Versão (1.7)
 -Melhorias
+    -Banco de dados
+	01- Criado tabela POS, PINPAD, IMPRESSORA_FISCAL, IMPRESSORA e ACESSO.
 
+    -Helpdesk
+	01- Todos chamados abertos, em atendimento e fechados aparece no perfil técnico.
+
+    -IP´s Maquinas PP (Agora equipamentos)
+	01- Troca IP´s Maquinas PP por equipamentos.
+	02- Adicionado pinpads, pos, impressoras fiscais e não fiscais.
+	03- Criado pagina exibir, onde qualquer usuario consegue acessar as tabelas de pinpads, pos, impressoras fiscais e impressoras. 
+
+    -Relatório plantão
+	01- Criado menu relatórios.
 -Bugs
+    -HelpDesk
+	01- O sistema anexo aqruivos .jpeg
+	02- Correção da listagem dos chamados abertos no perfil do técnico.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (1.6)
 -Melhorias

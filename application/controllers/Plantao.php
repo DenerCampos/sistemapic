@@ -30,7 +30,7 @@ class Plantao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => "plantao"));      
+            "ativo" => "relatorio"));      
         //Carrega index
         $this->load->view('plantao/home', array(
             "assetsUrl" => base_url("assets"),
@@ -55,7 +55,7 @@ class Plantao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => "plantao"));      
+            "ativo" => "relatorio"));      
         //Carrega index
         $this->load->view('plantao/resultado', array(
             "palavra" => $palavra,
@@ -81,7 +81,7 @@ class Plantao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => "plantao"));     
+            "ativo" => "relatorio"));     
         //Carrega index
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
@@ -103,7 +103,7 @@ class Plantao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array( 
             "assetsUrl" => base_url("assets"),
-            "ativo" => "plantao"));     
+            "ativo" => "relatorio"));     
         //Carrega index
         $this->load->view('mensagens/mensagem', array(
             "assetsUrl" => base_url("assets"),
@@ -126,7 +126,7 @@ class Plantao extends CI_Controller {
         //Carrega menu
         $this->load->view("menu/principal", array(
             "assetsUrl" => base_url("assets"),
-            "ativo" => "plantao"));
+            "ativo" => "relatorio"));
         //Carrega index
         $this->load->view('plantao/sucesso', array(
             "assetsUrl" => base_url("assets"),
