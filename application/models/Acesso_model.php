@@ -78,6 +78,20 @@ class Acesso_model extends CI_Model {
             return NULL;
         }
     }
+    
+    //busca por id usuario
+    public function buscaIdUsuario($id){
+        $query = $this->db->query(
+                "SELECT *
+                FROM acesso 
+                WHERE idusuario = $id");
+        //retorna objeto usuario
+        if ($query->num_rows() == 1){
+            return $this->getObjByRow($query->row());
+        } else{
+            return NULL;
+        }
+    }
 
 
     /*------Funções internas--------*/ 

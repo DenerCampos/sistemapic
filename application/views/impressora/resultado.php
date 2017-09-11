@@ -13,7 +13,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarImpressora" 
                     data-toggle="modal" data-target="#mdlCriarImpressora" role="button">
-                Nova Impressora
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Nova Impressora
             </button>
         </div>
         
@@ -25,7 +26,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
                            placeholder="Busca por nome, modelo ou serial...">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            

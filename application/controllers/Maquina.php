@@ -235,10 +235,12 @@ class Maquina extends CI_Controller {
             $this->recuperaRemover($id, $url);
             //verifica se existe
             if ($this->maquina->existe($id)){
+                //busca maquina
+                $maquina = $this->maquina->buscaMaquinaId($id);
                 //remove 
                 $this->maquina->removerMaquina($id);
                 //Log
-                $this->gravaLog("removeu maquina", "maquina removida id: ".$id);
+                $this->gravaLog("removeu maquina", "maquina removida id: ".$id.". nome: ".$maquina->getNome().". ip: ".$maquina->getIp());
                 $this->mensagem("Maquina removida.", $url);
             }else {
                 //Log
@@ -318,6 +320,35 @@ class Maquina extends CI_Controller {
                 "erro" => "Maquina não encontrada"
             );
             echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Remover ajax
+    public function verificaNome(){
+        //Recupera nome
+        $nome = trim($this->input->get_post("iptCriNome"));
+        
+        if (!$this->maquina->existeMaquina($nome)){
+            echo json_encode(TRUE); //não existe
+        } else {
+            echo json_encode(FALSE); //existe
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Remover ajax
+    public function verificaNomeEditar(){
+        //Recupera nome
+        $id = trim($this->input->post("id"));
+        $nome = trim($this->input->post("nome"));
+        
+        if (!$this->maquina->verificaMaquinaAtualiza($id, $nome)){
+            echo json_encode(TRUE); //não existe
+        } else {
+            echo json_encode(FALSE); //existe
         }
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
@@ -414,23 +445,22 @@ class Maquina extends CI_Controller {
         $this->registro->addLog();
     }
     
-    //verifica nivel de usuario para acesso ao sistema
+    //Verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '2'){
-                //acesso negado
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Maquina.php");
-                redirect(base_url());
+            if (unserialize($this->session->userdata('acesso'))->getEquipamento() == 1){
+                //acesso permitido                
             } else {
-                //acesso permitido
+                //acesso negado
+                $this->gravaLog("tentativa de acesso sem permissao", "acesso ao controlador Maquina.php");
+                redirect(base_url());
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Maquina.php");
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Maquina.php");
             redirect(base_url());
         }
     }

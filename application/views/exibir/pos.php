@@ -17,15 +17,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <th>Modelo</th>
                     <th>Serial</th>
                     <th>Local</th>
+                    <th>Chart</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($lista as $item) { ?>
-                <tr>
+                <tr <?php if($item->getManutencao()){echo 'class="danger"';} else{echo 'class=""';} ?> >
                     <td><?php echo $item->getNome(); ?></td>
                     <td><?php echo $item->getModelo(); ?></td>
                     <td><?php echo $item->getSerial(); ?></td>
                     <td><?php echo $local->buscaId($item->getIdlocal())->getNome(); ?></td>
+                    <td><?php if($item->getManutencao()){echo "Sim";} else{echo "Não";} ?></td>
                 </tr>
                 <?php } //foreach lista?>   
             </tbody>

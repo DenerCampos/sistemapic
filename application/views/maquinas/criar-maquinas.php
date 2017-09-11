@@ -3,14 +3,17 @@
      aria-labelledby="mdlCriarMaquina" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Criar maquina</h4>
             </div>
+            
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
-            <form class="" method="post" 
+            <div class="alert alert-danger text-center" id="erro-criar-maquina" hidden=""></div>
+            
+            <form class="" id="frmCriMaquina" method="post" 
                   action="<?php echo base_url("maquina/criarMaquina") ?>">
                 <div class="modal-body">
                     <div class="row">
@@ -32,7 +35,7 @@
                             <div class="form-group">
                                 <label for="iptCriIp" class="control-label">Ip:</label>
                                 <input type="text" name="iptCriIp" id="iptCriIp" 
-                                       class="form-control" placeholder="ip" required="true" value="192.168.2.">
+                                       class="form-control" placeholder="ip" value="192.168.2.">
                             </div>
                         </div>
                         <div class="col-md-4">

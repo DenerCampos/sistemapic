@@ -204,22 +204,22 @@ class Plantao extends CI_Controller {
         }
     }
  
-    //verifica nivel de usuario para acesso ao sistema
+    //Verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '2'){
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Plantao.php");
-                redirect(base_url());
+            if (unserialize($this->session->userdata('acesso'))->getRelatorio() == 1){
+                //acesso permitido                
             } else {
-                //acesso permitido
+                //acesso negado
+                $this->gravaLog("tentativa de acesso sem permissao", "acesso ao controlador Plantao.php");
+                redirect(base_url());
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Plantao.php");
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Plantao.php");
             redirect(base_url());
         }
     }

@@ -13,7 +13,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarPos" 
                     data-toggle="modal" data-target="#mdlCriarPos" role="button">
-                Novo POS
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Novo POS
             </button>
         </div>
         
@@ -25,7 +26,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
                            placeholder="Busca por nome, modelo ou serial...">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            
@@ -61,6 +63,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <th>Serial</th>
                             <th>Descrição</th>
                             <th>Local</th>
+                            <th>Chart</th>
                             <th class="text-right">Ações</th>
                         </tr>
                     </thead>
@@ -70,8 +73,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td><?php echo $item->getNome(); ?></td>
                             <td><?php echo $item->getModelo(); ?></td>
                             <td><?php echo $item->getSerial(); ?></td>
-                            <td><?php echo $item->getDescricao(); ?></td>
-                            <td><?php echo $local->buscaId($item->getIdlocal())->getNome(); ?></td>                                               
+                            <td><?php echo $item->getDescricao(); ?></td>                            
+                            <td><?php echo $local->buscaId($item->getIdlocal())->getNome(); ?></td>  
+                            <td><?php if($item->getManutencao()){echo "Sim";} else{echo "Não";} ?></td>
                             <td class="text-right">
                                 
                                 <!-- editar -->

@@ -19,6 +19,7 @@ class Usuario_admin extends CI_Controller {
         $this->load->model('Usuario_model', 'usuario');
         $this->load->model('estado_model', 'estado');
         $this->load->model("Area_model", "area");
+        //$this->load->model("Acesso_model", "acesso");
     }
     
     
@@ -148,40 +149,7 @@ class Usuario_admin extends CI_Controller {
             "arquivoJS" => "administracao.js"));
     }
     
-    /*-------------Funções---------------*/
-    //Criar usuario
-    public function criarUsuario(){
-        //recupera dados
-        $nome = $this->input->post("iptCriNome");
-        $login = $this->input->post("iptCriEmail");
-        $senha = $this->input->post("iptCriSenha");
-        $rsenha = $this->input->post("iptCriRSenha");
-        $nivel = $this->input->post("selCriNivel");
-        $estado = $this->input->post("selCriEstado");
-        //recupera area - somente tecnico
-        $area = $this->input->post("selCriArea");
-        
-        //verifica dados
-        if ($this->verificaLogin($login, $senha, $rsenha)){
-            //verifica usuario tecnico
-            if ($this->verificaTecnico($nivel)){
-                //cria usuario tecnico
-                $this->usuario->newUsuario($nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));
-            } else {
-                //cria usuario
-                $this->usuario->newUsuario($nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado));                
-            }
-            $this->usuario->addUsuario();
-            //Log
-            $this->gravaLog("ADMIN criação usuario", "usuario criado: ".$nome." Email: ". $login);
-            redirect(base_url('admin/usuario_admin'));
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro criação usuario", "tentativa de criar usuario: ".$nome." Email: ". $login);
-            echo'erro ao criar usuario';
-        }
-    }
-    
+    /*-------------Funções---------------*/        
     //Paginação usuario
     public function listarUsuarios(){
         //Configuração da paginação codeigniter
@@ -217,93 +185,162 @@ class Usuario_admin extends CI_Controller {
         return $paginas;
     }
     
+    //Criar usuario
+    public function criarUsuario(){
+        //recupera dados
+        $nome; $login; $senha; $rsenha; $nivel; $estado; $url;
+        //recupera area - somente tecnico
+        $area;
+        //array com nivel de acesso
+        $acesso;
+        
+        try {
+            //recupera dados do post
+            $this->recuperaCriarUsuario($nome, $login, $senha, $rsenha, $nivel, $estado, $area, $acesso, $url);
+
+            //verifica dados
+            if ($this->verificaLogin($login, $senha, $rsenha)){
+                //verifica usuario tecnico
+                if ($this->verificaTecnico($nivel)){
+                    //cria usuario tecnico
+                    $this->usuario->newUsuario($nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));
+                } else {
+                    //cria usuario
+                    $this->usuario->newUsuario($nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado));                
+                }
+                //adiciona usuario
+                $this->usuario->addUsuario();
+                //cria nivel de acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
+                $this->acesso->novo($acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"], 
+                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $this->usuario->buscaUsuario($login)->getIdusuario());
+                $this->acesso->adiciona();
+                //Log
+                $this->gravaLog("ADMIN criação usuario", "usuario criado: ".$nome." Email: ". $login);
+                $this->gravaLog("ADMIN criação acesso", implode("|", $acesso));
+                //mensagem
+                $this->mensagem("Usuário <strong>".$login."</strong> criado!", $url);
+            }else{
+                //Log
+                $this->gravaLog("ADMIN erro criação usuario", "tentativa de criar usuario: ".$nome." Email: ". $login);
+                $this->erro("Erro na criação de usuário. Tentar novamente.");
+            }
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("ADMIN GERAL", $exc->getTraceAsString());
+            $this->erro($exc->getTraceAsString());
+        }
+    }
+    
     //Atualiza usuario
     public function atualizaUsuario(){
         //recuperando dados do usuario
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $login = $this->input->post("iptEdtEmail");
-        $senha = $this->input->post("iptEdtSenha");
-        $rsenha = $this->input->post("iptEdtRSenha");
-        $nivel = $this->input->post("selEdtNivel");
-        $estado = $this->input->post("selEdtEstado");
-        $url = $this->input->post("iptEdtUrl");
+        $id; $nome; $login; $senha; $rsenha; $nivel; $estado; $url;
         //recupera area - somente tecnico
-        $area = $this->input->post("selEdtArea");
-        
-        if ($senha == ""){
-            $senha = NULL;
-        }
-        //verifica dados
-        if ($this->atualizaLogin($id, $login, $senha, $rsenha)){
-            //atualiza usuario
-            //verifica se é tecnico
-            if ($this->verificaTecnico($nivel)){
-                if (isset($senha)){
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));            
+        $area;
+        //array com nivel de acesso
+        $acesso;
+        try {
+            //Recupera dados
+            $this->recuperaAtualizaUsuario($id, $nome, $login, $senha, $rsenha, $nivel, $estado, $area, $acesso, $url);
+            if ($senha == ""){
+                $senha = NULL;
+            }
+            //verifica dados
+            if ($this->atualizaLogin($id, $login, $senha, $rsenha)){
+                //atualiza usuario
+                //verifica se é tecnico
+                if ($this->verificaTecnico($nivel)){
+                    if (isset($senha)){
+                        $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));            
+                    } else {
+                        $usuario = $this->usuario->buscaId($id);
+                        $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));
+                    }
                 } else {
-                    $usuario = $this->usuario->buscaId($id);
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado), $this->geraArea($area));
+                    //Não é tecnico
+                    if (isset($senha)){
+                        $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado));            
+                    } else {
+                        $usuario = $this->usuario->buscaId($id);
+                        $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado));
+                    }
                 }
-            } else {
-                //Não é tecnico
-                if (isset($senha)){
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $this->geraSenha($senha), $this->geraNivel($nivel), $this->geraEstado($estado));            
-                } else {
-                    $usuario = $this->usuario->buscaId($id);
-                    $this->usuario->atualizaUsuario($id, $nome, $login, $usuario->getSenha(), $this->geraNivel($nivel), $this->geraEstado($estado));
-                }
-            }           
+                //busca nivel de acesso
+                $idacesso = $this->acesso->buscaIdUsuario($id)->getIdacesso();
+                //atualiza acesso atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
+                $this->acesso->atualiza($idacesso, $acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"],
+                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $id);                
+                //Log
+                $this->gravaLog("ADMIN alteração usuario", "usuario alterado: ".$nome." Email: ". $login);
+                //mensagem
+                $this->mensagem("Usuário <strong>".$login."</strong> alterado!", $url);
+            }else{
+                //Log
+                $this->gravaLog("ADMIN erro alteração usuario", "tentativa de alterar usuario: ".$nome." Email: ". $login);
+                $this->erro("Erro na edição de usuário. Tentar novamente.");
+            }      
+            
+        } catch (Exception $exc) {
             //Log
-            $this->gravaLog("ADMIN alteração usuario", "usuario alterado: ".$nome." Email: ". $login);
-            redirect($url);
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro alteração usuario", "tentativa de alterar usuario: ".$nome." Email: ". $login);
-            echo'erro ao alterar usuario';
-        }            
+            $this->gravaLog("ADMIN GERAL", $exc->getTraceAsString());
+            $this->erro($exc->getTraceAsString());
+        }     
     }
     
     //Desabilitar usuario
-    public function desabilitaUsuario(){
-        //recupera id usuario
-        $id = $this->input->post("iptRmvId");
-        $url = $this->input->post("iptRmvUrl");
-        
-        //verifica se usuario existe e esta ativo
-        if ($this->usuario->verificaAtivo($id)){
-            //desativa usuario
-            $this->usuario->desativaUsuario($id);
+    public function desabilitaUsuario() {
+        $id; $url;
+
+        try {
+            //recupera dados do post
+            $this->recuperaDesabilitaUsuario($id, $url);
+            //verifica se usuario existe e esta ativo
+            if ($this->usuario->verificaAtivo($id)) {
+                //desativa usuario
+                $this->usuario->desativaUsuario($id);
+                //Log
+                $this->gravaLog("ADMIN desabilita usuario", "usuario desabilitado id: " . $id);
+                //mensagem
+                $this->mensagem("Usuário desabilitado!", $url);
+            } else {
+                //Log
+                $this->gravaLog("ADMIN erro desabilitar usuario", "tentativa de desabilitar usuario id: " . $id);
+                $this->erro("Erro ao desabilitar o usuário. Tentar novamente.");
+            }
+        } catch (Exception $exc) {
             //Log
-            $this->gravaLog("ADMIN desabilita usuario", "usuario desabilitado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro desabilitar usuario", "tentativa de desabilitar usuario id: ".$id);
-            echo'erro ao desabilitar usuario';
+            $this->gravaLog("ADMIN GERAL", $exc->getTraceAsString());
+            $this->erro($exc->getTraceAsString());
         }
     }
-    
+
     //Ativar usuario
-    public function ativaUsuario(){
-        //recupera id usuario
-        $id = $this->input->post("iptAtvId");
-        $url = $this->input->post("iptAtvUrl");
+    public function ativaUsuario() {        
+        $id; $url;
         
-        //verifica se usuario existe e esta ativo
-        if ($this->usuario->verificaDesativo($id)){
-            //ativar usuario
-            $this->usuario->ativaUsuario($id);
+        try {
+            //recupera id usuario
+            $this->recuperaAtivaUsuario($id, $url);
+            //verifica se usuario existe e esta ativo
+            if ($this->usuario->verificaDesativo($id)) {
+                //ativar usuario
+                $this->usuario->ativaUsuario($id);
+                //Log
+                $this->gravaLog("ADMIN ativar usuario", "usuario ativado id: " . $id);
+                //mensagem
+                $this->mensagem("Usuário ativado!", $url);
+            } else {
+                //Log
+                $this->gravaLog("ADMIN erro ativar usuario", "tentativa de ativar usuario id: " . $id);
+                $this->erro("Erro ao ativar o usuário. Tentar novamente.");
+            }
+        } catch (Exception $exc) {
             //Log
-            $this->gravaLog("ADMIN ativar usuario", "usuario ativado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro ativar usuario", "tentativa de ativar usuario id: ".$id);
-            echo'erro ao ativar usuario';
+            $this->gravaLog("ADMIN GERAL", $exc->getTraceAsString());
+            $this->erro($exc->getTraceAsString());
         }
     }
-        
+
     //buscar
     public function busca(){
         try {
@@ -330,6 +367,7 @@ class Usuario_admin extends CI_Controller {
         //Recupera Id usuario
         $id = $this->input->post("idusuario");
         $usuario = $this->usuario->buscaId($id);
+        $acesso = $this->acesso->buscaIdUsuario($id);
         
         if (isset($usuario)){
             $estado = $this->estado->buscaId($usuario->getIdestado());
@@ -345,7 +383,8 @@ class Usuario_admin extends CI_Controller {
                 "login" => $usuario->getLogin(),
                 "nivel" =>  $this->buscaNivel($usuario->getNivel()),
                 "estado" => $estado->getNome(),
-                "area" => $area
+                "area" => $area,
+                "acesso" => $acesso
             );
             echo json_encode($mgs);
         } else {
@@ -539,6 +578,145 @@ class Usuario_admin extends CI_Controller {
             //grava log
             $this->gravaLog("tentativa de acesso", "acesso ao controlador Usuario_adim.php");
             redirect(base_url());
+        }
+    }
+    
+    //recupera dados do post criar usuario
+    private function recuperaCriarUsuario(&$nome, &$login, &$senha, &$rsenha, &$nivel, &$estado, &$area, &$acesso, &$url){
+        //recupera dados
+        $nome = trim($this->input->post("iptCriNome"));
+        $login = trim($this->input->post("iptCriEmail"));
+        $senha = trim($this->input->post("iptCriSenha"));
+        $rsenha = trim($this->input->post("iptCriRSenha"));
+        $nivel = trim($this->input->post("selCriNivel"));
+        $estado = trim($this->input->post("selCriEstado"));
+        //recupera area - somente tecnico
+        $area = trim($this->input->post("selCriArea"));
+        //recupera url
+        $url = trim($this->input->post("iptCriUrl"));
+               
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "administracao/usuario_admin";
+        }
+        
+        //recupera nivel de acesso
+        if (!empty($this->input->post("chkCriOcorrencia"))){
+            $acesso['ocorrencia'] = 1;
+        } else {
+            $acesso['ocorrencia'] = 0;
+        }
+        if (!empty($this->input->post("chkCriAdmin"))){
+            $acesso['admin'] = 1;
+        } else {
+            $acesso['admin'] = 0;
+        }        
+        if (!empty($this->input->post("chkCriCaixa"))){
+            $acesso['caixa'] = 1;
+        } else {
+            $acesso['caixa'] = 0;
+        }
+        if (!empty($this->input->post("chkCriManutencao"))){
+            $acesso['manutencao'] = 1;
+        } else {
+            $acesso['manutencao'] = 0;
+        }
+        if (!empty($this->input->post("chkCriRelatorio"))){
+            $acesso['relatorio'] = 1;
+        } else {
+            $acesso['relatorio'] = 0;
+        }
+        if (!empty($this->input->post("chkCriUsuario"))){
+            $acesso['usuario'] = 1;
+        } else {
+            $acesso['usuario'] = 0;
+        }
+        if (!empty($this->input->post("chkCriEquipamento"))){
+            $acesso['equipamento'] = 1;
+        } else {
+            $acesso['equipamento'] = 0;
+        }
+    }
+    
+    //recupera dados do post atualiza usuario
+    private function recuperaAtualizaUsuario(&$id, &$nome, &$login, &$senha, &$rsenha, &$nivel, &$estado, &$area, &$acesso, &$url){
+        //recupera dados
+        $id = trim($this->input->post("iptEdtId"));
+        $nome = trim($this->input->post("iptEdtNome"));
+        $login = trim($this->input->post("iptEdtEmail"));
+        $senha = trim($this->input->post("iptEdtSenha"));
+        $rsenha = trim($this->input->post("iptEdtRSenha"));
+        $nivel = trim($this->input->post("selEdtNivel"));
+        $estado = trim($this->input->post("selEdtEstado"));
+        //recupera area - somente tecnico
+        $area = trim($this->input->post("selEdtArea"));
+        //recupera url
+        $url = trim($this->input->post("iptEdtUrl"));
+               
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "administracao/usuario_admin";
+        }
+        
+        //recupera nivel de acesso
+        if (!empty($this->input->post("chkEdtOcorrencia"))){
+            $acesso['ocorrencia'] = 1;
+        } else {
+            $acesso['ocorrencia'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtAdmin"))){
+            $acesso['admin'] = 1;
+        } else {
+            $acesso['admin'] = 0;
+        }        
+        if (!empty($this->input->post("chkEdtCaixa"))){
+            $acesso['caixa'] = 1;
+        } else {
+            $acesso['caixa'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtManutencao"))){
+            $acesso['manutencao'] = 1;
+        } else {
+            $acesso['manutencao'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtRelatorio"))){
+            $acesso['relatorio'] = 1;
+        } else {
+            $acesso['relatorio'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtUsuario"))){
+            $acesso['usuario'] = 1;
+        } else {
+            $acesso['usuario'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtEquipamento"))){
+            $acesso['equipamento'] = 1;
+        } else {
+            $acesso['equipamento'] = 0;
+        }
+    }
+    
+    //Recupera dados do post desabilita usuario
+    private function recuperaDesabilitaUsuario(&$id, &$url){
+        //recupera dados
+        $id = trim($this->input->post("iptRmvId"));
+        $url = trim($this->input->post("iptRmvUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "administracao/usuario_admin";
+        }
+    }
+    
+    //Recupera dados do post ativa usuario
+    private function recuperaAtivaUsuario(&$id, &$url){
+        //recupera dados
+        $id = $this->input->post("iptAtvId");
+        $url = $this->input->post("iptAtvUrl");
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "administracao/usuario_admin";
         }
     }
 }

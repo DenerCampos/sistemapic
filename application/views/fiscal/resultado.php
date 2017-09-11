@@ -13,7 +13,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarFiscal" 
                     data-toggle="modal" data-target="#mdlCriarFiscal" role="button">
-                Novo POS
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Nova impressora fiscal
             </button>
         </div>
         
@@ -25,7 +26,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
                            placeholder="Busca por caixa, modelo ou serial...">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            
@@ -105,7 +107,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <!-- Mensagem que não há cadastros -->
     <div class="alert alert-info alert-dismissible text-center alerta" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        Não há <strong>POS</strong> cadastrados.
+        Não há <strong>Impressoras fiscais</strong> cadastradas.
     </div>
     <?php }?> 
        

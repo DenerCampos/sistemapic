@@ -9,11 +9,18 @@
                 <h4 class="modal-title" id="formModalLabel">Criar conta</h4>
             </div>
             <!-- Mensagem de erro -->
-            <div class="erro" hidden=""></div>
-            <form class="formulario" method="post" 
+            <div class="alert alert-danger text-center" id="erro-cria-usuario" hidden=""></div>
+            <form class="formulario" id="frmCriUsuario" method="post" 
                   action="<?php echo base_url("login/criar") ?>">
                 <div class="modal-body">
-                    <div class="row">                        
+                    <div class="row"> 
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptCriUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptCriUrl" id="iptCriUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control">
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="iptCriNome" class="control-label">Nome:</label>

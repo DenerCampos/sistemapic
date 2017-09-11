@@ -3,14 +3,17 @@
      aria-labelledby="mdlCriarPlantao" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Gerar relatório plantão</h4>
             </div>
+            
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
-            <form class="formulario" method="post" 
+            <div class="alert alert-danger text-center" id="erro-gerar-plantao" hidden=""></div>
+            
+            <form class="formulario" id="frmGeraPlantao" method="post" 
                   action="<?php echo base_url("plantao/gerar") ?>">
                 <div class="modal-body">
                     <div class="row">

@@ -40,13 +40,13 @@
                                                onclick="editarChamado(this)">
                                                 <i class="fa fa-pencil-square-o" ></i>
                                             </a>
-                                            <?php if ($atendimento->getUsuario_atende() == $this->session->userdata("id")){ ?>
                                             <a title="Emcaminhar" role="button" href="#mdlEncaminharChamado" 
                                                data-toggle="modal" data-target="#mdlEncaminharChamado"
                                                data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
                                                onclick="encaminharChamado(this)">
                                                 <i class="fa fa-external-link" ></i>
                                             </a>
+                                            <?php if ($atendimento->getUsuario_atende() == $this->session->userdata("id")){ ?>
                                             <a title="Fechar" role="button" href="#mdlFecharChamado" 
                                                data-toggle="modal" data-target="#mdlFecharChamado"
                                                data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
@@ -65,7 +65,15 @@
                                                data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
                                                onclick="visualizarChamado(this)">
                                                 <i class="fa fa-search-plus" ></i>
-                                            </a>                                                
+                                            </a>
+                                            <?php if (unserialize($this->session->userdata('acesso'))->getAdmin() == 1){ ?>
+                                            <a title="Remover" role="button" href="#mdlRemoverChamado" 
+                                                data-toggle="modal" data-target="#mdlRemoverChamado"
+                                                data-id="<?php echo $atendimento->getIdocorrencia(); ?>"
+                                                onclick="removerChamado(this)">
+                                                 <i class="fa fa-remove" ></i>
+                                            </a>
+                                            <?php }?>
                                         </td>
                                     </tr>
                                     <?php }?>

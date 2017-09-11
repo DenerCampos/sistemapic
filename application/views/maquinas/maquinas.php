@@ -8,8 +8,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="novo-chamado col-md-6">
             <button class="btn btn-primary" type="submit" href="#mdlCriarMaquina" 
                     data-toggle="modal" data-target="#mdlCriarMaquina" role="button">
-                Nova maquina
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Nova maquina
             </button>
+            <a class="btn btn-success" href="<?php echo base_url("exibir/maquina"); ?>" role="button">
+                <i class="fa fa-list-alt"></i> Listar todos
+            </a>
         </div>
         <div class="pesquisar-chamado col-md-6">
             <form class="form-buscar" method="post"
@@ -18,7 +22,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
                            placeholder="Busca por nome ou ip...">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            
@@ -54,12 +59,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td><?php echo $local->buscaId($maquina->getIdlocal())->getNome(); ?></td>
                             <td><?php echo $tipo->buscaId($maquina->getIdtipo())->getNome(); ?></td>
                             <td class="text-right">
+                                
+                                <!-- editar -->
                                 <a href="#" title="Editar" role="button" href="#mdlEditarMaquina" 
                                    data-toggle="modal" data-target="#mdlEditarMaquina"
                                    data-id="<?php echo $maquina->getIdmaquina(); ?>"
                                    onclick="editarMaquinaIp(this)">
                                     <i class="fa fa-pencil-square-o" ></i>
                                 </a>
+                                
+                                <!-- remover -->
+                                <?php if (unserialize($this->session->userdata('acesso'))->getAdmin() == 1){ ?>
+                                <a href="#" title="Remover" role="button" href="#mdlRemoverMaquina" 
+                                   data-toggle="modal" data-target="#mdlRemoverMaquina"
+                                   data-id="<?php echo $maquina->getIdmaquina(); ?>"
+                                   onclick="removerMaquinaIp(this)">
+                                    <i class="fa fa-remove" ></i>
+                                </a>                                
+                                <?php } ?>
+                                
                             </td>
                         </tr>
                         <?php } //foreach maquinas?>

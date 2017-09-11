@@ -12,13 +12,13 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center hidden">
+            <div class="alert alert-danger text-center" id="erro-fechar-chamado">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <p><strong>Fechamento de chamado!</strong></p>
             </div>
             
             <!-- Formulario de fechamento do chamado -->
-            <form class="formulario" method="post" enctype="multipart/form-data"
+            <form class="formulario" id="frmFchChamado" method="post" enctype="multipart/form-data"
                   action="<?php echo base_url("ocorrencia/fechar") ?>">
                 
                 <!-- Corpo da modal -->
@@ -192,7 +192,7 @@
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
                                             <a href="" class="lightview ">
-                                                <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                                <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="fecha-anexo0">
@@ -203,7 +203,7 @@
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
                                             <a href="" class="lightview ">
-                                                <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                                <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="fecha-anexo1">
@@ -214,7 +214,7 @@
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
                                             <a href="" class="lightview ">
-                                                <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                                <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="fecha-anexo2">

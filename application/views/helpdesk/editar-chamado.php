@@ -12,10 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
+            <div class="alert alert-danger text-center" id="erro-editar-chamado" hidden=""></div>
             
             <!-- Formulario de edição do chamado -->
-            <form class="formulario" method="post" enctype="multipart/form-data"
+            <form class="formulario" id="frmEdtChamado" method="post" enctype="multipart/form-data"
                   action="<?php echo base_url("ocorrencia/editar") ?>">
                 
                 <!-- Corpo da modal -->
@@ -193,7 +193,7 @@
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
                                             <a href="" class="lightview ">
-                                                <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                                <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="edita-anexo0">
@@ -204,7 +204,7 @@
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
                                             <a href="" class="lightview ">
-                                                <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                                <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="edita-anexo1">
@@ -215,7 +215,7 @@
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
                                             <a href="" class="lightview ">
-                                                <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                                <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="edita-anexo2">

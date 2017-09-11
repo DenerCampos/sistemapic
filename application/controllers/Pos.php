@@ -171,13 +171,13 @@ class Pos extends CI_Controller {
     //Criar
     public function criar(){
         try {
-            $nome; $modelo; $serial; $descricao; $local; $url;
+            $nome; $modelo; $serial; $descricao; $manutencao; $local; $url;
             //recupera dados
-            $this->recuperaCriar($nome, $modelo, $serial, $descricao, $local, $url);
+            $this->recuperaCriar($nome, $modelo, $serial, $descricao, $manutencao, $local, $url);
             //verifica dados
             if (!$this->pos->existe($serial)){
-                //cria novo($modelo, $serial, $nome, $descricao, $local)
-                $this->pos->novo($modelo, $serial, $nome, $descricao, $this->geraLocal($local));
+                //cria novo($modelo, $serial, $nome, $descricao, $manutencao, $local)
+                $this->pos->novo($modelo, $serial, $nome, $descricao, $manutencao, $this->geraLocal($local));
                 $this->pos->adiciona();
                 //Log
                 $this->gravaLog("criação pos", "pos criado: ".$modelo." serial: ".$serial." usuario: ".$this->session->userdata("id"));
@@ -197,13 +197,13 @@ class Pos extends CI_Controller {
     //Atualizar
     public function atualizar(){
         try {
-            $id; $nome; $modelo; $serial; $descricao; $local; $url;
+            $id; $nome; $modelo; $serial; $descricao; $manutencao; $local; $url;
             //Recuperando dados
-            $this->recuperaEditar($id, $nome, $modelo, $serial, $descricao, $local, $url);
+            $this->recuperaEditar($id, $nome, $modelo, $serial, $descricao, $manutencao, $local, $url);
             //verifica dados
             if (!$this->pos->existeAtualiza($id, $serial)){
-                //atualiza  atualiza($id, $modelo, $serial, $nome, $descricao, $local)
-                $this->pos->atualiza($id, $modelo, $serial, $nome, $descricao, $this->geraLocal($local));
+                //atualiza  atualiza($id, $modelo, $serial, $nome, $descricao, $manutencao, $local)
+                $this->pos->atualiza($id, $modelo, $serial, $nome, $descricao, $manutencao, $this->geraLocal($local));
                 //Log
                 $this->gravaLog("alteração pos", "pos alterado: ".$modelo." serial: ".$serial." usuario: ".$this->session->userdata("id"));
                 $this->mensagem("Alteração salva.", $url);
@@ -278,6 +278,7 @@ class Pos extends CI_Controller {
                 "modelo" => $equipamento->getModelo(),
                 "serial" =>$equipamento->getSerial(),
                 "descricao" => $equipamento->getDescricao(),
+                "manutencao" => $equipamento->getManutencao(),
                 "local" => $local->getNome()
             );
             echo json_encode($mgs);
@@ -318,14 +319,40 @@ class Pos extends CI_Controller {
         exit();
     }
     
+    //Verifica se existe o serial cadastrado ajax
+    public function verificaSerial(){
+        $serial = trim($this->input->get_post("iptCriSerial"));
+        //verifica se existe
+        if (!$this->pos->existe($serial)){
+            echo json_encode(TRUE); //não exite
+        }else {
+            echo json_encode(FALSE); //existe
+        }
+            exit();
+    }
+    
+    //Verifica se existe o serial cadastrado ajax
+    public function verificaSerialAtualiza(){ 
+        $id = trim($this->input->post("id"));
+        $serial = trim($this->input->post("serial"));        
+        //verifica se existe
+        if (!$this->pos->existeAtualiza($id, $serial)){
+            echo json_encode(TRUE); //não exite
+        }else {
+            echo json_encode(FALSE); //existe
+        }
+            exit();
+    }
+    
     /*---------------Funções internas------------*/ 
     
     //Recupera dados de criar
-    private function recuperaCriar(&$nome, &$modelo, &$serial, &$descricao, &$local, &$url){
+    private function recuperaCriar(&$nome, &$modelo, &$serial, &$descricao, &$manutencao, &$local, &$url){
         $nome = trim($this->input->post("iptCriNome"));
         $modelo = trim($this->input->post("iptCriModelo"));
         $serial = trim($this->input->post("iptCriSerial"));
         $descricao = trim($this->input->post("iptCriDesc"));
+        $manutencao = trim($this->input->post("iptCriManutencao"));
         $local = trim($this->input->post("selCriLocal"));
         $url = trim($this->input->post("iptCriUrl"));
         
@@ -333,21 +360,36 @@ class Pos extends CI_Controller {
         if (!isset($url)|| $url === ""){
             $url = "pos";
         }
+        
+        //Verifica se esta em manutenção ou não
+        if (isset($manutencao)){
+            $manutencao = TRUE;
+        } else{
+            $manutencao = FALSE;
+        }
     }
     
     //Recupera dados de editar
-    private function recuperaEditar(&$id, &$nome, &$modelo, &$serial, &$descricao, &$local, &$url){
+    private function recuperaEditar(&$id, &$nome, &$modelo, &$serial, &$descricao, &$manutencao, &$local, &$url){
         $id = trim($this->input->post("iptEdtId"));
         $nome = trim($this->input->post("iptEdtNome"));
         $modelo = trim($this->input->post("iptEdtModelo"));
         $serial = trim($this->input->post("iptEdtSerial"));
         $descricao = trim($this->input->post("iptEdtDesc"));
+        $manutencao = $this->input->post("iptEdtManutencao");
         $local = trim($this->input->post("selEdtLocal"));
         $url = trim($this->input->post("iptEdtUrl"));
         
         //verifica URL existe
         if (!isset($url)|| $url === ""){
             $url = "pos";
+        }
+        
+        //Verifica se esta em manutenção ou não
+        if (isset($manutencao)){
+            $manutencao = TRUE;
+        } else{
+            $manutencao = FALSE;
         }
     }
     
@@ -407,23 +449,22 @@ class Pos extends CI_Controller {
         $this->registro->addLog();
     }
     
-    //verifica nivel de usuario para acesso ao sistema
+    //Verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '2'){
-                //acesso negado
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Pos.php");
-                redirect(base_url());
+            if (unserialize($this->session->userdata('acesso'))->getEquipamento() == 1){
+                //acesso permitido                
             } else {
-                //acesso permitido
+                //acesso negado
+                $this->gravaLog("tentativa de acesso sem permissao", "acesso ao controlador Pos.php");
+                redirect(base_url());
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Pos.php");
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Pos.php");
             redirect(base_url());
         }
     }

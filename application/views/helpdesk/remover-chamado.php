@@ -3,14 +3,17 @@
      aria-labelledby="mdlRemoverChamado" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Excluir chamado</h4>
             </div>
+            
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center"><strong>Deseja remover este chamado?</strong></div>
-            <form class="" method="post" 
+            <div class="alert alert-danger text-center" id="erro-remover-chamado"><strong>Deseja remover este chamado?</strong></div>
+            
+            <form class="" id="frmRmvChamado" method="post" 
                   action="<?php echo base_url("ocorrencia/remover") ?>">
                 <div class="modal-body">
                     <div class="row">
@@ -55,7 +58,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Remover
                     </button>
                 </div>

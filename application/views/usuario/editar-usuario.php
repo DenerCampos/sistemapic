@@ -4,10 +4,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="row">
+    
+    <!-- Mensagem de erro -->
+    <div class="alert alert-danger text-center" id="erro-editar-usuario" hidden=""></div>
+    
     <div class="col-md-10 col-md-offset-1">
         <div class="row">
-            <form class="" method="post" enctype="multipart/form-data"
+            <!-- Formulario -->
+            <form class="" id="frmEdtUsuario" method="post" enctype="multipart/form-data"
                       action="<?php echo base_url("usuario/atualizaUsuario") ?>">
+                
+                <!-- Foto -->
                 <div class="col-md-3">
                     <div class="imagem-usuario">                        
                         <img class="foto-usuario img-circle img-thumbnail img-responsive"
@@ -20,9 +27,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </label>
                     </div>
                 </div>
+                
+                <!-- Edição -->
                 <div class="col-md-9 form-usuario">
                     <div class="modal-body">
                         <div class="row">
+                            <!-- ID -->
                             <div class="col-md-12 hidden">
                                 <div class="form-group">
                                     <label for="iptEdtId" class="control-label">Id:</label>
@@ -30,6 +40,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            class="form-control" placeholder="Seu nome" required="true">
                                 </div>
                             </div>
+                            <!-- URL -->
                             <div class="col-md-12 hidden">
                                 <div class="form-group">
                                     <label for="iptEdtUrl" class="control-label">Url:</label>
@@ -37,6 +48,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            class="form-control" placeholder="" required="true">
                                 </div>
                             </div>
+                            <!-- Nome -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="iptEdtNome" class="control-label">Nome:</label>
@@ -44,6 +56,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            class="form-control" placeholder="Seu nome" required="true">
                                 </div>
                             </div>
+                            <!-- email -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="iptEdtEmail" class="control-label">E-mail:</label>
@@ -51,6 +64,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            class="form-control" placeholder="Seu e-mail">
                                 </div>
                             </div>
+                            <!-- senha atual -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="iptEdtSenhaAtual" class="control-label">Senha atual:</label>
@@ -58,6 +72,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            class="form-control" placeholder="********">
                                 </div>
                             </div>
+                            <!-- nova senha -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="iptEdtSenha" class="control-label">Nova senha:</label>
@@ -65,6 +80,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            class="form-control" placeholder="********">
                                 </div>
                             </div>
+                            <!-- Repete nova senha-->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="iptEdtRSenha" class="control-label">Repita nova senha:</label>
@@ -75,7 +91,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>
                     </div>
                     <div class="btn-usuario">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary carregando">
                             Salvar
                         </button>
                     </div>                         

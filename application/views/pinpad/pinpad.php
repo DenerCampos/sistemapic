@@ -10,7 +10,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="novo-chamado col-md-6">
             <button class="btn btn-primary" type="submit" href="#mdlCriarPinpad" 
                     data-toggle="modal" data-target="#mdlCriarPinpad" role="button">
-                Novo PinPad
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Novo PinPad
             </button>
             <a class="btn btn-success" href="<?php echo base_url("exibir/pinpad"); ?>" role="button">
                 <i class="fa fa-list-alt"></i> Listar todos
@@ -25,7 +26,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
                            placeholder="Busca por nome, modelo ou serial...">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            
@@ -74,7 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </a>
                                 
                                 <!-- remover -->
-                                <?php if ($this->session->userdata('nivel') === '0') {?>
+                                <?php if (unserialize($this->session->userdata('acesso'))->getAdmin() == 1){ ?>
                                 <a href="#" title="Remover" role="button" href="#mdlRemoverPinpad" 
                                    data-toggle="modal" data-target="#mdlRemoverPinpad"
                                    data-id="<?php echo $item->getIdpinpad(); ?>"

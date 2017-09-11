@@ -13,6 +13,15 @@ body{
     padding-top: 70px;
 }
 
+/*Error do bootstrap*/
+.help-block{
+    font-size: smaller;
+}
+
+.texto-bold{
+    font-weight: 700;
+}
+
 /*Menu principal*/
 .logo-principal{
     height: 20px;
@@ -36,7 +45,8 @@ body{
 }
 
 .criar-conta{
-    padding-top: 15px;
+    margin-right: 5px;
+    margin-bottom: 2px;
 }
 
 .opcoes-caixa{
@@ -58,6 +68,23 @@ a:hover, a:focus{
 }
 
 .navbar-login-session{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.navbar-logar-head{
+    width: 305px;
+    padding: 10px;
+}
+
+.navbar-logar-head>div{
+    font-size: x-large;
+    font-weight: 700;
+    text-align: center;
+}
+
+.navbar-logar-form{
     padding: 10px;
     padding-bottom: 0px;
     padding-top: 0px;
@@ -85,6 +112,11 @@ a:hover, a:focus{
 .pagina-direita{
     float: right;
     margin-right: 20px;
+}
+
+.novos-chamados{
+    padding: 10px 20px;
+    width: 200px;
 }
 
 /*mapas*/
@@ -233,6 +265,7 @@ input[type=file] {
 
 .imagem-usuario{
     height: 250px;
+    text-align: center;
 }
 
 .foto-usuario{
@@ -309,4 +342,54 @@ input[type=file] {
 /*link navegacao sem ativo*/
 .nav-admin>.pagination>li>a, .nav-admin>.pagination>li>a:focus, .nav-admin>.pagination>li>a:hover, .nav-admin>.pagination>li>span:focus, .nav-admin>.pagination>li>span:hover{
     color: #8a6d3b;
+}
+
+/*Relatorios*/
+.texto-cabecalho-relatorio{
+    font-size: x-large;
+    margin-bottom: 10px;
+    background-color: #f8f8f8;
+    border-bottom: solid 2px #e7e7e7;
+    border-top: solid 2px #e7e7e7;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.separador{
+    border-bottom: solid 2px #e7e7e7;
+    margin-bottom: 10px;
+}
+
+.relatorio-resultado{
+    margin-top: 20px;
+    display: none;
+}
+
+.display-conteudo-relatorio{
+    margin-bottom: 5px;
+}
+
+.conteudo-relatorio{
+    padding: 6px 12px;
+    border: solid 1px #e7e7e7;
+}
+
+.titulo-relatorio{
+    font-size: large;
+    background-color: #e7e7e7;
+    text-align: center;
+    padding: 2px;
+}
+
+.relatorio-resultado-processando {
+    margin-top: 20px;
+    font-size: 18px;
+    display: none;
+}
+
+.relatorio-resultado-erro{
+    margin-top: 20px;
+    font-size: 18px;
+    color: red;
+    display: none;
 }

@@ -15,6 +15,7 @@ class Pos_model extends CI_Model {
     var $serial; //serial do pos
     var $nome; //nome do pos no pic
     var $descricao; //dados adicionais ao pos
+    var $manutencao; //0 para não esta em manutenção e 1 para verdadeiro. (verifica se esta ou não na chart - fora do PIC)
     var $idlocal; //identificador do local
 
     /*------Construtor--------*/
@@ -24,11 +25,12 @@ class Pos_model extends CI_Model {
     
     /*------Requisições--------*/
     //Novo POS
-    public function novo($modelo, $serial, $nome, $descricao, $local){
+    public function novo($modelo, $serial, $nome, $descricao, $manutencao, $local){
         $this->setModelo($modelo);
         $this->setSerial($serial);
         $this->setNome($nome);
         $this->setDescricao($descricao);
+        $this->setManutencao($manutencao);
         $this->setIdlocal($local);
     }
     
@@ -38,12 +40,13 @@ class Pos_model extends CI_Model {
     }
     
     //Atualiza POS
-    public function atualiza($id, $modelo, $serial, $nome, $descricao, $local){
+    public function atualiza($id, $modelo, $serial, $nome, $descricao, $manutencao, $local){
         $dados = array (
             "modelo" => $modelo, 
             "serial" => $serial,
             "nome" => $nome,
             "descricao" => $descricao,
+            "manutencao" => $manutencao,
             "idlocal" => $local
         );
         $this->db->set($dados);
@@ -176,6 +179,7 @@ class Pos_model extends CI_Model {
         $pos->setSerial($r->serial);
         $pos->setNome($r->nome);
         $pos->setDescricao($r->descricao);
+        $pos->setManutencao($r->manutencao);
         $pos->setIdlocal($r->idlocal);
         
         return $pos;
@@ -217,6 +221,10 @@ class Pos_model extends CI_Model {
         return $this->descricao;
     }
 
+    function getManutencao() {
+        return $this->manutencao;
+    }
+
     function getIdlocal() {
         return $this->idlocal;
     }
@@ -239,6 +247,10 @@ class Pos_model extends CI_Model {
 
     function setDescricao($descricao) {
         $this->descricao = $descricao;
+    }
+
+    function setManutencao($manutencao) {
+        $this->manutencao = $manutencao;
     }
 
     function setIdlocal($idlocal) {

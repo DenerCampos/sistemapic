@@ -24,7 +24,7 @@
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptEdtUrl" class="control-label">Url:</label>
-                                <input type="text" name="iptEdtUrl" id="iptEdtUrl" value="<?php echo current_url(); ?>"
+                                <input type="text" name="iptEdtUrl" id="iptEdtUrl" value="<?php echo $this->uri->uri_string(); ?>"
                                        class="form-control" placeholder="" required="true">
                             </div>
                         </div>
@@ -97,6 +97,33 @@
                                 </select>
                             </div>
                         </div>
+                        
+                        <!-- Nivel de acesso -->                        
+                        <div class="col-md-12 nivel-acesso">
+                            <div class="texto-bold">Nivel de acesso: <br/></div>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtAdmin" name="chkEdtAdmin" value="admin" > Adiministração
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtOcorrencia" name="chkEdtOcorrencia" value="ocorrencia"> Help-Desk
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtCaixa" name="chkEdtCaixa" value="caixa" > Caixa
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtManutencao" name="chkEdtManutencao" value="manutencao" > Manutenção
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtRelatorio" name="chkEdtRelatorio" value="relatorio" > Relatórios
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtUsuario" name="chkEdtUsuario" value="usuario" > Usuário
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtEquipamento" name="chkEdtEquipamento" value="equipamento" > Equipamentos
+                            </label>
+                        </div>
+                        
                     </div>
                 </div>
                 <div class="modal-footer">

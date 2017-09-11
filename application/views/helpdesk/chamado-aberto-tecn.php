@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
                 <!-- em aberto -->
                 <?php if (isset($abertas)) { ?>
-                    <div class="panel panel-danger">
+                    <div class="panel panel-danger" id="chamado-aberto">
                         <div class="panel-heading">
                             <h3 class="panel-title">Chamados em aberto</h3>
                         </div>
@@ -47,7 +47,15 @@
                                                data-id="<?php echo $aberta->getIdocorrencia(); ?>"
                                                onclick="visualizarChamado(this)">
                                                 <i class="fa fa-search-plus" ></i>
-                                            </a>                                                 
+                                            </a>
+                                            <?php if (unserialize($this->session->userdata('acesso'))->getAdmin() == 1){ ?> 
+                                            <a title="Remover" role="button" href="#mdlRemoverChamado" 
+                                                data-toggle="modal" data-target="#mdlRemoverChamado"
+                                                data-id="<?php echo $aberta->getIdocorrencia(); ?>"
+                                                onclick="removerChamado(this)">
+                                                 <i class="fa fa-remove" ></i>
+                                             </a>
+                                            <?php }?>
                                         </td>
                                     </tr>
                                     <?php }?>

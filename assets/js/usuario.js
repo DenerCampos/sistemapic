@@ -97,3 +97,53 @@ function ativarUsuario(ancor){
         }
     });
 }
+
+//VALIDAÇÃO
+//Criar usuario
+$('#frmEdtUsuario').validate({
+    //regras de validações
+    rules: {
+        iptEdtNome: {            
+            required: true,
+            minlength:3,
+            maxlength:50
+        },
+        iptEdtEmail: {            
+            required: true,
+            email: true,
+            minlength:3,
+            maxlength:50,
+            remote:baseUrl+"usuario/verificaEmail" 
+        },
+        iptEdtRSenha: {
+            equalTo: "#iptEdtSenha"
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptEdtNome: {            
+            required: "Necessário nome.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 50 caracteres."
+        },
+        iptEdtEmail: {            
+            required: "Necessário e-mail.",
+            email: "Necessário e-mail valido",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 50 caracteres.",
+            remote: $.validator.format("{0} já existe no sistema. Tente outro email")
+        },
+        iptEdtRSenha: {
+            equalTo: "As senhas devem ser iguais."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();    
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {
+        $('#erro-editar-usuario').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-editar-usuario').show();
+    }
+});

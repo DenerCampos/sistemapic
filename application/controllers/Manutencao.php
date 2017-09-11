@@ -533,8 +533,8 @@ class Manutencao extends CI_Controller {
                 $this->manutencao->reindicio($id, $ddefeito);
                 //Log
                 $this->gravaLog("reindicio manutencao", "manutencao em garantia: ".$equipamento." data: ".$ddefeito." Id: ".$id);
-                //adiciona manutenção $equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $garantia, $data_garantia, $data_reincidencia, $data_sem_conserto, $patrimonio, $descricao, $fornecedor, $motivo, $idunidade, $idsetor)
-                $this->manutencao->newManutencao($equipamento, $defeito, $ddefeito, NULL, NULL, NULL, NULL, NULL, NULL, $patrimonio, $descricao, $fornecedor, NULL, $this->geraUnidade($unidade), $this->geraSetor($setor));
+                //adiciona manutenção $equipamento, $defeito, $data_defeito, $data_entrega, $data_retorno, $garantia,$data_garantia, $data_reincidencia, $data_sem_conserto, $patrimonio, $descricao, $fornecedor, $motivo, $solucao, $idunidade, $idsetor)
+                $this->manutencao->newManutencao($equipamento, $defeito, $ddefeito, NULL, NULL, NULL, NULL, NULL, NULL, $patrimonio, $descricao, $fornecedor, NULL, NULL, $this->geraUnidade($unidade), $this->geraSetor($setor));
                 $this->manutencao->addManutencao();
                 //Log
                 $this->gravaLog("criação manutencao", "manutencao criada: ".$equipamento." data: ".$ddefeito);
@@ -802,6 +802,7 @@ class Manutencao extends CI_Controller {
     
     //busca setor
     private function geraSetor($setor){
+        $teste = $this->setor->buscaPorNome($setor)->getIdsetor();
         return $this->setor->buscaPorNome($setor)->getIdsetor();
     }
 
@@ -929,23 +930,22 @@ class Manutencao extends CI_Controller {
         return $data;
     }
 
-    //verifica nivel de usuario para acesso ao sistema
+    //Verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '2'){
-                //acesso negado
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Manutencao.php");
-                redirect(base_url());
+            if (unserialize($this->session->userdata('acesso'))->getManutencao() == 1){
+                //acesso permitido                
             } else {
-                //acesso permitido
+                //acesso negado
+                $this->gravaLog("tentativa de acesso sem permissao", "acesso ao controlador Manutencao.php");
+                redirect(base_url());
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Manutencao.php");
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Manutencao.php");
             redirect(base_url());
         }
     }

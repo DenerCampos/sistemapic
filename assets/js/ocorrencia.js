@@ -66,7 +66,26 @@ $(document).ready(function() {
         anexarImagem(this, $elemento);
     });
     
+    //Chama a função que atualiza o chamados em aberto em 5 minutos (300000)
+    var atualiza = setInterval(atualizaChamadoAberto, 300000);
+    
 });
+
+//Atualiza pagina de chamados em aberto de 5 em 5 minutos se nenhuma modal estiver aberta.
+function atualizaChamadoAberto(){    
+    //verifica se esta na pagina de chamados abertos
+    if ($("#chamado-aberto").length){
+       if ($(".modal-dialog").is(":visible")){
+            //console.log("modal aberta");
+        } else{
+            //console.log("modal fechada");
+            //Atualiza pagina
+            location.reload();
+        } 
+    }else {
+        //console.log("não esta em chamados abertos");
+    }
+}
 
 //Anexar imagem
 function anexarImagem(input, elemento){
@@ -394,3 +413,173 @@ function fecharChamado(ancor){
     $(".carregando-modal").delay(700).hide("slow");
     $(".corpo-modal").delay(1000).show("slow");
 }
+
+//VALIDAÇÔES
+//Novo chamado
+$('#frmCriChamado').validate({    
+    //regras de validações
+    rules: {
+        iptCriUsuario: {            
+            required: true,
+            minlength:3,
+            maxlength:50
+        },      
+        iptCriDesc: {            
+            required: true,
+            minlength:3,
+            maxlength:1000
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptCriUsuario: {            
+            required: "Necessário nome.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 50 caracteres."
+        },      
+        iptCriDesc: {            
+            required: "Necessário descrição do problema.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 1000 caracteres."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-criar-chamado').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-criar-chamado').show();
+    }
+});
+
+//Atender chamado
+$('#frmAtdChamado').validate({    
+    //regras de validações
+    rules: {
+        iptAtdId: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptAtdId: {            
+            required: "Erro no id."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-atender-chamado').html("Erro Geral! \n\ <strong>Informar o TI</strong>.");
+        $('#erro-atender-chamado').show();
+    }
+});
+
+//Imprimir chamado
+$('#frmImpChamado').validate({    
+    //regras de validações
+    rules: {
+        iptImpId: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptImpId: {            
+            required: "Erro no id."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-imprimir-chamado').html("Erro Geral! \n\ <strong>Informar o TI</strong>.");
+        $('#erro-imprimir-chamado').show();
+    }
+});
+
+//Remover chamado
+$('#frmRmvChamado').validate({    
+    //regras de validações
+    rules: {
+        iptRmvId: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptRmvId: {            
+            required: "Erro no id."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-remover-chamado').html("Erro Geral! \n\ <strong>Informar o TI</strong>.");
+        $('#erro-remover-chamado').show();
+    }
+});
+
+//Editar chamado
+$('#frmEdtChamado').validate({    
+    //regras de validações
+    rules: {      
+        iptEdtComentarioNovo: {            
+            required: true,
+            minlength:3,
+            maxlength:1000
+        }
+    },
+    //Mensagens da validação
+    messages:{      
+        iptEdtComentarioNovo: {            
+            required: "Necessário um aditamento.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 1000 caracteres."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-editar-chamado').html("Por favor, preencha \n\
+                                  corretamente o <strong>campo de comentário</strong>.");
+        $('#erro-editar-chamado').show();
+    }
+});
+
+//Fechar chamado
+$('#frmFchChamado').validate({    
+    //regras de validações
+    rules: {      
+        iptFchComentarioNovo: {            
+            required: true,
+            minlength:3,
+            maxlength:1000
+        }
+    },
+    //Mensagens da validação
+    messages:{      
+        iptFchComentarioNovo: {            
+            required: "Necessário uma solução.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 1000 caracteres."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-fechar-chamado')
+                .find('p')
+                .html("Por favor, preencha corretamente o <strong>campo de solução</strong>.");
+        $('#erro-fechar-chamado').show();
+    }
+});

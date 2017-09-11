@@ -12,10 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
+            <div class="alert alert-danger text-center" id="erro-cria-fiscal" hidden=""></div>
             
             <!-- Formulario -->
-            <form class="" method="post" action="<?php echo base_url("fiscal/criar") ?>">
+            <form class="" id="frmCriFiscal" method="post" action="<?php echo base_url("fiscal/criar") ?>">
                 <div class="modal-body">
                     <div class="row">
                         <!-- url -->

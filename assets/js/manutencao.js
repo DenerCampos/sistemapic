@@ -227,3 +227,157 @@ function defeitoManutencao(ancor){
         }
     });
 }
+
+//VALIDAÇÔES
+//Nova manutenção
+$('#frmCriManutencao').validate({    
+    //regras de validações
+    rules: {
+        iptCriEquipamento: {            
+            required: true,
+            minlength:3,
+            maxlength:100
+        },      
+        iptCriDataDefeito: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptCriEquipamento: {            
+            required: "Necessário nome.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 100 caracteres."
+        },      
+        iptCriDataDefeito: {            
+            required: "Informe uma data valida."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-nova-manutencao').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-nova-manutencao').show();
+    }
+});
+
+//Enviar manutenção
+$('#frmEnvManutencao').validate({    
+    //regras de validações
+    rules: {
+        iptEnvDataEnvio: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptEnvDataEnvio: {            
+            required: "Informe uma data valida."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-enviar-manutencao').html("Por favor, preencha \n\
+                                  corretamente a <strong>data</strong>.");
+        $('#erro-enviar-manutencao').show();
+    }
+});
+
+//Nova manutenção
+$('#frmEdtManutencao').validate({    
+    //regras de validações
+    rules: {
+        iptEdtEquipamento: {            
+            required: true,
+            minlength:3,
+            maxlength:100
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptEdtEquipamento: {            
+            required: "Necessário nome.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 100 caracteres."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-editar-manutencao').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-editar-manutencao').show();
+    }
+});
+
+//Sem conserto manutenção
+$('#frmScmManutencao').validate({    
+    //regras de validações
+    rules: {
+        iptScmMotivo: {            
+            required: true,
+            minlength:3,
+            maxlength:200
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptScmMotivo: {            
+            required: "Necessário um motivo.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 200 caracteres."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-sem-conserto-manutencao').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-sem-conserto-manutencao').show();
+    }
+});
+
+//Apresentou defeito manutenção
+$('#frmDftManutencao').validate({    
+    //regras de validações
+    rules: {
+        iptDftEquipamento: {            
+            required: true,
+            minlength:3,
+            maxlength:100
+        },      
+        iptDftDataDefeito: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptDftEquipamento: {            
+            required: "Necessário nome.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 100 caracteres."
+        },      
+        iptDftDataDefeito: {            
+            required: "Informe uma data valida."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-defeito-manutencao').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-defeito-manutencao').show();
+    }
+});

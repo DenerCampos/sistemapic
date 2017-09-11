@@ -9,6 +9,8 @@
         <script src="<?php echo $assetsUrl; ?>/libs/jqm/jquery.mask.min.js"></script>
         <script src="<?php echo $assetsUrl; ?>/libs/lv/js/lightview/lightview.js"></script>
         <script src="<?php echo $assetsUrl; ?>/libs/lv/js/spinners/spinners.min.js"></script>
+        <script src="<?php echo $assetsUrl; ?>/libs/chartjs/Chart.bundle.min.js"></script>
+        <script src="<?php echo $assetsUrl; ?>/libs/chartjs/Chart.min.js"></script>
         <!--<script src="<?php echo $assetsUrl; ?>/libs/qtip/jquery.qtip.min.js"></script>-->
         
         <!-- Scripts pessoal -->

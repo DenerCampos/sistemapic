@@ -3,14 +3,17 @@
      aria-labelledby="mdlEditarMaquina" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Editar maquina</h4>
             </div>
+            
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
-            <form class="" method="post" 
+            <div class="alert alert-danger text-center" id="erro-editar-maquina" hidden=""></div>
+            
+            <form class="" id="frmEdtMaquina" method="post" 
                   action="<?php echo base_url("maquina/atualizaMaquina") ?>">
                 <div class="modal-body">
                     <div class="row"> 

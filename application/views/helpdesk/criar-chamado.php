@@ -12,13 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center hidden" id="erro">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <p></p>
-            </div>
+            <div class="alert alert-danger text-center" id="erro-criar-chamado" hidden=""></div>
             
             <!-- Formulario -->
-            <form class="formulario" method="post" enctype="multipart/form-data"
+            <form class="formulario" id="frmCriChamado" method="post" enctype="multipart/form-data"
                   action="<?php echo base_url("ocorrencia/novaOcorrencia") ?>">
                 
                 <!-- Corpo da modal -->
@@ -129,7 +126,7 @@
                                         <input type="checkbox" name="iptCriEnviarArea" id="iptCriEnviarEmail" value="emailarea" checked="true"> Enviar e-mail para área de atendimento.
                                     </label>
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" name="iptCriEnviarUsuario" id="iptCriEnviarUsuario" value="emailusuario"> Me enviar e-mail.
+                                        <input type="checkbox" name="iptCriEnviarUsuario" id="iptCriEnviarUsuario" value="emailusuario"> Receber e-mail deste chamado.
                                     </label>
                                 </div>
                             </div> <!-- Fim dados da Ocorrencia -->
@@ -142,7 +139,7 @@
                                 <div class="col-md-4">
                                     <div class="imagem-anexo-preview">
                                         <a href="" class="lightview ">
-                                            <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                            <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                         </a>
                                     </div>
                                     <label class="btn btn-default" for="cria-anexo0">
@@ -153,7 +150,7 @@
                                 <div class="col-md-4">
                                     <div class="imagem-anexo-preview">
                                         <a href="" class="lightview ">
-                                            <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                            <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                         </a>
                                     </div>
                                     <label class="btn btn-default" for="cria-anexo1">
@@ -164,7 +161,7 @@
                                 <div class="col-md-4">
                                     <div class="imagem-anexo-preview">
                                         <a href="" class="lightview ">
-                                            <img class="imagem-anexo img-thumbnail img-responsive" src="">
+                                            <img class="imagem-anexo img-thumbnail img-responsive" src="<?php echo $assetsUrl."/img/default-img.jpg" ?>">
                                         </a>
                                     </div>
                                     <label class="btn btn-default" for="cria-anexo2">

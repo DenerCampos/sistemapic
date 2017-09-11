@@ -12,10 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
+            <div class="alert alert-danger text-center" id="erro-editar-pinpad" hidden=""></div>
             
             <!-- Formulario -->
-            <form class="" method="post" action="<?php echo base_url("pinpad/atualizar") ?>">
+            <form class="" id="frmEdtPinpad" method="post" action="<?php echo base_url("pinpad/atualizar") ?>">
                 <div class="modal-body">
                     <div class="row"> 
                         <!-- url -->

@@ -2,25 +2,31 @@
 <!--Home-->
 <div class="menu-chamado col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="row"> <!-- row -->
+        
         <div class="novo-chamado col-md-6">
             <button class="btn btn-primary" type="submit" href="#mdlCriarChamado" 
                     data-toggle="modal" data-target="#mdlCriarChamado" role="button">
-                Novo Chamado
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Novo Chamado
             </button>
         </div>
+        
         <div class="pesquisar-chamado col-md-6">
-            <form class="form-buscar" method="post"
+            <form class="form-buscar" id="frmBuscaChamado" method="post"
                   action="<?php echo base_url("ocorrencia/buscar") ?>">
                 <div class="input-group">
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
                            placeholder="Busca por número, problema ou descrição...">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary carregando" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            
         </div>
+        
     </div><!-- fim row -->
+    
     <!-- tab panel -->
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

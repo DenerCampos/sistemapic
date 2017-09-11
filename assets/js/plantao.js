@@ -38,3 +38,35 @@ function EnviarEmailPlantao(ancor){
       }
     });
 }
+
+//VALIDAÇÔES
+//Novo chamado
+$('#frmGeraPlantao').validate({    
+    //regras de validações
+    rules: {
+        iptCriDataInicio: {            
+            required: true
+        },      
+        iptCriDataFim: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptCriDataInicio: {            
+            required: "Informe uma data valida."
+        },      
+        iptCriDataFim: {            
+            required: "nforme uma data valida."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-gerar-plantao').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-gerar-plantao').show();
+    }
+});

@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
                 <!-- em aberto -->
                 <?php if (isset($abertas)) { ?>
-                <div class="panel panel-danger">
+                <div class="panel panel-danger" id="chamado-aberto">
                     <div class="panel-heading">
                         <h3 class="panel-title">Chamados em aberto</h3>
                     </div>

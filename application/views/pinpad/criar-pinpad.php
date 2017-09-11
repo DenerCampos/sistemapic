@@ -12,10 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
+            <div class="alert alert-danger text-center" id="erro-cria-pinpad" hidden=""></div>
             
             <!-- Formulario -->
-            <form class="" method="post" action="<?php echo base_url("pinpad/criar") ?>">
+            <form class="" id="frmCriPinpad" method="post" action="<?php echo base_url("pinpad/criar") ?>">
                 <div class="modal-body">
                     <div class="row">
                         <!-- url -->
@@ -81,7 +81,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Criar
                     </button>
                 </div>

@@ -247,22 +247,22 @@ class Caixa extends CI_Controller {
         $this->registro->addLog();
     }
     
-    //verifica nivel de usuario para acesso ao sistema
+    //Verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '3'){
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Caixa.php");
-                redirect(base_url());
+            if (unserialize($this->session->userdata('acesso'))->getCaixa() == 1){
+                //acesso permitido                
             } else {
-                //acesso permitido
+                //acesso negado
+                $this->gravaLog("tentativa de acesso sem permissao", "acesso ao controlador Caixa.php");
+                redirect(base_url());
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Caixa.php");
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Caixa.php");
             redirect(base_url());
         }
     }

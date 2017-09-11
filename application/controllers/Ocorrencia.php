@@ -12,7 +12,7 @@ class Ocorrencia extends CI_Controller {
 
     /*------Construtor--------*/
     public function __construct() {
-        parent::__construct();
+        parent::__construct();        
         //verifica nivel
         $this->verificaNivel();
         //carregamento modelo
@@ -25,7 +25,7 @@ class Ocorrencia extends CI_Controller {
         $this->load->model("Usuario_model", "usuario");
         $this->load->model("Ocorrencia_model", "ocorrencia");
         $this->load->model("Ocorrencia_estado_model", "estado");
-        $this->load->model("Arquivo_model", "arquivo");
+        $this->load->model("Arquivo_model", "arquivo");        
     }    
     
     /*------Carregamento de views--------*/ 
@@ -323,7 +323,7 @@ class Ocorrencia extends CI_Controller {
     }   
     
     //Exibe a view resultado da busca
-    public function resultado($palavra, $numeros = NULL, $problemas = NULL, $descricao = NULL){
+    public function resultado($palavra, $total, $abertos = NULL, $atendimentos = NULL, $fechados = NULL){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -334,12 +334,31 @@ class Ocorrencia extends CI_Controller {
         //Carrega index
         $this->load->view('helpdesk/resultado', array(
             "palavra" => $palavra,
-            "numeros" => $numeros,
-            "problemas" => $problemas,
-            "descricao" => $descricao,
+            "total" => $total,
+            "abertos" => $abertos,
+            "atendimentos" => $atendimentos,
+            "fechados" => $fechados,
             "problema" => new Problema_model(),
-            "estado" => new Ocorrencia_estado_model()
+            "estado" => new Ocorrencia_estado_model(),
+            "usuario" => new Usuario_model()
         ));
+        //Modal
+        if ($this->session->userdata("nivel") != "2"){
+            $this->load->view("helpdesk/atender-chamado", array( 
+                "assetsUrl" => base_url("assets")));
+            $this->load->view("helpdesk/encaminhar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "tecnicos" => $this->usuario->todosTecnicos()));
+            $this->load->view("helpdesk/remover-chamado", array( 
+                "assetsUrl" => base_url("assets")));
+            $this->load->view("helpdesk/fechar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "unidades" => $this->unidade->todasUnidades(),
+                "areas" => $this->area->todasAreas(),
+                "locais" => $this->local->todosLocais(),
+                "problemas" => $this->problema->todosProblemas(),
+                "setores" => $this->setor->todosSetores()));
+        }
         $this->load->view("helpdesk/criar-chamado", array( 
             "assetsUrl" => base_url("assets"),
             "unidades" => $this->unidade->todasUnidades(),
@@ -356,8 +375,13 @@ class Ocorrencia extends CI_Controller {
             "locais" => $this->local->todosLocais(),
             "problemas" => $this->problema->todosProblemas(),
             "setores" => $this->setor->todosSetores()));
-        $this->load->view("helpdesk/remover-chamado", array( 
-                "assetsUrl" => base_url("assets")));
+        $this->load->view("helpdesk/editar-chamado", array( 
+                "assetsUrl" => base_url("assets"),
+                "unidades" => $this->unidade->todasUnidades(),
+                "areas" => $this->area->todasAreas(),
+                "locais" => $this->local->todosLocais(),
+                "problemas" => $this->problema->todosProblemas(),
+                "setores" => $this->setor->todosSetores()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
@@ -623,6 +647,9 @@ class Ocorrencia extends CI_Controller {
             $id; $url;
             //Recupera dados
             $this->recuperaDadosImprimir($id, $url);
+            
+            //teste
+            $chamado = $this->ocorrencia->buscaId($id);
             //Gera pagina em html
             $paginas = $this->load->view("helpdesk/impressao-chamado", array( 
                 "assetsUrl" => base_url("assets"),
@@ -633,7 +660,7 @@ class Ocorrencia extends CI_Controller {
                 "setor" => new Setor_model(),
                 "problema" => new Problema_model(),
                 "comentario" => $this->gerarComentarios($id),
-                "solucao" => $this->comentario->buscaSolucao($id),
+                "solucao" => $this->gerarSolucao($id),
                 "anexos" =>  $this->geraArquivos($id),
                 "estado" => new Ocorrencia_estado_model()), TRUE);
             //Busca arquivo de estilo
@@ -658,11 +685,11 @@ class Ocorrencia extends CI_Controller {
                 //remover ocorrencia
                 $this->ocorrencia->remove($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 2);
                 //log
-                $this->gravaLog("chamado removido", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
+                $this->gravaLog("chamado removido", "login: ".$this->session->userdata("login")." - chamado: ".$id);
                 $this->mensagem("Chamado <strong>".$id."</strong> removido.", $url);
             }else{
                 //log
-                $this->gravaLog("erro chamado removido", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
+                $this->gravaLog("erro chamado removido", "login: ".$this->session->userdata("login")." - chamado: ".$id);
                 $this->erro("Chamado <strong>".$id."</strong> não existe.");
             }
         } catch (Exception $exc) {
@@ -772,24 +799,26 @@ class Ocorrencia extends CI_Controller {
     public function buscar(){
         //recupera dados da busca
         $busca = strtolower(trim($this->input->post("iptBusca")));
+        //redirect(base_url("ocorrencia/buscar/".$busca));
         try {
             //verifica se foi digitado algo
-            //usuario todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-            if (isset($busca) && $this->session->userdata("nivel") == 2){
+            if (!empty($busca) && $this->session->userdata("nivel") == 2){
                 //busca por numero do chamado
-                $numeros = $this->ocorrencia->todasPorBuscaNumero($busca, $this->session->userdata("id"));
-                $this->resultado($busca, $numeros);
-            } elseif (isset($busca)){
-                //busca por numero do chamado todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-                $numeros = $this->ocorrencia->todasPorBuscaNumero($busca);
-                //busca por problema todasPorBuscaProblema($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-                $problemas = $this->ocorrencia->todasPorBuscaProblema($busca);
-                //busca por descricao todasPorBuscaDescricao($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
-                $descricao = $this->ocorrencia->todasPorBuscaDescricao($busca);
-                //chamando a view
-                $this->resultado($busca, $numeros, $problemas, $descricao);
+                $abertos = $this->ocorrencia->todasPorBuscaNumero($busca, 1, $this->session->userdata("id"));
+                $this->resultado($busca, $abertos);
+            } elseif (!empty($busca)){
+                //Busca todos abertos
+                $abertos = $this->buscaTodosPorEstados($busca, 1);
+                //Busca todos em atendimento
+                $atendimentos = $this->buscaTodosPorEstados($busca, 2);
+                //Busca todos fechados
+                $fechados = $this->buscaTodosPorEstados($busca, 3);
+                //Calcula total
+                $total = count($abertos)+count($atendimentos)+count($fechados);
+                //chamando a view resultado($palavra, $total, $abertos = NULL, $atendimentos = NULL, $fechados = NULL)
+                $this->resultado($busca, $total, $abertos, $atendimentos, $fechados);
             } else {
-                $this->resultado("'vazio'");
+                $this->resultado("'vazio'", 0);
             }                       
         } catch (Exception $exc) {
             //log
@@ -797,6 +826,7 @@ class Ocorrencia extends CI_Controller {
             $this->erro("Erro na busca. Favor tentar novamente.");
         }
     }
+    
     
     /*----------------Funções AJAX---------------*/
     
@@ -1065,14 +1095,14 @@ class Ocorrencia extends CI_Controller {
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '3'){
-                //grava log
+            if (unserialize($this->session->userdata('acesso'))->getOcorrencia() == 1){
+                //acesso permitido                
+            } else {
+                //acesso negado
                 $this->gravaLog("tentativa de acesso", "acesso ao controlador Ocorrencia.php");
                 redirect(base_url());
-            } else {
-                //acesso permitido
             }
         } else {
             //grava log
@@ -1324,6 +1354,29 @@ class Ocorrencia extends CI_Controller {
         }
     }
     
+    //Gera solução das ocorrencias
+    private function gerarSolucao($id){
+        //busca todos comentarios da ocorrencia
+        $comentarios = $this->comentario->buscaIdOcorrencia($id);
+        //verifica se existe comentarios
+        if (isset($comentarios)){
+            $coments = array();
+            foreach ($comentarios as $comentario) {
+                $coments[] = date("d/m - H:i", strtotime($comentario->getData())).
+                    " | ". $this->usuario->buscaId($comentario->getIdusuario())->getNome().
+                    ": ".
+                    $comentario->getDescricao().
+                    "\n";
+                break;
+            }
+            //Retorna o ultimo comentario.
+            return $coments[0];
+        } else {
+            return NULL;
+        }
+    }
+
+
     //Gera arquivos das ocorrencias
     private function geraArquivos($id){
         //busca todos arquivos
@@ -1453,6 +1506,56 @@ class Ocorrencia extends CI_Controller {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
         }
+    }
+    
+    //busca todos por estado aberto
+    private function buscaTodosPorEstados($busca, $estado){        
+        $numero = $this->buscaPorNumero($busca, $estado);
+        $problema = $this->buscaPorProblema($busca, $estado);
+        $descicao = $this->buscaPorDescricao($busca, $estado);
+        //Array de resultados por estado
+        $resultado = array();
+        //Verifica se teve busca e adiciona no resultado cada valor encontrado
+        if (isset($numero)){
+            foreach ($numero as $key => $value) {
+                array_push($resultado, $value);
+            }
+        }
+        //Verifica se teve busca e adiciona no resultado cada valor encontrado
+        if (isset($problema)){
+            foreach ($problema as $key => $value) {
+                array_push($resultado, $value);
+            }
+        }
+        //Verifica se teve busca e adiciona no resultado cada valor encontrado
+        if (isset($descicao)){
+            foreach ($descicao as $key => $value) {
+                array_push($resultado, $value);
+            }
+        }
+        
+        return $resultado;
+    }
+
+    //Busca todos estados por numero
+    private function buscaPorNumero($busca, $estado){
+        //Busca todos --todasPorBuscaNumero($palavra, $estado, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+        $resultado = $this->ocorrencia->todasPorBuscaNumero($busca, $estado);
+        return $resultado;
+    }
+    
+    //Busca todos estados por problema
+    private function buscaPorProblema($busca, $estado){
+        //Busca todos --todasPorBuscaProblema($palavra, $estado, $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+        $resultado = $this->ocorrencia->todasPorBuscaProblema($busca, $estado);
+        return $resultado;
+    }
+    
+    //Busca todos estados por descrição
+    private function buscaPorDescricao($busca, $estado){
+        //Busca todos --todasPorBuscaDescricao($palavra, $estado,  $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+        $resultado = $this->ocorrencia->todasPorBuscaDescricao($busca, $estado);
+        return $resultado;
     }
    
 }

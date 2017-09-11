@@ -4,6 +4,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (1.8)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Sistema</u></h3>
+        <p>01- Validação front-end.</p>
+        <h3><u>Helpdesk</u></h3>
+        <p>01- Criado campo de datas de abertura, atendimento e fechamento na impressão do chamado.</p>
+        <p>02- Criado campo de solução em chamados fechados na impressão de chamado.</p>
+        <p>03- Na vizualização de chamados, aparece a solução em separado se chamado estiver fechado.</p>
+        <p>04- Na impressão de chamados foi colocado quebra de linha nos textos dos comentários.</p>
+        <p>05- Na busca, foi separado os chamados por aberto, fechados e em atendimento e com suas opções.</p>
+        <p>06- Na tela de chamados abertos, será recarregada a pagina automáticamente a cada 5 minutos.</p>
+        <p>07- Adicionado uma imagem padrão para a imagem do anexo quando não tiver anexo.</p>
+        <h3><u>Nivel de acesso</u></h3>
+        <p>01- Implementado o nivel de acesso por funções, habilitando ou desabilitando acesso à algumas funções por usuário.</p>
+        <h3><u>Equipamentos (Maquinas)</u></h3>
+        <p>01- Não é mais obrigado o campo IP.</p>
+        <p>02- Adicionado a exibição da listagem de maquinas.</p>
+        <h3><u>Relatórios</u></h3>
+        <p>01- Adicionado relatório geral.</p>
+        <p>02- Adicionado relatório por setor.</p>
+        <p>03- Adicionado relatório por usuário.</p>
+        <p>04- Adicionado relatório por técnico.</p>
+        <h3><u>Equipamentos (POS)</u></h3>
+        <p>01- Adicionado campo para controlar se o POS está em manutenção (CHART).</p>
+        <p>02- Informando na lista de POS os POS que estão na CHART.</p>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (1.7)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>

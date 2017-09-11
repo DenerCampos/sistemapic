@@ -5,7 +5,8 @@
         <div class="col-md-6">
             <button class="btn btn-primary" type="submit" href="#mdlCriarPlantao" 
                     data-toggle="modal" data-target="#mdlCriarPlantao" role="button">
-                Criar novo relatório
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Criar novo relatório
             </button>
         </div>
         <div class="pesquisar-chamado col-md-6">
@@ -15,7 +16,8 @@
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
                            placeholder="Busca por data ou nome usuário...">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            

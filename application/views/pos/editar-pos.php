@@ -12,10 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
+            <div class="alert alert-danger text-center" id="erro-editar-pos" hidden=""></div>
             
             <!-- Formulario -->
-            <form class="" method="post" action="<?php echo base_url("pos/atualizar") ?>">
+            <form class="" id="frmEdtPos" method="post" action="<?php echo base_url("pos/atualizar") ?>">
                 <div class="modal-body">
                     <div class="row"> 
                         <!-- url -->
@@ -80,6 +80,12 @@
                                 <textarea class="form-control" id="iptEdtDesc" maxlength="2000" name="iptEdtDesc"
                                   placeholder="Dados adicionais" rows="3"></textarea>
                             </div>
+                        </div>
+                        <!-- manutenção -->
+                        <div class="col-md-12 text-right">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="iptEdtManutencao" id="iptEdtManutencao" value="manutencao"> Encontra-se na CHART?
+                            </label>
                         </div>
                         
                     </div> <!-- Fim row -->

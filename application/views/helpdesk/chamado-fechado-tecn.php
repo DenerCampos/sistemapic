@@ -46,6 +46,14 @@
                                                onclick="visualizarChamado(this)">
                                                 <i class="fa fa-search-plus" ></i>
                                             </a>
+                                            <?php if (unserialize($this->session->userdata('acesso'))->getAdmin() == 1){ ?>
+                                            <a title="Remover" role="button" href="#mdlRemoverChamado" 
+                                                data-toggle="modal" data-target="#mdlRemoverChamado"
+                                                data-id="<?php echo $fechada->getIdocorrencia(); ?>"
+                                                onclick="removerChamado(this)">
+                                                 <i class="fa fa-remove" ></i>
+                                            </a>
+                                            <?php }?>
                                         </td>
                                     </tr>
                                     <?php }?>

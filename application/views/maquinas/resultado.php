@@ -6,9 +6,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="row">
         <div class="novo-chamado col-md-6">
+            <a class="btn btn-warning" href="<?php echo base_url("maquina"); ?>" role="button">
+                <i class="fa fa-arrow-circle-o-left"></i> Voltar
+            </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarMaquina" 
                     data-toggle="modal" data-target="#mdlCriarMaquina" role="button">
-                Nova maquina
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                 Nova maquina
             </button>
         </div>
         <div class="pesquisar-chamado col-md-6">
@@ -19,12 +23,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                            placeholder="Busca por nome ou ip..."
                            <?php if (isset($palavra)) {echo 'value = "'.$palavra.'"';}?>>
                     <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Buscar!</button>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
                     </span>
                 </div>
             </form>            
         </div>
     </div>
+    
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-danger">
@@ -32,12 +38,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
     </div>
+    
+    <!-- painel listando maquinas -->
+    <?php if (isset($maquinas)) {?>
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">Maquinas cadastradas</h3>
         </div>
+        <!-- corpo painel -->
         <div class="panel-body">
             <div class="table-responsive">
+                <!-- tabela -->
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -51,8 +62,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </tr>
                     </thead>
                     <tbody>
-                        <!--Todas areas-->
-                        <?php if (isset($maquinas)) {?>
                         <?php foreach ($maquinas as $maquina) { ?>
                         <tr>
                             <td><?php echo $maquina->getNome(); ?></td>
@@ -62,28 +71,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td><?php echo $local->buscaId($maquina->getIdlocal())->getNome(); ?></td>
                             <td><?php echo $tipo->buscaId($maquina->getIdtipo())->getNome(); ?></td>
                             <td class="text-right">
+                                
+                               <!-- editar -->
                                 <a href="#" title="Editar" role="button" href="#mdlEditarMaquina" 
                                    data-toggle="modal" data-target="#mdlEditarMaquina"
                                    data-id="<?php echo $maquina->getIdmaquina(); ?>"
                                    onclick="editarMaquinaIp(this)">
                                     <i class="fa fa-pencil-square-o" ></i>
                                 </a>
+                                
+                                <!-- remover -->
+                                <?php if (unserialize($this->session->userdata('acesso'))->getAdmin() == 1){ ?>
+                                <a href="#" title="Remover" role="button" href="#mdlRemoverMaquina" 
+                                   data-toggle="modal" data-target="#mdlRemoverMaquina"
+                                   data-id="<?php echo $maquina->getIdmaquina(); ?>"
+                                   onclick="removerMaquinaIp(this)">
+                                    <i class="fa fa-remove" ></i>
+                                </a>
+                                <?php } ?>
+                                
                             </td>
                         </tr>
                         <?php } //foreach maquinas?>
-                        <?php } //isset maquinas?>
                     </tbody>
-                </table>                
+                </table> <!-- fim tabela -->
             </div>
-        </div>
+        </div> <!-- fim corpo painel -->
+    </div> <!-- fim painel listando pinpads -->
+    <?php } else {?>
+    
+    <!-- Mensagem que não há cadastros -->
+    <div class="alert alert-info alert-dismissible text-center alerta" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        Não há <strong>Maquinas</strong> cadastradas.
     </div>
-    <?php if (!isset($maquinas)) {?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-info">
-                <?php echo "Não existe maquinas."; ?>
-            </div>
-        </div>
-    </div>
-    <?php }?>
+    <?php }?> 
+       
 </div>

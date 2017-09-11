@@ -2,10 +2,12 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ * 
+ * Project: Dener Junio Campos
+ * Sistema PIC
  */
 
-$(document).ready(function() {
-    
+$(document).ready(function() {    
     //função para mostrar o calendario do jquery no navegador firefox.
     $(function(){
         if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) {
@@ -16,50 +18,53 @@ $(document).ready(function() {
         }
     });
     
-    //popover bootstrap
+    //popover bootstrap mapa
     $('[data-toggle="popover"]').popover({
         trigger: 'hover',
         html: 'true',
         placement: 'left',
         container: 'map'
     });
-    
+        
     //tooltip bootstrap
     $('[data-toggle="tooltip"]').tooltip();
-       
-    //Login
-    $('.trigger').popover({
-        html: true,
-        title: function(){
-            return $(this).parent().find('.head').html();
-        },
-        content: function(){
-            return $(this).parent().find('.content').html();
-        },
-        placement: 'bottom',
-        container: 'body'
+    
+     //Fotos usuario perfil
+    $('#iptEdtFoto').on("change", function(){
+        fotoPerfil(this);
     });
+         
+    //Login
+//    $('.trigger').popover({
+//        trigger: 'click',
+//        html: true,
+//        title: function(){
+//            return $(this).parent().find('.head').html();
+//        },
+//        content: function(){
+//            return $(this).parent().find('.content').html();
+//        },
+//        placement: 'bottom',
+//        container: 'body'
+//    });
        
     //Verificar estado maquina onload
     //$('span[onload]').trigger('onload');
           
-    //Fotos usuario perfil
-    $('#iptEdtFoto').on("change", function(){
-        fotoPerfil(this);
-    });
+   
         
-    //Formularios
-    $(".formulario").submit(function(){
-        formulario = this;
-        botao = $(formulario).find(".carregando");
-        carregando(botao);
-    });  
+    //Formularios -- chamado na validação
+//    $(".formulario").submit(function(){
+//        formulario = this;
+//        botao = $(formulario).find(".carregando");
+//        carregando(botao);
+//    }); 
 });
 
-//Esconder tela login
-function esconderLogin(){
-    $('.trigger').popover('hide');
-}
+////Esconder tela login
+//function esconderLogin(){
+//    $('.trigger').popover('hide');
+//}
 
 //Animação de carregando (botões)
 function carregando(button){
@@ -83,3 +88,45 @@ function fotoPerfil(input) {
         $(".foto-usuario").attr('src', baseUrl+'document/user/0.png');        
     }
 } 
+
+//VALIDAÇÔES
+//Mudando default
+$.validator.setDefaults({
+    ignore : [], //não ignorar os campos hiden
+    errorClass: 'help-block', //classe da label erro criada pelo validador
+    highlight: function(element){ //focus na classe form-grupo do bootstrap
+        $(element)
+            .closest('.form-group')
+            .addClass('has-error');
+    },
+    unhighlight: function(element){ //defocus na classe do bootstrap
+        $(element)
+            .closest('.form-group')
+            .removeClass('has-error');
+    }
+});
+
+//estilo de feedback (bootstrap) - teste
+//    validClass: 'has-success',
+//    errorClass: 'help-block', //classe da label erro criada pelo validador
+//    highlight: function(element){ //focus na classe form-grupo do bootstrap
+//        $(element)
+//            .closest('.form-group')
+//            .addClass('has-error has-feedback')
+//            .find('span')
+//            .remove();
+//        $(element)
+//            .closest('.form-group')
+//            .append('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>');
+//    },
+//    unhighlight: function(element){ //defocus na classe do bootstrap
+//        $(element)
+//            .closest('.form-group')
+//            .removeClass('has-error has-feedback')
+//            .addClass('has-success has-feedback')
+//            .find('span')
+//            .remove();
+//        $(element)
+//            .closest('.form-group')
+//            .append('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+//    },

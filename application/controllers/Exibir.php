@@ -85,6 +85,29 @@ class Exibir extends CI_Controller {
             "arquivoJS" => "home.js"));
     }
     
+    //Exibir maquinas
+    public function maquina(){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('exibir/maquinas', array(
+            "assetsUrl" => base_url("assets"),
+            "lista" => $this->maquinas(),
+            "local" => new Local_model()));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "exibir.js"));
+    }
+    
     //Exibir pinpads
     public function pinpad(){
         //Carrega cabeçaho html
@@ -184,6 +207,13 @@ class Exibir extends CI_Controller {
     
         
     /*------------Funções internas---------------*/ 
+    //Maquinas
+    private function maquinas(){
+        //carregando modelo
+        $this->load->model('maquina_model', 'maquina');
+        return $this->maquina->buscaTodas();
+    }
+    
     //PinPads
     private function pinpads(){
         //carregando modelo

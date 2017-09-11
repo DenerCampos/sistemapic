@@ -44,7 +44,6 @@ class Usuario extends CI_Controller {
             "arquivoJS" => "usuario.js"));
     }
 
-
     //Mensagem de erro
     public function erro($msg = NULL, $uri = null){
         //Carrega cabeçaho html
@@ -175,6 +174,21 @@ class Usuario extends CI_Controller {
             $this->gravaLog("erro geral", $exc->getTraceAsString());
         }
     }
+    
+    /*------------Funções AJAX-------------*/     
+    //Verifica se existe o email cadastrado
+    public function verificaEmail(){
+        $email = trim($this->input->get_post("iptEdtEmail"));
+        //verifica se existe
+        if ($this->usuario->verificaLoginAtualiza($this->session->userdata('id'), $email)){
+            echo json_encode(FALSE);
+        }else {
+            echo json_encode(TRUE);
+        }
+            exit();
+    }
+    
+    /*-----------Funções internas----------*/ 
 
     //recupera dados do atualiza usuarios
     private function recuperaAtualizaUsuario(&$nome, &$email, &$senha_anterior, &$senha_nova, &$senha_repete, &$foto){
@@ -240,7 +254,8 @@ class Usuario extends CI_Controller {
                 "login" => $usuario->getLogin(),
                 "nivel" => $usuario->getNivel(),
                 "area" => $usuario->getIdarea(),
-                "foto" => $this->caminhoFoto($usuario)
+                "foto" => $this->caminhoFoto($usuario),
+                "acesso" => serialize($this->acesso->buscaIdUsuario($usuario->getIdusuario()))
             );
             //cria sessão
             $this->session->set_userdata($dados);
@@ -324,23 +339,23 @@ class Usuario extends CI_Controller {
         $this->registro->addLog();
     }
     
-    //verifica nivel de usuario para acesso ao sistema
+    //Verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '3'){
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Usuario.php");
-                redirect(base_url());
+            if (unserialize($this->session->userdata('acesso'))->getUsuario() == 1){
+                //acesso permitido                
             } else {
-                //acesso permitido
+                //acesso negado
+                $this->gravaLog("tentativa de acesso sem permissao", "acesso ao controlador Usuario.php");
+                redirect(base_url());
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Caixa.php");
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Usuario.php");
             redirect(base_url());
         }
-    }    
+    } 
 }

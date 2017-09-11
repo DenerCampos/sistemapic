@@ -12,10 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
+            <div class="alert alert-danger text-center" id="erro-cria-pos" hidden=""></div>
             
             <!-- Formulario -->
-            <form class="" method="post" action="<?php echo base_url("pos/criar") ?>">
+            <form class="" id="frmCriPos" method="post" action="<?php echo base_url("pos/criar") ?>">
                 <div class="modal-body">
                     <div class="row">
                         <!-- url -->
@@ -73,6 +73,12 @@
                                   placeholder="Dados adicionais" rows="3"></textarea>
                             </div>
                         </div>
+                        <!-- manutenção -->
+                        <div class="col-md-12 text-right">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="iptCriManutencao" id="iptCriManutencao" value="manutencao"> Encontra-se na CHART?
+                            </label>
+                        </div>
                         
                     </div> <!-- Fim row -->
                 </div> <!-- Fim corpo modal -->
@@ -81,7 +87,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Criar
                     </button>
                 </div>

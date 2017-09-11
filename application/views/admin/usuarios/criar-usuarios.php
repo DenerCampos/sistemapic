@@ -13,7 +13,14 @@
             <form class="" method="post" 
                   action="<?php echo base_url("admin/usuario_admin/criarUsuario") ?>">
                 <div class="modal-body">
-                    <div class="row">                        
+                    <div class="row">
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptCriUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptCriUrl" id="iptCriUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control" placeholder="" required="true">
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="iptCriNome" class="control-label">Nome:</label>
@@ -82,6 +89,31 @@
                                     <?php } ?>
                                 </select>
                             </div>
+                        </div>
+                        <!-- Nivel de acesso -->                        
+                        <div class="col-md-12 nivel-acesso">
+                            <div class="texto-bold">Nivel de acesso: <br/></div>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriAdmin" name="chkCriAdmin" value="admin" > Adiministração
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriOcorrencia" name="chkCriOcorrencia" value="ocorrencia" checked="" > Help-Desk
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriCaixa" name="chkCriCaixa" value="caixa" > Caixa
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriManutencao" name="chkCriManutencao" value="manutencao" > Manutenção
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriRelatorio" name="chkCriRelatorio" value="relatorio" > Relatórios
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriUsuario" name="chkCriUsuario" value="usuario" checked="" > Usuário
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriEquipamento" name="chkCriEquipamento" value="equipamento" > Equipamentos
+                            </label>
                         </div>
                     </div>
                 </div>

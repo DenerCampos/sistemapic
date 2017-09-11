@@ -12,10 +12,10 @@
             </div>
             
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""></div>
+            <div class="alert alert-danger text-center" id="erro-sem-conserto-manutencao" hidden=""></div>
             
             <!-- Formulario retorno manutenção -->
-            <form class="formulario" method="post" 
+            <form class="formulario" id="frmScmManutencao" method="post" 
                   action="<?php echo base_url("manutencao/semconsertoManutencao") ?>">
                 <!-- Corpo da modal -->
                 <div class="modal-body">

@@ -772,6 +772,20 @@ function editarUsuario(ancor){
                 } else {
                     $("#selEdtArea").prop({disabled: true});
                 }
+                
+                //nivel de acesso  
+                if (msg.acesso){
+                    $.each(msg.acesso, function(key, item){
+                        if (item === '1'){
+                            $("[value="+key+"]").prop("checked", true);
+                            //this.prop("checked", true);
+                        } else{
+                            $("[value="+key+"]").prop("checked", false);
+                        }
+                    });
+                } else{
+                    $("[type=checkbox]").prop("checked", false);
+                }                
             }
             else{
                 $("#alert").val(msg.erro).show;

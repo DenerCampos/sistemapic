@@ -50,12 +50,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                            onclick="visualizarManutencao(this)">
                                             <i class="fa fa fa-search-plus" ></i>
                                         </a>   
-                                        <a href="#" title="Remover" role="button" href="#mdlRemoverManutencao" 
+<!--                                        <a href="#" title="Remover" role="button" href="#mdlRemoverManutencao" 
                                            data-toggle="modal" data-target="#mdlRemoverManutencao"
                                            data-id="<?php echo $garantia->getIdmanutencao(); ?>"
                                            onclick="removerManutencao(this)">
                                             <i class="fa fa-remove" ></i>
-                                        </a>
+                                        </a>-->
                                     </td>
                                 </tr>
                                 <?php } //foreach manutencaos?>

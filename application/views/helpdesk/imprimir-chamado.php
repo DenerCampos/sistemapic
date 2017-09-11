@@ -3,14 +3,17 @@
      aria-labelledby="mdlImprimirChamado" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Imprimir chamado</h4>
             </div>
+            
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center"><strong>Deseja imprimir este chamado?</strong></div>
-            <form class="" method="post" target="_blank"
+            <div class="alert alert-danger text-center" id="erro-imprimir-chamado"><strong>Deseja imprimir este chamado?</strong></div>
+            
+            <form class="" id="frmImpChamado" method="post" target="_blank"
                   action="<?php echo base_url("ocorrencia/imprimir") ?>">
                 <div class="modal-body">
                     <div class="row">

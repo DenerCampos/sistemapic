@@ -279,14 +279,15 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Busca todos por busca (numero do chamado)
-    public function todasPorBuscaNumero($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
+    public function todasPorBuscaNumero($palavra, $estado, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
         if (isset($limite) && isset($usuario)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE idocorrencia LIKE '$palavra' AND
                         usuario_abre = $usuario AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");           
         } elseif (isset ($usuario)) {
@@ -295,14 +296,16 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE idocorrencia LIKE '$palavra' AND
                         usuario_abre = $usuario AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
         } elseif (isset ($limite)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE idocorrencia LIKE '$palavra' AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -310,7 +313,8 @@ class Ocorrencia_model extends CI_Model {
                 "SELECT *
                 FROM ocorrencia
                 WHERE idocorrencia LIKE '$palavra' AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
         }
         //retorna objeto ip
@@ -322,7 +326,7 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Busca todos por busca (problema)
-    public function todasPorBuscaProblema($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
+    public function todasPorBuscaProblema($palavra, $estado, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
         if (isset($limite) && isset($usuario)){
             $query = $this->db->query(
                 "SELECT ocorrencia.*
@@ -330,7 +334,8 @@ class Ocorrencia_model extends CI_Model {
                 INNER JOIN problema
                 ON ocorrencia.idproblema = problema.idproblema
                 WHERE ocorrencia.idestado = 1 AND 
-                        problema.nome LIKE '%$palavra%'
+                        problema.nome LIKE '%$palavra%' AND
+                        ocorrencia.idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");           
         } elseif (isset ($usuario)) {
@@ -340,7 +345,8 @@ class Ocorrencia_model extends CI_Model {
                 INNER JOIN problema
                 ON ocorrencia.idproblema = problema.idproblema
                 WHERE ocorrencia.idestado = 1 AND 
-                        problema.nome LIKE '%$palavra%'
+                        problema.nome LIKE '%$palavra%' AND
+                        ocorrencia.idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
         } elseif (isset ($limite)){
             $query = $this->db->query(
@@ -349,7 +355,8 @@ class Ocorrencia_model extends CI_Model {
                 INNER JOIN problema
                 ON ocorrencia.idproblema = problema.idproblema
                 WHERE ocorrencia.idestado = 1 AND 
-                        problema.nome LIKE '%$palavra%'
+                        problema.nome LIKE '%$palavra%' AND
+                        ocorrencia.idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -359,7 +366,8 @@ class Ocorrencia_model extends CI_Model {
                 INNER JOIN problema
                 ON ocorrencia.idproblema = problema.idproblema
                 WHERE ocorrencia.idestado = 1 AND 
-                        problema.nome LIKE '%$palavra%'
+                        problema.nome LIKE '%$palavra%' AND
+                        ocorrencia.idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
         }
         //retorna objeto ip
@@ -371,14 +379,15 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Busca todos por busca (Descricao)
-    public function todasPorBuscaDescricao($palavra, $usuario = NULL, $limite = NULL, $ponteiro = NULL){
+    public function todasPorBuscaDescricao($palavra, $estado,  $usuario = NULL, $limite = NULL, $ponteiro = NULL){
         if (isset($limite) && isset($usuario)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE descricao LIKE '%$palavra%' AND
                         usuario_abre = $usuario AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");           
         } elseif (isset ($usuario)) {
@@ -387,14 +396,16 @@ class Ocorrencia_model extends CI_Model {
                 FROM ocorrencia
                 WHERE descricao LIKE '%$palavra%' AND
                         usuario_abre = $usuario AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
         } elseif (isset ($limite)){
             $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia
                 WHERE descricao LIKE '%$palavra%' AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -402,7 +413,8 @@ class Ocorrencia_model extends CI_Model {
                 "SELECT *
                 FROM ocorrencia
                 WHERE descricao LIKE '%$palavra%' AND
-                        idestado = 1
+                        idestado = 1 AND
+                        idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
         }
         //retorna objeto ip
@@ -790,7 +802,76 @@ class Ocorrencia_model extends CI_Model {
         }
         return $query->num_rows();
     }
-
+    
+    //Relatorios
+    //Relatorio Geral - contar todos os abertos
+    public function contarAbertosPorData($inicio, $fim){
+        //Busca
+        $query = $this->db->query(
+                "SELECT * 
+                FROM ocorrencia
+                WHERE data_abertura >= '$inicio' AND 
+                    data_abertura <= '$fim'");
+        //$total = $query->num_rows();
+        return $query->num_rows();
+    }
+    
+    //Relatorio Geral - contar todos os atendimentos
+    public function contarAtendimentosPorData($inicio, $fim){
+        //Busca
+        $query = $this->db->query(
+                "SELECT * 
+                FROM ocorrencia
+                WHERE data_alteracao >= '$inicio' AND 
+                    data_alteracao <= '$fim'");
+        //$total = $query->num_rows();
+        return $query->num_rows();
+    }
+    
+    //Relatorio Geral - contar todos os fechados
+    public function contarFechadosPorData($inicio, $fim){
+        //Busca
+        $query = $this->db->query(
+                "SELECT * 
+                FROM ocorrencia
+                WHERE data_fechamento >= '$inicio' AND 
+                    data_fechamento <= '$fim'");
+        //$total = $query->num_rows();
+        return $query->num_rows();
+    }
+    
+    //Relatorio Geral - retorna todos fechados no periodo
+    public function retornaFechadosPorData($inicio, $fim){
+        //Busca
+        $query = $this->db->query(
+                "SELECT * 
+                FROM ocorrencia
+                WHERE data_fechamento >= '$inicio' AND 
+                    data_fechamento <= '$fim'");
+        //retorna objeto
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Relatorio Geral - retorna todos abertos no periodo
+    public function retornaAbertosPorData($inicio, $fim){
+        //Busca
+        $query = $this->db->query(
+                "SELECT * 
+                FROM ocorrencia
+                WHERE data_abertura >= '$inicio' AND 
+                    data_abertura <= '$fim'");
+        //retorna objeto
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
     /* ------Funções internas-------- */
 
     //Retorna objeto

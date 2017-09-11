@@ -318,6 +318,31 @@ class Impressora extends CI_Controller {
         exit();
     }
     
+    //Verifica se existe o serial cadastrado ajax
+    public function verificaSerial(){
+        $serial = trim($this->input->get_post("iptCriSerial"));
+        //verifica se existe
+        if (!$this->impressora->existe($serial)){
+            echo json_encode(TRUE); //não exite
+        }else {
+            echo json_encode(FALSE); //existe
+        }
+            exit();
+    }
+    
+    //Verifica se existe o serial cadastrado ajax
+    public function verificaSerialAtualiza(){ 
+        $id = trim($this->input->post("id"));
+        $serial = trim($this->input->post("serial"));        
+        //verifica se existe
+        if (!$this->impressora->existeAtualiza($id, $serial)){
+            echo json_encode(TRUE); //não exite
+        }else {
+            echo json_encode(FALSE); //existe
+        }
+            exit();
+    }
+    
     /*---------------Funções internas------------*/ 
     
     //Recupera dados de criar
@@ -407,23 +432,22 @@ class Impressora extends CI_Controller {
         $this->registro->addLog();
     }
     
-    //verifica nivel de usuario para acesso ao sistema
+    //Verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario
         //verifica se tem alguem logado
-        if ($this->session->has_userdata('nivel')){
+        if ($this->session->has_userdata('acesso')){
             //verifica nivel de acesso
-            if ($this->session->userdata('nivel') == '2'){
-                //acesso negado
-                //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Impressora.php");
-                redirect(base_url());
+            if (unserialize($this->session->userdata('acesso'))->getEquipamento() == 1){
+                //acesso permitido                
             } else {
-                //acesso permitido
+                //acesso negado
+                $this->gravaLog("tentativa de acesso sem permissao", "acesso ao controlador Impressora.php");
+                redirect(base_url());
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Impressora.php");
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Impressora.php");
             redirect(base_url());
         }
     }

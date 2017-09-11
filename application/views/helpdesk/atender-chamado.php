@@ -9,8 +9,8 @@
                 <h4 class="modal-title" id="formModalLabel">Atender chamado</h4>
             </div>
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center"><strong>Deseja atender este chamado?</strong></div>
-            <form class="formulario" method="post" 
+            <div class="alert alert-danger text-center" id="erro-atender-chamado"><strong>Deseja atender este chamado?</strong></div>
+            <form class="formulario" id="frmAtdChamado" method="post" 
                   action="<?php echo base_url("ocorrencia/atender") ?>">
                 <div class="modal-body">
                     <div class="row">
