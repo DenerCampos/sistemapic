@@ -266,10 +266,19 @@ class Usuario_admin extends CI_Controller {
                     }
                 }
                 //busca nivel de acesso
-                $idacesso = $this->acesso->buscaIdUsuario($id)->getIdacesso();
-                //atualiza acesso atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
-                $this->acesso->atualiza($idacesso, $acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"],
-                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $id);                
+                $idacesso = $this->acesso->buscaIdUsuario($id);
+                //verifica se existe acesso para o usuario
+                if (isset($idacesso)){
+                    //atualiza acesso atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
+                    $this->acesso->atualiza($idacesso->getIdacesso(), $acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"],
+                            $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $id);   
+                } else {
+                    //novo acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
+                    $this->acesso->novo($acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"],
+                            $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $id);
+                    //adiciona adiciona()
+                    $this->acesso->adiciona();
+                }
                 //Log
                 $this->gravaLog("ADMIN alteração usuario", "usuario alterado: ".$nome." Email: ". $login);
                 //mensagem

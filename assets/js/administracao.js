@@ -777,14 +777,14 @@ function editarUsuario(ancor){
                 if (msg.acesso){
                     $.each(msg.acesso, function(key, item){
                         if (item === '1'){
-                            $("[value="+key+"]").prop("checked", true);
+                            $("[value="+key+"]").prop('checked', true);
                             //this.prop("checked", true);
                         } else{
-                            $("[value="+key+"]").prop("checked", false);
+                            $("[value="+key+"]").prop('checked', false);
                         }
                     });
                 } else{
-                    $("[type=checkbox]").prop("checked", false);
+                    $("[type=checkbox]").prop('checked', false);
                 }                
             }
             else{
