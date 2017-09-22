@@ -7,6 +7,7 @@ class Caixa extends CI_Controller {
      * Caixa: Controller para operações dos ips do caixas e mapas dos caixas
      *
      * @author Dener Junio
+     * mapa dos caixas
      * 
      */
 
