@@ -2,40 +2,15 @@
 
 
 #melhorias
-- Sistema
-01- Validar todos os campos front-end. (https://www.youtube.com/watch?v=EwTr2BwtZmQ) - falta usuario, porem não tem como validar em popover, pq cria o popover novo a cada clique e instancia depois dos java scripts (tentar mudar o layout) (OK)
-02- Colocar no autoload do codeigniter o classe acesso. OK. - mudei no autoload.php da pasta config
+    - Chek-list
+	01- Implementar o checklist, desenvolver um app android e fazer os lamçamentos via o aplicativo.
 
-- Helpdesk
-01- Criar campo de data abertura, data atendimento (se estiver em atendimento) e data de fechamento (se estiver fechado) na impressão do chamado. (OK)
-02- Na impressão do chamado, so pode aparecer solução se estiver fechado o chamado, e a solução não deve aparecer nos comentarios. (OK)
-03- Na vizualização, aparecer a solução separado dos comentarios, quando o chamado estiver fechado. (OK)
-04- Na impressão do chamado, dar quebra de linha nos textos dos comentarios. (adiciona <br/> nos \r\n) (OK)
-05- Na busca, seperar dos chamados abertos, atendimento e fechados. Dar as opcções de cada um. (OK)
-06- Nos chamados abertos, recarregar a cada 5 minutos, com a modal fechada somente. (OK)
-07- Adicionado imagem default (default-img.jpg) quando não tem anexo. (OK)
+#Nova Versão (1.9)
+-Melhorias
 
-- Nivel de acesso
-01- Implementar nivel de acesso por controle. OK
+-Bugs
 
-- IP´s Maquinas PP
-01- Troca ip´s maquinas por equipamentos, não é obrigado a ter IP´s e separar por tipos de equipamentos. OK (mudei o banco de dados)
-
-- Relatório plantão
-01- Criar relatorio geral, por setor e por usuario. (tudo em ajax) (OK)
-	Geral: qtd chamados em aberto, fechado e atendimento. tecnico que mais fechou chamado, area que mais abriu chamado, setor que mais abriu chamado, problema mais reclamado, usuario que mais abriu chamado
-	Setor: total de chamados abertos por setor
-	Usuario: total de chamados abertos por usuario
-	Tecnico: total de chamados fechados por tecnico.
-
-- POS
-01- Colocar um checkbox indicando os pos que estão na chart. (OK)
-02- Mostrar na lista de pos os pos que se encontram na char. (OK)
-
-- Maquinas
-01- Criar exibição das maquinas. (OK)
-
-
+---------------------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (1.8)
 -Melhorias
     - Sistema
@@ -51,25 +26,26 @@
 	06- Nos chamados abertos, recarregar a cada 5 minutos, com a modal fechada somente. (OK)
 	07- Adicionado imagem default (default-img.jpg) quando não tem anexo. (OK)
 
-- Nivel de acesso
-01- Implementar nivel de acesso por controle. OK
+    - Nivel de acesso
+	01- Implementar nivel de acesso por controle. (OK)
 
-- IP´s Maquinas PP
-01- Troca ip´s maquinas por equipamentos, não é obrigado a ter IP´s e separar por tipos de equipamentos. OK (mudei o banco de dados)
+    - IP´s Maquinas PP
+	01- Troca ip´s maquinas por equipamentos, não é obrigado a ter IP´s e separar por tipos de equipamentos. (OK)
 
-- Relatório plantão
-01- Criar relatorio geral, por setor e por usuario. (tudo em ajax) (OK)
-	Geral: qtd chamados em aberto, fechado e atendimento. tecnico que mais fechou chamado, area que mais abriu chamado, setor que mais abriu chamado, problema mais reclamado, usuario que mais abriu chamado
-	Setor: total de chamados abertos por setor
-	Usuario: total de chamados abertos por usuario
-	Tecnico: total de chamados fechados por tecnico.
+    - Relatório plantão
+	01- Criar relatorio geral, por setor e por usuario. (tudo em ajax) (OK)
+	    Geral: qtd chamados em aberto, fechado e atendimento. tecnico que mais fechou chamado, area que mais abriu chamado, setor que mais abriu chamado, problema mais reclamado, usuario que mais abriu chamado
+	    Setor: total de chamados abertos por setor
+	    Usuario: total de chamados abertos por usuario
+	    Tecnico: total de chamados fechados por tecnico.
 
-- POS
-01- Colocar um checkbox indicando os pos que estão na chart. (OK)
-02- Mostrar na lista de pos os pos que se encontram na char. (OK)
+    - POS
+	01- Colocar um checkbox indicando os pos que estão na chart. (OK)
+	02- Mostrar na lista de pos os pos que se encontram na char. (OK)
 
-- Maquinas
-01- Criar exibição das maquinas. (OK)
+    - Maquinas
+	01- Criar exibição das maquinas. (OK)
+
 -Bugs
 ---------------------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (1.7)
