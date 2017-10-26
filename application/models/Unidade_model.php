@@ -168,13 +168,37 @@ class Unidade_model extends CI_Model {
         if (isset($limite)){
             $query = $this->db->query(
                 "SELECT *
+                FROM unidade                 
+                WHERE idestado = 1
+                ORDER BY nome
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                    "SELECT *
+                    FROM unidade   
+                    WHERE idestado = 1");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todas areas Administração
+    public function todasUnidadesAdm($limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
                 FROM unidade 
                 ORDER BY nome
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
                     "SELECT *
-                    FROM unidade");
+                    FROM unidade
+                    ORDER BY nome");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){

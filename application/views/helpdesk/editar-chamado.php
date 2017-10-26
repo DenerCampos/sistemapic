@@ -197,9 +197,10 @@
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="edita-anexo0">
-                                            <input class="" id="edita-anexo0" name="edita-anexo0" type="file" accept="image/png, image/jpeg, application/pdf">
+                                            <input class="" id="edita-anexo0" name="edita-anexo0" type="file">
                                             Escolher arquivo
                                         </label>
+                                        <div class="nome-arquivo-anexo"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
@@ -208,9 +209,10 @@
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="edita-anexo1">
-                                            <input class="" id="edita-anexo1" name="edita-anexo1" type="file" accept="image/png, image/jpeg, application/pdf">
+                                            <input class="" id="edita-anexo1" name="edita-anexo1" type="file">
                                             Escolher arquivo
                                         </label>
+                                        <div class="nome-arquivo-anexo"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
@@ -219,9 +221,10 @@
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="edita-anexo2">
-                                            <input class="" id="edita-anexo2" name="edita-anexo2" type="file" accept="image/png, image/jpeg, application/pdf">
+                                            <input class="" id="edita-anexo2" name="edita-anexo2" type="file">
                                             Escolher arquivo
                                         </label>
+                                        <div class="nome-arquivo-anexo"></div>
                                     </div>
                                 </div> <!--Fim Anexos-->
                             </div> <!-- Fim ocorrencia -->  

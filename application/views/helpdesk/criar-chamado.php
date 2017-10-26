@@ -104,7 +104,8 @@
                                     <div class="form-group">
                                         <label for="iptCriVnc" class="control-label">Vnc:</label>
                                         <input type="text" name="iptCriVnc" id="iptCriVnc"
-                                               class="form-control" placeholder="000">
+                                               class="form-control" placeholder="000"
+                                               value="<?php echo $vnc; ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -143,9 +144,10 @@
                                         </a>
                                     </div>
                                     <label class="btn btn-default" for="cria-anexo0">
-                                        <input class="" id="cria-anexo0" name="cria-anexo0" type="file" accept="image/png, image/jpeg, application/pdf">
+                                        <input class="" id="cria-anexo0" name="cria-anexo0" type="file" accept="file_extension|audio/*|video/*|image/*|media_type">
                                         Escolher arquivo
                                     </label>
+                                    <div class="nome-arquivo-anexo"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="imagem-anexo-preview">
@@ -154,9 +156,10 @@
                                         </a>
                                     </div>
                                     <label class="btn btn-default" for="cria-anexo1">
-                                        <input class="" id="cria-anexo1" name="cria-anexo1" type="file" accept="image/png, image/jpeg, application/pdf">
+                                        <input class="" id="cria-anexo1" name="cria-anexo1" type="file" accept="file_extension|audio/*|video/*|image/*|media_type">
                                         Escolher arquivo
                                     </label>
+                                    <div class="nome-arquivo-anexo"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="imagem-anexo-preview">
@@ -165,9 +168,10 @@
                                         </a>
                                     </div>
                                     <label class="btn btn-default" for="cria-anexo2">
-                                        <input class="" id="cria-anexo2" name="cria-anexo2" type="file" accept="image/png, image/jpeg, application/pdf">
+                                        <input class="" id="cria-anexo2" name="cria-anexo2" type="file" accept="file_extension|audio/*|video/*|image/*|media_type">
                                         Escolher arquivo
                                     </label>
+                                    <div class="nome-arquivo-anexo"></div>
                                 </div>                                                                
                             </div> <!-- Fim anexos -->
                         </div> <!-- Fim ocorrencia -->

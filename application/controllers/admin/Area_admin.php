@@ -37,7 +37,7 @@ class Area_admin extends CI_Controller {
         $this->load->view('admin/areas/areas', array(
             "assetsUrl" => base_url("assets"),
             "estado" => new Estado_model(),
-            "areas" => $this->area->todasAreas(7, $this->recuperaOffset()),
+            "areas" => $this->area->todasAreasAdm(7, $this->recuperaOffset()),
             "paginas" => $this->listarAreas()));
         //Modal
         $this->load->view('admin/areas/criar-areas', array(

@@ -1,38 +1,40 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
                 <!-- fechados -->
                 <?php if (isset($fechadas)) { ?>
+                <!-- painel -->
                 <div class="panel panel-success">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Chamados fechados</h3>
+                        <h3 class="panel-title"><strong>Chamados fechados</strong></h3>
                     </div>
                     <div class="panel-body table-responsive">
+                        <!-- tabela -->
                         <table class="table table-hover">
+                            <!-- cabeçalho tabela -->
                             <thead>
                                 <tr>
                                     <th>Número</th>
+                                    <th>Aberto em</th>
+                                    <th>Fechado em</th>
                                     <th>Usuário</th>
                                     <th>Problema</th>
-                                    <th>Data abertura</th>
-                                    <th>Data fechamento</th>
                                     <th>Descrição</th>
                                     <th>Técnico</th>
-                                    <th>Estado</th>
                                     <th class="text-right">Opções</th>
                                 </tr>
                             </thead>
+                            <!-- corpo tabela -->
                             <tbody>
                                 <?php foreach ($fechadas as $fechada) { ?>
                                 <tr>
-                                    <td><?php echo $fechada->getIdocorrencia(); ?></td>
-                                    <td><?php echo $fechada->getUsuario(); ?></td>
-                                    <td><?php echo $problema->buscaId($fechada->getIdproblema())->getNome(); ?></td>
+                                    <td><?php echo $fechada->getIdocorrencia(); ?></td>                                    
                                     <td><?php echo date("d/m/Y - H:i", strtotime($fechada->getData_abertura())); ?></td>
                                     <td><?php echo date("d/m/Y - H:i", strtotime($fechada->getData_fechamento())); ?></td>
+                                    <td><?php echo $fechada->getUsuario(); ?></td>
+                                    <td><?php echo $problema->buscaId($fechada->getIdproblema())->getNome(); ?></td>
                                     <td title="<?php echo $fechada->getDescricao(); ?>">
                                         <?php echo $fechada->reduzirDescricao($fechada->getDescricao()); ?>
                                     </td>
                                     <td><?php echo $usuario->buscaId($fechada->getUsuario_fecha())->getNome(); ?></td>
-                                    <td><?php echo $estado->buscaId($fechada->getIdocorrencia_estado())->getNome(); ?></td>
                                     <td class="text-right opcoes">
                                         <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                            data-toggle="modal" data-target="#mdlImprimirChamado"

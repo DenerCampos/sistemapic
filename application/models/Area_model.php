@@ -59,12 +59,36 @@ class Area_model extends CI_Model {
             $query = $this->db->query(
                 "SELECT *
                 FROM area 
+                WHERE idestado = 1
                 ORDER BY nome
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
                     "SELECT *
-                    FROM area");
+                    FROM area
+                    WHERE idestado = 1");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todas areas, mesmo as desativadas
+    public function todasAreasAdm($limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM area
+                ORDER BY nome
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                    "SELECT *
+                    FROM area
+                    ORDER BY nome");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){

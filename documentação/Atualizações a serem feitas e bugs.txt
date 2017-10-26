@@ -1,9 +1,24 @@
 #bugs
-
+   - Helpdesk
+	01- A listagem de ocorrencias em atendimento do tecnico esta aparecendo de todas as areas. Colocar para aparecer apenas de cada area. (mudar o sql de pesquisa, talvez vai ter que unificar areas, tipo, apenas um TI, apenas uma manutenção para ambos. para assim todos da area ter acesso a todos os chamados da area ou colocar as duas areas na pesquisa.) (OK - mudei a consulta sql e agrupei as areas, unificando-as)
+	02- A listagem de ocorrencias em aberto para os tecnicos esta errada, quando o tecnico abrir chamado para outra area que não é a dele, ele não pode ter a opção de atender esse chamado. (OK)
+	03- Unificar as areas de atendimento, TI PP e TI PC vai ser so TI, ELETRICA PP e ELETRICA PC vai ser ELETRICA e assim com as outras, isso é para os tecnicos das areas conseguirem visualizarem os mesmo chamados. (OK - criei outro metodo todasAreasAdm para listar todas as areas na parte da administração)
+	04- Na pesquisa, não pode aparecer chamados de outras areas para os tecnicos.
+	05- Revisar o perfil usuario e admin. (OK)
 
 #melhorias
     - Chek-list
 	01- Implementar o checklist, desenvolver um app android e fazer os lamçamentos via o aplicativo.
+    - Helpdesk
+	01- Permitir inserir arquivos de todos os tipos e tratar para aparecer imagem somente de fotos e icone caso outros arquivos. (mudei no php.ini o post_max_size = 100M e upload_max_filesize = 30M) (ja fiz no novo chamado e no vizualizar)
+	02- Retirar da listagem a opção ESTADO. (OK)
+	03- Alterar Data atendimento para Ultima atualização.
+	04- Fazer busca por comentario.
+	05- Inserir o Vnc automaticamente pegando o ip da maquina que acesso o sistema. (OK)
+	06- Adicionar bagdes com a quantidade de chamados. (OK)
+    - Sistema
+	01- Tentar colocar para funcionar em iexplorer 6. - Não da. tera que que não permitir ou avisar que o sistema não roda no ie
+
 
 #Nova Versão (1.9)
 -Melhorias

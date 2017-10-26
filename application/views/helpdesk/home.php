@@ -16,7 +16,7 @@
                   action="<?php echo base_url("ocorrencia/buscar") ?>">
                 <div class="input-group">
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
-                           placeholder="Busca por número, problema ou descrição...">
+                           placeholder="Busca por número, problema, descrição ou comentários...">
                     <span class="input-group-btn">
                         <button class="btn btn-primary carregando" type="submit">
                             <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
@@ -33,18 +33,21 @@
             <div role="tabpanel">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="<?php if((isset($aba)) && ($aba == "aberto")) {echo "active";} if (!isset($aba)) {echo "active";} ?>" role="presentation">                        
-                        <a href="<?php echo base_url('ocorrencia/aberto'); ?>">
-                            Em aberto
+                        <a href="<?php echo base_url('ocorrencia/aberto'); ?>" title="Chamados em aberto">
+                            <strong>Em aberto</strong>
+                            <span class="badge"><?php echo $contadores[0]; ?></span>
                         </a>
                     </li>
                     <li class="<?php if((isset($aba)) && ($aba == "atendimento")) {echo "active";} ?>" role="presentation">                        
-                        <a href="<?php echo base_url('ocorrencia/atendimento'); ?>">
-                            Em atendimento
+                        <a href="<?php echo base_url('ocorrencia/atendimento'); ?>" title="Chamados em atendimento">
+                            <strong>Em atendimento</strong>
+                            <span class="badge"><?php echo $contadores[1]; ?></span>
                         </a>
                     </li>
                     <li class="<?php if((isset($aba)) && ($aba == "fechado")) {echo "active";} ?>" role="presentation">                        
-                        <a href="<?php echo base_url('ocorrencia/fechado'); ?>">
-                            Fechado
+                        <a href="<?php echo base_url('ocorrencia/fechado'); ?>" title="Chamados fechados">
+                            <strong>Fechado</strong>
+                            <span class="badge"><?php echo $contadores[2]; ?></span>
                         </a>
                     </li>                    
                 </ul>                

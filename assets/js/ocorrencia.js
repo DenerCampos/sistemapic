@@ -8,61 +8,43 @@ $(document).ready(function() {
     //Anexar help desk
     // Criar chamado
     $('#cria-anexo0').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     $('#cria-anexo1').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     $('#cria-anexo2').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     
     // editar chamado
     $('#edita-anexo0').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     $('#edita-anexo1').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     $('#edita-anexo2').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     
     // fechar chamado
     $('#fecha-anexo0').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     $('#fecha-anexo1').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     $('#fecha-anexo2').change(function(){
-        console.log("input teve mudanças");
-        $elemento = $(this).parent().prev();
-        //$elemento.find('.lightview').removeClass("hidden");
+        $elemento = $(this).parent().parent();
         anexarImagem(this, $elemento);
     });
     
@@ -91,15 +73,40 @@ function atualizaChamadoAberto(){
 function anexarImagem(input, elemento){
     //verifica se existe realmente a imagem
     if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {            
-            $(elemento).find('.lightview').attr("href", e.target.result);
-            $(elemento).find('img').attr('src', e.target.result);
-            $(elemento).find('.lightview').removeClass("hidden");
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-    else {
+        //Verifica o tipo de arquivo foi feito o upload
+        if (input.files[0].type === "text/plain"){
+            $(elemento).find('.lightview').attr("href", baseUrl+"/assets/img/default-txt.png");
+            $(elemento).find('img').attr('src', baseUrl+"/assets/img/default-txt.png");
+            $(elemento).find('.nome-arquivo-anexo').html(input.files[0].name);            
+        } else if ((input.files[0].type === "image/gif") || (input.files[0].type === "image/png") || (input.files[0].type === "image/jpeg") || (input.files[0].type === "image/bmp")){
+            var reader = new FileReader();
+            reader.onload = function (e) {            
+                $(elemento).find('.lightview').attr("href", e.target.result);
+                $(elemento).find('img').attr('src', e.target.result);
+                $(elemento).find('.nome-arquivo-anexo').html(input.files[0].name);
+            };
+            //lendo arquivo
+            reader.readAsDataURL(input.files[0]);
+        } else if (input.files[0].type === "application/pdf"){
+            var reader = new FileReader();
+            reader.onload = function (e) {            
+                $(elemento).find('.lightview').attr("href", e.target.result);
+                $(elemento).find('img').attr('src', baseUrl+"/assets/img/default-pdf.png");
+                $(elemento).find('.nome-arquivo-anexo').html(input.files[0].name);
+            };
+            //lendo arquivo
+            reader.readAsDataURL(input.files[0]);
+        } else if (input.files[0].type === "application/x-msdownload"){
+            $(elemento).find('.lightview').attr("href", baseUrl+"/assets/img/default-exe.png");
+            $(elemento).find('img').attr('src', baseUrl+"/assets/img/default-exe.png");
+            $(elemento).find('.nome-arquivo-anexo').html(input.files[0].name);
+        } else { //outros
+            //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet excel //application/msword word //application/x-msdownload executavel
+            $(elemento).find('.lightview').attr("href", baseUrl+"/assets/img/default-xxx.png");
+            $(elemento).find('img').attr('src', baseUrl+"/assets/img/default-xxx.png");
+            $(elemento).find('.nome-arquivo-anexo').html(input.files[0].name);
+        } 
+        
     }
 } 
 
@@ -207,10 +214,21 @@ function visualizarChamado(ancor){
                                 '<label for="" class="control-label">Anexos:</label></div>'+
                                 '<div class="col-md-12" id="imagem-anexo-visualiza"></div>';
                     $("#visualiza-anexo").append($cabecalho);
-                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){                       
-                        $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
-                        $("#imagem-anexo-visualiza").append($html);
-                        //$(".anexo-grupo").removeClass("hidden");
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){ 
+                        //verifica se é imagem ou arquivo                       
+                        if (msg.arquivos[i].imagem === 1){
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    msg.arquivos[i].url+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-visualiza").append($html);
+                        } else {
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="" download><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    baseUrl+'/assets/img/default-arq.png'+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-visualiza").append($html);
+                        }
                     } 
                 } else {
                     $("#visualiza-anexo-badge").html("");
@@ -330,10 +348,27 @@ function editarChamado(ancor){
                                 '<label for="" class="control-label">Anexos:</label></div>'+
                                 '<div class="col-md-12" id="imagem-anexo-edita"></div>';
                     $("#edita-anexo-antigo").append($cabecalho);
-                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){                       
-                        $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
-                        $("#imagem-anexo-edita").append($html);
-                        //$(".anexo-grupo").removeClass("hidden");
+//                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){                       
+//                        $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
+//                        $("#imagem-anexo-edita").append($html);
+//                        //$(".anexo-grupo").removeClass("hidden");
+//                    } 
+//                } else {
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){ 
+                        //verifica se é imagem ou arquivo                       
+                        if (msg.arquivos[i].imagem === 1){
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    msg.arquivos[i].url+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-edita").append($html);
+                        } else {
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="" download><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    baseUrl+'/assets/img/default-arq.png'+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-edita").append($html);
+                        }
                     } 
                 } else {
                     $("#edita-anexo-badge").html("");
@@ -396,14 +431,24 @@ function fecharChamado(ancor){
                                 '<label for="" class="control-label">Anexos:</label></div>'+
                                 '<div class="col-md-12" id="imagem-anexo-fecha"></div>';
                     $("#fecha-anexo-antigo").append($cabecalho);
-                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){                       
-                        $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i]+'" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+msg.arquivos[i]+'"></a></div>';
-                        $("#imagem-anexo-fecha").append($html);
-                        //$(".anexo-grupo").removeClass("hidden");
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){ 
+                        //verifica se é imagem ou arquivo                       
+                        if (msg.arquivos[i].imagem === 1){
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    msg.arquivos[i].url+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-fecha").append($html);
+                        } else {
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="" download><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    baseUrl+'/assets/img/default-arq.png'+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-fecha").append($html);
+                        }
                     } 
                 } else {
                     $("#fecha-anexo-badge").html("");
-                    //$(".anexo-grupo").addClass("hidden");
                 }
             }
             else{

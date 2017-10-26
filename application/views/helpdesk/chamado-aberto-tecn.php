@@ -1,41 +1,49 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
-                <!-- em aberto -->
+                <!-- em aberto tecnico-->
                 <?php if (isset($abertas)) { ?>
                     <div class="panel panel-danger" id="chamado-aberto">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Chamados em aberto</h3>
+                            <h3 class="panel-title"><strong>Chamados em aberto</strong><small> seus e da sua área de atendimento.</small></h3>
                         </div>
+                        <!-- painel -->
                         <div class="panel-body table-responsive">
+                            <!-- tabela -->
                             <table class="table table-hover table-responsive">
+                                <!-- cabeçalho tabela -->
                                 <thead>
                                     <tr>
                                         <th>Número</th>
+                                        <th>Aberto em</th>
                                         <th>Usuário</th>
                                         <th>Problema</th>
-                                        <th>Data abertura</th>
                                         <th>Descrição</th>
-                                        <th>Estado</th>
+                                        <th>Área</th>
+                                        <th>Unidade</th>
                                         <th class="text-right">Opções</th>
                                     </tr>
                                 </thead>
+                                <!-- corpo tabela -->
                                 <tbody>
                                     <?php foreach ($abertas as $aberta) { ?>
                                     <tr>
                                         <td><?php echo $aberta->getIdocorrencia(); ?></td>
+                                        <td><?php echo date("d/m/Y - H:i", strtotime($aberta->getData_abertura())); ?></td>
                                         <td><?php echo $aberta->getUsuario(); ?></td>
                                         <td><?php echo $problema->buscaId($aberta->getIdproblema())->getNome(); ?></td>
-                                        <td><?php echo date("d/m/Y - H:i", strtotime($aberta->getData_abertura())); ?></td>
                                         <td title="<?php echo $aberta->getDescricao(); ?>">
                                             <?php echo $aberta->reduzirDescricao($aberta->getDescricao()); ?>
                                         </td>
-                                        <td><?php echo $estado->buscaId($aberta->getIdocorrencia_estado())->getNome(); ?></td>
+                                        <td><?php echo $area->buscaId($aberta->getIdarea())->getNome(); ?></td>
+                                        <td><?php echo $unidade->buscaId($aberta->getIdunidade())->getNome(); ?></td>
                                         <td class="text-right opcoes">
+                                            <?php if ($this->session->userdata("area") == $aberta->getIdarea()) { //tecnico não atende area diferente ?>
                                             <a title="Atender" role="button" href="#mdlAtenderChamado" 
                                                data-toggle="modal" data-target="#mdlAtenderChamado"
                                                data-id="<?php echo $aberta->getIdocorrencia(); ?>"
                                                onclick="atenderChamado(this)">
                                                <i class="fa fa-sign-in" ></i>
                                             </a>
+                                            <?php } ?>
                                             <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                                data-toggle="modal" data-target="#mdlImprimirChamado"
                                                data-id="<?php echo $aberta->getIdocorrencia(); ?>"
@@ -72,6 +80,7 @@
             </div>  <!--tab-panel-->
         </div>
     </div><!--row--> 
+    
     <div class="row">
         <div class="pagina-direita">
             <?php if (isset($paginas)) {?>

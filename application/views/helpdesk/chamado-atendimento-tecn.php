@@ -1,38 +1,42 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
-                <!-- em atendimento -->
+                <!-- em atendimento tecnico-->
                 <?php if (isset($atendimentos)) { ?>
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Chamados em atendimento</h3>
+                            <h3 class="panel-title"><strong>Chamados em atendimento</strong><small> seus e da sua área de atendimento.</small></h3>
                         </div>
+                        <!-- painel -->
                         <div class="panel-body table-responsive">
+                             <!-- tabela -->
                             <table class="table table-hover">
+                                <!-- cabeçalho tabela -->
                                 <thead>
                                     <tr>
                                         <th>Número</th>
+                                        <th>Aberto em</th>
+                                        <th>Última atualização</th>
                                         <th>Usuário</th>
                                         <th>Problema</th>
-                                        <th>Data abertura</th>
-                                        <th>Data atendimento</th>
                                         <th>Descrição</th>
                                         <th>Técnico</th>
-                                        <th>Estado</th>
+                                        <th>Área</th>
                                         <th class="text-right">Opções</th>
                                     </tr>
                                 </thead>
+                                 <!-- corpo tabela -->
                                 <tbody>
                                     <?php foreach ($atendimentos as $atendimento) { ?>
                                     <tr>
                                         <td><?php echo $atendimento->getIdocorrencia(); ?></td>
-                                        <td><?php echo $atendimento->getUsuario(); ?></td>
-                                        <td><?php echo $problema->buscaId($atendimento->getIdproblema())->getNome(); ?></td>
                                         <td><?php echo date("d/m/Y - H:i", strtotime($atendimento->getData_abertura())); ?></td>
                                         <td><?php echo date("d/m/Y - H:i", strtotime($atendimento->getData_alteracao())); ?></td>
+                                        <td><?php echo $atendimento->getUsuario(); ?></td>
+                                        <td><?php echo $problema->buscaId($atendimento->getIdproblema())->getNome(); ?></td> 
                                         <td title="<?php echo $atendimento->getDescricao(); ?>">
                                             <?php echo $atendimento->reduzirDescricao($atendimento->getDescricao()); ?>
                                         </td>
                                         <td><?php echo $usuario->buscaId($atendimento->getUsuario_atende())->getNome(); ?></td>
-                                        <td><?php echo $estado->buscaId($atendimento->getIdocorrencia_estado())->getNome();; ?></td>
+                                        <td><?php echo $area->buscaId($atendimento->getIdarea())->getNome(); ?></td>
                                         <td class="text-right opcoes">
                                             <a title="Editar" role="button" href="#mdlEditarChamado" 
                                                data-toggle="modal" data-target="#mdlEditarChamado"
@@ -90,6 +94,7 @@
             </div>  <!--tab-panel-->
         </div>
     </div><!--row--> 
+    
     <div class="row">
         <div class="pagina-direita">
             <?php if (isset($paginas)) {?>

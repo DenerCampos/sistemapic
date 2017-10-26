@@ -22,7 +22,7 @@
                   action="<?php echo base_url("ocorrencia/buscar") ?>">
                 <div class="input-group">
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
-                           placeholder="Busca por número, problema ou descrição...">
+                           placeholder="Busca por número, problema, descrição ou comentários...">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>
@@ -48,20 +48,21 @@
             
             <!-- Aberto -->
             <?php if (!empty($abertos)) {?>
-            <div class="panel panel-info">
+            <div class="panel panel-danger">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Chamados em aberto</h3>
+                    <h3 class="panel-title"><strong>Chamados em aberto</strong></h3>
                 </div>
                 <div class="panel-body table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Número</th>
+                                <th>Número</th>                                
+                                <th>Aberto em</th>
                                 <th>Usuário</th>
                                 <th>Problema</th>
-                                <th>Data abertura</th>
                                 <th>Descrição</th>
-                                <th>Estado</th>
+                                <th>Área</th>
+                                <th>Unidade</th>
                                 <th class="text-right">Opções</th>
                             </tr>
                         </thead>
@@ -69,17 +70,18 @@
                             <?php foreach ($abertos as $numero) { ?>
                             <tr>
                                 <td><?php echo $numero->getIdocorrencia(); ?></td>
+                                <td><?php echo date("d/m/Y - H:i", strtotime($numero->getData_abertura())); ?></td>
                                 <td><?php echo $numero->getUsuario(); ?></td>
                                 <td><?php echo $problema->buscaId($numero->getIdproblema())->getNome(); ?></td>
-                                <td><?php echo date("d/m/Y - H:i", strtotime($numero->getData_abertura())); ?></td>
                                 <td title="<?php echo $numero->getDescricao(); ?>">
                                     <?php echo $numero->reduzirDescricao($numero->getDescricao()); ?>
                                 </td>
-                                <td><?php echo $estado->buscaId($numero->getIdocorrencia_estado())->getNome(); ?></td>
+                                <td><?php echo $area->buscaId($numero->getIdarea())->getNome(); ?></td>
+                                <td><?php echo $unidade->buscaId($numero->getIdunidade())->getNome(); ?></td>
                                 <td class="text-right opcoes">
                                     
                                     <!-- Tecnico e admin -->
-                                    <?php if ($this->session->userdata('nivel') != 2) { ?>
+                                    <?php if (($this->session->userdata('nivel') == 0) || ($numero->getIdarea() == $this->session->userdata("area"))) { ?>
                                     <a title="Atender" role="button" href="#mdlAtenderChamado" 
                                        data-toggle="modal" data-target="#mdlAtenderChamado"
                                        data-id="<?php echo $numero->getIdocorrencia(); ?>"
@@ -122,21 +124,22 @@
             
             <!-- Em atendimento -->
             <?php if (!empty($atendimentos)) {?>
-            <div class="panel panel-danger">
+            <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Chamados em atendimento</h3>
+                    <h3 class="panel-title"><strong>Chamados em atendimento</strong></h3>
                 </div>
                 <div class="panel-body table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Número</th>
+                                <th>Número</th>                                
+                                <th>Aberto em</th>
+                                <th>Última atualização</th>
                                 <th>Usuário</th>
                                 <th>Problema</th>
-                                <th>Data abertura</th>
-                                <th>Data atualização</th>
                                 <th>Descrição</th>
                                 <th>Técnico</th>
+                                <th>Área</th>
                                 <th class="text-right">Opções</th>
                             </tr>
                         </thead>
@@ -144,14 +147,16 @@
                             <?php foreach ($atendimentos as $numero) { ?>
                             <tr>
                                 <td><?php echo $numero->getIdocorrencia(); ?></td>
-                                <td><?php echo $numero->getUsuario(); ?></td>
-                                <td><?php echo $problema->buscaId($numero->getIdproblema())->getNome(); ?></td>
                                 <td><?php echo date("d/m/Y - H:i", strtotime($numero->getData_abertura())); ?></td>
                                 <td><?php echo date("d/m/Y - H:i", strtotime($numero->getData_alteracao())); ?></td>
+                                <td><?php echo $numero->getUsuario(); ?></td>
+                                <td><?php echo $problema->buscaId($numero->getIdproblema())->getNome(); ?></td>
                                 <td title="<?php echo $numero->getDescricao(); ?>">
                                     <?php echo $numero->reduzirDescricao($numero->getDescricao()); ?>
                                 </td>
                                 <td><?php echo $usuario->buscaId($numero->getUsuario_atende())->getNome(); ?></td>
+                                <td><?php echo $area->buscaId($numero->getIdarea())->getNome(); ?></td>
+                                
                                 <td class="text-right opcoes">
                                     <a title="Editar" role="button" href="#mdlEditarChamado" 
                                        data-toggle="modal" data-target="#mdlEditarChamado"
@@ -159,13 +164,17 @@
                                        onclick="editarChamado(this)">
                                         <i class="fa fa-pencil-square-o" ></i>
                                     </a>
+                                    <!-- Tecnico e admin -->
+                                    <?php if ($this->session->userdata('nivel') != 2) { ?>
                                     <a title="Emcaminhar" role="button" href="#mdlEncaminharChamado" 
                                        data-toggle="modal" data-target="#mdlEncaminharChamado"
                                        data-id="<?php echo $numero->getIdocorrencia(); ?>"
                                        onclick="encaminharChamado(this)">
                                         <i class="fa fa-external-link" ></i>
                                     </a>
-                                    <?php if (($this->session->userdata('nivel') != 2) && ($numero->getUsuario_atende() == $this->session->userdata('id'))) { ?>
+                                    <?php }?>
+                                    <!-- Tecnico e admin  -->
+                                    <?php if (($this->session->userdata('nivel') == 0) || ($numero->getUsuario_atende() == $this->session->userdata('id'))) { ?>
                                     <a title="Fechar" role="button" href="#mdlFecharChamado" 
                                        data-toggle="modal" data-target="#mdlFecharChamado"
                                        data-id="<?php echo $numero->getIdocorrencia(); ?>"
@@ -206,19 +215,20 @@
             <?php if (!empty($fechados)) {?>
             <div class="panel panel-success">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Chamados fechados</h3>
+                    <h3 class="panel-title"><strong>Chamados fechados</strong></h3>
                 </div>
                 <div class="panel-body table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Número</th>
+                                <th>Número</th>                                
+                                <th>Aberto em</th>
+                                <th>Fechado em</th>
                                 <th>Usuário</th>
                                 <th>Problema</th>
-                                <th>Data abertura</th>
-                                <th>Data fechamento</th>
                                 <th>Descrição</th>
                                 <th>Técnico</th>
+                                <th>Área</th>
                                 <th class="text-right">Opções</th>
                             </tr>
                         </thead>
@@ -226,14 +236,15 @@
                             <?php foreach ($fechados as $numero) { ?>
                             <tr>
                                 <td><?php echo $numero->getIdocorrencia(); ?></td>
-                                <td><?php echo $numero->getUsuario(); ?></td>
-                                <td><?php echo $problema->buscaId($numero->getIdproblema())->getNome(); ?></td>
                                 <td><?php echo date("d/m/Y - H:i", strtotime($numero->getData_abertura())); ?></td>
                                 <td><?php echo date("d/m/Y - H:i", strtotime($numero->getData_fechamento())); ?></td>
+                                <td><?php echo $numero->getUsuario(); ?></td>
+                                <td><?php echo $problema->buscaId($numero->getIdproblema())->getNome(); ?></td>
                                 <td title="<?php echo $numero->getDescricao(); ?>">
                                     <?php echo $numero->reduzirDescricao($numero->getDescricao()); ?>
                                 </td>
                                 <td><?php echo $usuario->buscaId($numero->getUsuario_fecha())->getNome(); ?></td>
+                                <td><?php echo $area->buscaId($numero->getIdarea())->getNome(); ?></td>
                                 <td class="text-right opcoes">                                    
                                     <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                        data-toggle="modal" data-target="#mdlImprimirChamado"

@@ -196,9 +196,10 @@
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="fecha-anexo0">
-                                            <input class="" id="fecha-anexo0" name="fecha-anexo0" type="file" accept="image/png, image/jpeg, application/pdf">
+                                            <input class="" id="fecha-anexo0" name="fecha-anexo0" type="file">
                                             Escolher arquivo
                                         </label>
+                                        <div class="nome-arquivo-anexo"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
@@ -207,9 +208,10 @@
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="fecha-anexo1">
-                                            <input class="" id="fecha-anexo1" name="fecha-anexo1" type="file" accept="image/png, image/jpeg, application/pdf">
+                                            <input class="" id="fecha-anexo1" name="fecha-anexo1" type="file">
                                             Escolher arquivo
                                         </label>
+                                        <div class="nome-arquivo-anexo"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="imagem-anexo-preview">
@@ -218,9 +220,10 @@
                                             </a>
                                         </div>
                                         <label class="btn btn-default" for="fecha-anexo2">
-                                            <input class="" id="fecha-anexo2" name="fecha-anexo2" type="file" accept="image/png, image/jpeg, application/pdf">
+                                            <input class="" id="fecha-anexo2" name="fecha-anexo2" type="file">
                                             Escolher arquivo
                                         </label>
+                                        <div class="nome-arquivo-anexo"></div>
                                     </div>
                                 </div> <!--Fim Anexos-->
                                 

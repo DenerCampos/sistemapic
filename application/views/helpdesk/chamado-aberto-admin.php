@@ -1,33 +1,41 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
-                <!-- em aberto -->
+                <!-- em aberto admin-->
                 <?php if (isset($abertas)) { ?>
+                <!-- painel -->
                 <div class="panel panel-danger" id="chamado-aberto">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Chamados em aberto</h3>
+                        <h3 class="panel-title"><strong>Chamados em aberto</strong></h3>
                     </div>
                     <div class="panel-body table-responsive">
+                        <!-- tabela -->
                         <table class="table table-hover table-responsive">
+                            <!-- cabeçalho tabela -->
                             <thead>
                                 <tr>
-                                    <th>Número</th>
+                                    <th>Número</th>                                    
+                                    <th>Abertura em</th>
                                     <th>Usuário</th>
                                     <th>Problema</th>
-                                    <th>Data abertura</th>
                                     <th>Descrição</th>
+                                    <th>Área</th>
+                                    <th>Unidade</th>
                                     <th>Estado</th>
                                     <th class="text-right">Opções</th>
                                 </tr>
                             </thead>
+                            <!-- corpo tabela -->
                             <tbody>
                                 <?php foreach ($abertas as $aberta) { ?>
                                 <tr>
                                     <td><?php echo $aberta->getIdocorrencia(); ?></td>
-                                    <td><?php echo $aberta->getUsuario(); ?></td>
-                                    <td><?php echo $problema->buscaId($aberta->getIdproblema())->getNome(); ?></td>
                                     <td><?php echo date("d/m/Y - H:i", strtotime($aberta->getData_abertura())); ?></td>
+                                    <td><?php echo $aberta->getUsuario(); ?></td>
+                                    <td><?php echo $problema->buscaId($aberta->getIdproblema())->getNome(); ?></td>                                    
                                     <td title="<?php echo $aberta->getDescricao(); ?>">
                                         <?php echo $aberta->reduzirDescricao($aberta->getDescricao()); ?>
                                     </td>
+                                    <td><?php echo $area->buscaId($aberta->getIdarea())->getNome(); ?></td>
+                                    <td><?php echo $unidade->buscaId($aberta->getIdunidade())->getNome(); ?></td>
                                     <td><?php echo $estado->buscaId($aberta->getIdocorrencia_estado())->getNome(); ?></td>
                                     <td class="text-right opcoes">
                                         <a title="Atender" role="button" href="#mdlAtenderChamado" 
@@ -70,6 +78,7 @@
             </div>  <!--tab-panel-->
         </div>
     </div><!--row--> 
+    
     <div class="row">
         <div class="pagina-direita">
             <?php if (isset($paginas)) {?>
@@ -78,5 +87,6 @@
             </nav>
             <?php }?>
         </div>
-    </div><!--row-->     
+    </div><!--row-->  
+    
 </div>

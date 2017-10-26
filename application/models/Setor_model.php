@@ -169,6 +169,30 @@ class Setor_model extends CI_Model {
             $query = $this->db->query(
                 "SELECT *
                 FROM setor 
+                WHERE idestado = 1
+                ORDER BY nome
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                    "SELECT *
+                    FROM setor
+                    WHERE idestado = 1
+                    ORDER BY nome");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todas areas
+    public function todosSetoresAdm($limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM setor 
                 ORDER BY nome
                 LIMIT $ponteiro, $limite");           
         } else {
