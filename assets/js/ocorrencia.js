@@ -48,9 +48,9 @@ $(document).ready(function() {
         anexarImagem(this, $elemento);
     });
     
-    //Chama a função que atualiza o chamados em aberto em 5 minutos (300000)
-    var atualiza = setInterval(atualizaChamadoAberto, 300000);
-    
+    //Chama a função que atualiza o chamados em aberto em 5 minutos (300000) 2 minutos (120000)
+    var atualizaChamados = setInterval(atualizaChamadoAberto, 300000);
+       
 });
 
 //Atualiza pagina de chamados em aberto de 5 em 5 minutos se nenhuma modal estiver aberta.
@@ -543,6 +543,30 @@ $('#frmImpChamado').validate({
     invalidHandler: function (event, validator) {          
         $('#erro-imprimir-chamado').html("Erro Geral! \n\ <strong>Informar o TI</strong>.");
         $('#erro-imprimir-chamado').show();
+    }
+});
+
+//Encaminhar chamado
+$('#frmEncChamado').validate({    
+    //regras de validações
+    rules: {
+        iptEncId: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptEncId: {            
+            required: "Erro no id."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-encaminhar-chamado').html("Erro Geral! \n\ <strong>Informar o TI</strong>.");
+        $('#erro-encaminhar-chamado').show();
     }
 });
 

@@ -20,7 +20,18 @@
         
         <!-- Variavel global da url do projeto-->  
         <script type="text/javascript">            
-            var baseUrl = "<?php echo base_url(); ?>" ;            
+            var baseUrl = "<?php echo base_url(); ?>" ; 
+            //Se navegador IE, não compativel
+            if (isIE()) {
+                // is IE
+                window.location.href = baseUrl+"home/invalido";
+            }   
+
+            //Verifica se navegador é o IE, se sim, retorna a versão
+            function isIE () {
+                var myNav = navigator.userAgent.toLowerCase();
+                return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1]) : false;
+            }
         </script>
     </head>
     <body>

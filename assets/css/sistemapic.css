@@ -119,6 +119,74 @@ a:hover, a:focus{
     width: 200px;
 }
 
+
+/*notificações*/
+
+.notificacao-link-novo{
+    color: #000 !important;
+    background-color: #337ab7;
+}
+
+.notificacao-link-novo:hover{
+    color: #333 !important;
+}
+
+.notificacao-link{
+    color: #777;
+    background-color: transparent;
+}
+
+.navbar-notificacao{
+    width: 400px;
+    height: 400px;  
+    padding: 0px;
+    overflow-y: auto;
+}
+
+.divider-notificacao{
+    margin: 0px !important;
+}
+
+.notificacao {
+    padding: 10px 10px;
+}
+
+.notificacao-novo{
+    background-color: #ccc;
+}
+
+.notificacao:hover {
+    background-color: rgba(51, 122, 183, 0.31);
+}
+
+.titulo-notificacao{
+    text-decoration: underline;
+}
+
+.texto-notificacao{
+    font-size: small;
+    padding-top: 5px;
+    padding-left: 10px;
+}
+.rodape-notificacao{
+    font-size: smaller;
+    padding-left: 10px;
+    color: #777;
+}
+
+.notificacao-indicador{
+    padding: 2px 5px;
+    background-color: #337ab7;
+    color: #fff;
+    font-weight: 600;
+}
+
+.carregamento-notificacao{
+    text-align: center;
+    font-size: x-large;
+    padding: 40% 0px;
+}
+
 /*mapas*/
 
 .mapa-pic{

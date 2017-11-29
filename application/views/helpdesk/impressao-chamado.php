@@ -116,10 +116,16 @@
                 
         <?php if (isset($anexos)) { ?>
         <h3 class="texto-anexo">Anexos</h3>
-        <?php foreach ($anexos as $anexo) { ?>       
-        <img src="<?php echo $anexo; ?>" class="imagem-anexo" />
+        <?php foreach ($anexos as $anexo) { ?> 
+        <?php if ($anexo["imagem"] == 1) { ?>
+        <img src="<?php echo $anexo["url"]; ?>" class="imagem-anexo" />
+        <span><?php echo $anexo["nome"]; ?></span>
+        <?php } else {?>
+        <img src="<?php echo base_url("assets/img/default-arq.png"); ?>" class="imagem-anexo" />
+        <span><?php echo $anexo["nome"]; ?></span>
         <?php }?>
-        <?php } ?>
+        <?php } //fim foreach?>
+        <?php } //fim isset?>
     </body>
 </html>
 <!-- Fim sitema -->

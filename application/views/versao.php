@@ -4,6 +4,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (1.9)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Sistema</u></h3>
+        <p>01- Aparece mensagem de erro ao tentar acessar o sistema pelo Internet Explorer.</p>
+        <h3><u>Helpdesk</u></h3>
+        <p>01- Permite inserir arquivos de todos os tipos.</p>
+        <p>02- Retirado da listagem a coluna ESTADO.</p>
+        <p>03- Alterado nome das colunas.</p>
+        <p>04- Possível fazer buscar por comentários.</p>
+        <p>05- Adicionado bagdes com a quantidade de chamados.</p>
+        <p>06- Insere VNC da maquina automaticamente.</p>
+        <p>07- Implementado busca por seguimento na URL.</p>
+        <p>08- Retirado o limite de 1000 caracteres na descrição, comentários e soluções.</p>
+        <h3><u>Notificação</u></h3>
+        <p>01- Implementado notificações (somente do help-desk)</p>        
+    </div>    
+    <div class="">
+        <h2>-Bugs</h2>
+        <h3><u>HelpDesk</u></h3>
+        <p>01- Corrigido a lista de ocorrencias em atendimento por técnico, Aparece todos da área de atendimento. Foi unificado as áreas de atendimento.</p>
+        <p>02- Corrigido erro do técnico atender chamado que não seja da área de atendimento do mesmo Somente quando encaminhado para o mesmo.</p>
+        <p>03- Corrigido erro na listagem dos chamados na busca para técnicos, chamados de outras áreas não aparecem.</p>
+        <p>04- Perfis revisados.</p>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (1.8)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>

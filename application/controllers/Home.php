@@ -60,6 +60,28 @@ class Home extends CI_Controller {
             "arquivoJS" => "home.js"));
     }
     
+    //navegador invalido (mensagem de erro)
+    public function invalido(){
+        //Carrega cabeçaho html
+        //$this->load->view("_html/cabecalho", array( 
+        //    "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        //$this->load->view("menu/principal", array( 
+        //    "assetsUrl" => base_url("assets"),
+        //    "ativo" => ""));     
+        //Carrega index
+        $this->load->view('errors/navegador-invalido', array(
+            "baseUrl" => base_url(),
+            "assetsUrl" => base_url("assets")));
+        //Modal
+        //$this->load->view("usuario/criar-usuario", array( 
+        //    "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        //$this->load->view("_html/rodape", array( 
+        //    "assetsUrl" => base_url("assets"), 
+        //    "arquivoJS" => "home.js"));
+    }
+    
     //Mensagem de erro
     public function erro($msg = NULL){
         //Carrega cabeçaho html

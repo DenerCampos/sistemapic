@@ -150,7 +150,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="iptFchDesc" class="control-label">Descrição:</label>
-                                            <textarea class="form-control" id="iptFchDesc" maxlength="1000" name="iptFchDesc"
+                                            <textarea class="form-control" id="iptFchDesc" name="iptFchDesc"
                                               placeholder="Descrição do chamado" disabled="" rows="5"></textarea>
                                         </div>
                                     </div>
@@ -232,7 +232,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="iptFchComentarioNovo" class="control-label">Solução:</label>                       
-                                            <textarea class="form-control" id="iptFchComentarioNovo" maxlength="1000" name="iptFchComentarioNovo"
+                                            <textarea class="form-control" id="iptFchComentarioNovo" name="iptFchComentarioNovo"
                                                       placeholder="Descrição da solução adotada" rows="5" required="true"></textarea>
                                         </div>
                                     </div>

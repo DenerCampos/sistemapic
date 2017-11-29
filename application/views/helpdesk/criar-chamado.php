@@ -118,7 +118,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="iptCriDesc" class="control-label">Descrição:</label>
-                                        <textarea class="form-control" id="iptCriDesc" maxlength="1000" name="iptCriDesc"
+                                        <textarea class="form-control" id="iptCriDesc" name="iptCriDesc"
                                                   placeholder="Descrição do chamado" rows="3" required=""></textarea>
                                     </div>
                                 </div>

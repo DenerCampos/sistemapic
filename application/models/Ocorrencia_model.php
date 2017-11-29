@@ -373,6 +373,40 @@ class Ocorrencia_model extends CI_Model {
         }
     }
     
+    //Busca todos por busca (Comentario)
+    public function todasPorBuscaComentarioUsuario($palavra, $estado,  $usuario, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT DISTINCT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN comentario
+                    ON ocorrencia.idocorrencia = comentario.idocorrencia
+                WHERE ocorrencia.idestado = 1 AND
+                    ocorrencia.idocorrencia_estado = $estado AND
+                    usuario_abre = $usuario AND
+                    comentario.descricao LIKE '%$palavra%'
+                ORDER BY ocorrencia.data_abertura DESC
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT DISTINCT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN comentario
+                    ON ocorrencia.idocorrencia = comentario.idocorrencia
+                WHERE ocorrencia.idestado = 1 AND
+                    ocorrencia.idocorrencia_estado = $estado AND
+                    usuario_abre = $usuario AND
+                    comentario.descricao LIKE '%$palavra%'
+                ORDER BY ocorrencia.data_abertura DESC");
+        }
+        //retorna objeto
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
     //BUSCAR - Tecnico    
     //Busca todos por busca (numero do chamado)
     public function todasPorBuscaNumeroTecnico($palavra, $estado, $usuario, $area, $limite = NULL, $ponteiro = NULL){
@@ -412,7 +446,7 @@ class Ocorrencia_model extends CI_Model {
     public function todasPorBuscaProblemaTecnico($palavra, $estado, $usuario, $area, $limite = NULL, $ponteiro = NULL){
         if (isset($limite) && isset($usuario)){
             $query = $this->db->query(
-                "SELECT *
+                "SELECT ocorrencia.*
                 FROM (SELECT * 
                       FROM ocorrencia
                       WHERE idarea = $area  OR
@@ -426,7 +460,7 @@ class Ocorrencia_model extends CI_Model {
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
-                "SELECT *
+                "SELECT ocorrencia.*
                 FROM (SELECT * 
                       FROM ocorrencia
                       WHERE idarea = $area  OR
@@ -456,7 +490,6 @@ class Ocorrencia_model extends CI_Model {
                       WHERE idarea = $area  OR
                             usuario_abre = $usuario) AS ocorrencia
                 WHERE descricao LIKE '%$palavra%' AND
-                        usuario_abre = $usuario AND
                         idestado = 1 AND
                         idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC
@@ -469,9 +502,46 @@ class Ocorrencia_model extends CI_Model {
                       WHERE idarea = $area  OR
                             usuario_abre = $usuario) AS ocorrencia
                 WHERE descricao LIKE '%$palavra%' AND
-                        usuario_abre = $usuario AND
                         idestado = 1 AND
                         idocorrencia_estado = $estado
+                ORDER BY data_abertura DESC");
+        }
+        //retorna objeto 
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos por busca (Comentario)
+    public function todasPorBuscaComentarioTecnico($palavra, $estado, $usuario, $area, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite) && isset($usuario)){
+            $query = $this->db->query(
+                "SELECT DISTINCT ocorrencia.*
+                FROM (SELECT * 
+                      FROM ocorrencia
+                      WHERE idarea = $area  OR
+                            usuario_abre = $usuario) AS ocorrencia
+                INNER JOIN comentario
+                    ON ocorrencia.idocorrencia = comentario.idocorrencia 
+                WHERE comentario.descricao LIKE '%$palavra%' AND
+                        ocorrencia.idestado = 1 AND
+                        ocorrencia.idocorrencia_estado = $estado
+                ORDER BY ocorrencia.data_abertura DESC
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT DISTINCT ocorrencia.*
+                FROM (SELECT * 
+                      FROM ocorrencia
+                      WHERE idarea = $area  OR
+                            usuario_abre = $usuario) AS ocorrencia
+                INNER JOIN comentario
+                    ON ocorrencia.idocorrencia = comentario.idocorrencia 
+                WHERE comentario.descricao LIKE '%$palavra%' AND
+                        ocorrencia.idestado = 1 AND
+                        ocorrencia.idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
         }
         //retorna objeto 
@@ -515,7 +585,7 @@ class Ocorrencia_model extends CI_Model {
     public function todasPorBuscaProblemaAdmin($palavra, $estado, $limite = NULL, $ponteiro = NULL){
         if (isset($limite)){
             $query = $this->db->query(
-                "SELECT *
+                "SELECT ocorrencia.*
                 FROM ocorrencia
                 INNER JOIN problema
                 ON ocorrencia.idproblema = problema.idproblema
@@ -526,7 +596,7 @@ class Ocorrencia_model extends CI_Model {
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
-                "SELECT *
+                "SELECT ocorrencia.*
                 FROM ocorrencia
                 INNER JOIN problema
                 ON ocorrencia.idproblema = problema.idproblema
@@ -562,6 +632,38 @@ class Ocorrencia_model extends CI_Model {
                         idestado = 1 AND
                         idocorrencia_estado = $estado
                 ORDER BY data_abertura DESC");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos por busca (Comentario)
+    public function todasPorBuscaComentarioAdmin($palavra, $estado, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT DISTINCT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN comentario
+                    ON ocorrencia.idocorrencia = comentario.idocorrencia
+                WHERE comentario.descricao LIKE '%$palavra%' AND
+                        ocorrencia.idestado = 1 AND
+                        ocorrencia.idocorrencia_estado = $estado
+                ORDER BY ocorrencia.data_abertura DESC
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT DISTINCT ocorrencia.*
+                FROM ocorrencia
+                INNER JOIN comentario
+                    ON ocorrencia.idocorrencia = comentario.idocorrencia
+                WHERE comentario.descricao LIKE '%$palavra%' AND
+                        ocorrencia.idestado = 1 AND
+                        ocorrencia.idocorrencia_estado = $estado
+                ORDER BY ocorrencia.data_abertura DESC");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){

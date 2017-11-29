@@ -25,7 +25,8 @@ class Ocorrencia extends CI_Controller {
         $this->load->model("Usuario_model", "usuario");
         $this->load->model("Ocorrencia_model", "ocorrencia");
         $this->load->model("Ocorrencia_estado_model", "estado");
-        $this->load->model("Arquivo_model", "arquivo");        
+        $this->load->model("Arquivo_model", "arquivo");      
+        $this->load->model("Notificacao_model", "notificacao");
     }    
     
     /*------Carregamento de views--------*/ 
@@ -580,7 +581,10 @@ class Ocorrencia extends CI_Controller {
                 $corpo = $this->emailAberturaUsuario($this->ocorrencia->recuperaUltima($this->session->userdata("id"))->getIdocorrencia());
                 //Envia e-mail
                 $this->envioEmail($this->session->userdata("login"), "Abertura chamado (Sistema PIC)", $corpo);
-            }                      
+            }
+            //notificacao
+            //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+            $this->enviaNotificacao($id, $this->session->userdata("id"), $area, "aberto");
             //log
             $this->gravaLog("chamado aberto", "usuario: ".$this->session->userdata("nome")." - chamado: ".$this->ocorrencia->recuperaUltima($this->session->userdata("id"))->getIdocorrencia());
             //mensagem
@@ -602,6 +606,9 @@ class Ocorrencia extends CI_Controller {
             if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->aberto($id)){
                 //atende ocorrencia
                 $this->ocorrencia->atende($id, $this->session->userdata("id"), date('Y-m-d H:i:s'), 2);
+                //notificacao
+                //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_abre(), "atende");
                 //log
                 $this->gravaLog("chamado em atendimento", "nome: ".$this->session->userdata("nome")." - chamado: ".$id);
                 $this->mensagem("Agora você está atendendo o chamado: <strong>".$id."</strong>.", $url);
@@ -632,7 +639,10 @@ class Ocorrencia extends CI_Controller {
                 $this->comentario->newComentario($comentario, date('Y-m-d H:i:s'), $id, $this->session->userdata("id"));
                 $this->comentario->addComentario();
                 //encaminha ocorrencia encaminha($id, $usuario, $dalteracao)
-                $this->ocorrencia->encaminha($id, $this->geraUsuario($usuario), date('Y-m-d H:i:s'));
+                $this->ocorrencia->encaminha($id, $this->geraTecnico($usuario), date('Y-m-d H:i:s'));
+                //notificacao
+                //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                $this->enviaNotificacao($id, $this->session->userdata("id"), $this->geraUsuario($usuario), "encaminha");
                 //log
                 $this->gravaLog("chamado emcaminhado", "nome: ".$this->session->userdata("nome")." - chamado: ".$id." para o usuario: ".$usuario);
                 $this->mensagem("Chamado <strong>".$id."</strong> encaminhado para <strong>".$usuario."</strong>.", $url);
@@ -741,6 +751,9 @@ class Ocorrencia extends CI_Controller {
                     //Envia e-mail para tecnico do chamado
                     $this->envioEmail($this->usuario->buscaId($this->ocorrencia->buscaId($id)->getUsuario_atende())->getLogin(), "Edição chamado (Sistema PIC)", $corpo);
                 }
+                //notificacao
+                //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_abre(), "atendimento");
                 //log
                 $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
                 $this->gravaLog("atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
@@ -788,6 +801,9 @@ class Ocorrencia extends CI_Controller {
                     //Envia e-mail para usuario do chamado
                     $this->envioEmail($this->usuario->buscaId($this->ocorrencia->buscaId($id)->getUsuario_abre())->getLogin(), "Fechamento de chamado (Sistema PIC)", $corpo);
                 }
+                //notificacao
+                //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_abre(), "fechado");
                 //log
                 $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
                 $this->gravaLog("fechamento", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
@@ -805,12 +821,73 @@ class Ocorrencia extends CI_Controller {
     }   
        
     //Busca por ocorrencia
-    public function buscar(){
+    public function buscarteste(){
         //recupera dados da busca
         $busca = strtolower(trim($this->input->post("iptBusca")));
         //recupera nivel de acesso
         $nivel = $this->session->userdata("nivel");
         //redirect(base_url("ocorrencia/buscar/".$busca));
+        try {
+            //verifica se foi digitado algo
+            if (!empty($busca) && $nivel == 2){ //usuario
+                //busca por numero do chamado
+                //$abertos = $this->ocorrencia->todasPorBuscaNumero($busca, 1, $this->session->userdata("id"));
+                //$this->resultado($busca, $abertos);
+                //Busca todos abertos
+                $abertos = $this->buscaTodosPorEstados($busca, 1, $nivel);
+                //Busca todos em atendimento
+                $atendimentos = $this->buscaTodosPorEstados($busca, 2, $nivel);
+                //Busca todos fechados
+                $fechados = $this->buscaTodosPorEstados($busca, 3, $nivel);
+                //Calcula total
+                $total = count($abertos)+count($atendimentos)+count($fechados);
+                //chamando a view resultado($palavra, $total, $abertos = NULL, $atendimentos = NULL, $fechados = NULL)
+                $this->resultado($busca, $total, $abertos, $atendimentos, $fechados);
+            } elseif (!empty($busca) && $nivel == 1){ //tecnico
+                //Busca todos abertos
+                $abertos = $this->buscaTodosPorEstados($busca, 1, $nivel);
+                //Busca todos em atendimento
+                $atendimentos = $this->buscaTodosPorEstados($busca, 2, $nivel);
+                //Busca todos fechados
+                $fechados = $this->buscaTodosPorEstados($busca, 3, $nivel);
+                //Calcula total
+                $total = count($abertos)+count($atendimentos)+count($fechados);
+                //chamando a view resultado($palavra, $total, $abertos = NULL, $atendimentos = NULL, $fechados = NULL)
+                $this->resultado($busca, $total, $abertos, $atendimentos, $fechados);
+            } elseif (!empty($busca) && $nivel == 0 ){ //admin
+                //Busca todos abertos
+                $abertos = $this->buscaTodosPorEstados($busca, 1, $nivel);
+                //Busca todos em atendimento
+                $atendimentos = $this->buscaTodosPorEstados($busca, 2, $nivel);
+                //Busca todos fechados
+                $fechados = $this->buscaTodosPorEstados($busca, 3, $nivel);
+                //Calcula total
+                $total = count($abertos)+count($atendimentos)+count($fechados);
+                //chamando a view resultado($palavra, $total, $abertos = NULL, $atendimentos = NULL, $fechados = NULL)
+                $this->resultado($busca, $total, $abertos, $atendimentos, $fechados);
+            } else {
+                $this->resultado("'vazio'", 0);
+            }                       
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na busca. Favor tentar novamente.");
+        }
+    }
+    
+    //Busca por ocorrencia
+    public function buscar(){
+        //recupera dados da busca
+        $busca = strtolower(trim($this->input->post("iptBusca")));
+        //verifica busca se vazio, caso não seja, ira para url com o seguimento 3 com o valor do campo de busca
+        if (empty($busca)){
+            //recupera o terceiro seguimento da url ocorrencia/buscar/XXXXXX
+            $busca = urldecode(strtolower(trim($this->uri->segment(3))));
+        } else {
+            redirect(base_url("ocorrencia/buscar/".urlencode($busca)));
+        }
+        //recupera nivel de acesso
+        $nivel = $this->session->userdata("nivel");
         try {
             //verifica se foi digitado algo
             if (!empty($busca) && $nivel == 2){ //usuario
@@ -1112,7 +1189,8 @@ class Ocorrencia extends CI_Controller {
         }
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
-    }
+    }  
+    
     
     /*---------Funções internas------------*/ 
     
@@ -1144,7 +1222,6 @@ class Ocorrencia extends CI_Controller {
             return null;
         }
     }
-
 
     //Paginação usuariao, recupera offset
     private function recuperaOffset(){
@@ -1198,6 +1275,11 @@ class Ocorrencia extends CI_Controller {
     //Gera usuario
     private function geraUsuario($nome){
         return $this->usuario->buscaUsuarioNome($nome)->getIdusuario();
+    }
+    
+    //Gera usuario
+    private function geraTecnico($nome){
+        return $this->usuario->buscaTecnicoNome($nome)->getIdusuario();
     }
     
     //primeira letra maiuscula 
@@ -1440,14 +1522,19 @@ class Ocorrencia extends CI_Controller {
         }
     }
 
-    //Gera arquivos das ocorrencias
+    //Gera arquivos das ocorrencias para impressão do chamado
     private function geraArquivos($id){
         //busca todos arquivos
         $arquivos = $this->arquivo->buscaOcorrencia($id);
         //verifica se existe arquivos
         if (isset($arquivos)){
+            
             foreach ($arquivos as $value) {
-                $arquivo[] = base_url($value->getLocal().$value->getNome()); 
+                $arquivo[] = array (
+                    "url" => base_url($value->getLocal().$value->getNome()),
+                    "nome" => $value->getNome_antigo(),
+                    "imagem" => $this->verificaTipoAnexo($value->getNome_antigo())
+                ); 
             }
             return $arquivo;
         } else {
@@ -1576,6 +1663,7 @@ class Ocorrencia extends CI_Controller {
         $numero = $this->buscaPorNumero($busca, $estado, $nivel);
         $problema = $this->buscaPorProblema($busca, $estado, $nivel);
         $descicao = $this->buscaPorDescricao($busca, $estado, $nivel);
+        $comentario = $this->buscaPorComentario($busca, $estado, $nivel);
         //Array de resultados por estado
         $resultado = array();
         //Verifica se teve busca e adiciona no resultado cada valor encontrado
@@ -1594,6 +1682,15 @@ class Ocorrencia extends CI_Controller {
         if (isset($descicao)){
             foreach ($descicao as $key => $value) {
                 array_push($resultado, $value);
+            }
+        }
+        //Verifica se teve busca e adiciona no resultado cada valor encontrado
+        if (isset($comentario)){
+            foreach ($comentario as $key => $value) {
+                //verifica se exite no array (vindo da descrição) o chamado
+                if (!in_array($value, $resultado)){
+                    array_push($resultado, $value);
+                }                
             }
         }
         
@@ -1672,6 +1769,30 @@ class Ocorrencia extends CI_Controller {
         return $resultado;
     }
     
+    //Busca todos estados por comentario
+    private function buscaPorComentario($busca, $estado, $nivel){
+        switch ($nivel) {
+            case 0: //admin
+                //$resultado = $this->ocorrencia->todasPorBuscaNumero($busca, $estado);
+                //todasPorBuscaComentarioAdmin($palavra, $estado, $limite = NULL, $ponteiro = NULL)
+                $resultado = $this->ocorrencia->todasPorBuscaComentarioAdmin($busca, $estado);
+                break;
+            case 1: //tecnico
+                //todasPorBuscaComentarioTecnico($palavra, $estado, $usuario, $area, $limite = NULL, $ponteiro = NULL)
+                $resultado = $this->ocorrencia->todasPorBuscaComentarioTecnico($busca, $estado, $this->session->userdata("id"), $this->session->userdata("area"));
+                break;
+            case 2: //usuario
+                //todasPorBuscaComentarioUsuario($palavra, $estado,  $usuario, $limite = NULL, $ponteiro = NULL)
+                $resultado = $this->ocorrencia->todasPorBuscaComentarioUsuario($busca, $estado, $this->session->userdata("id"));
+                break;
+            default:
+                break;
+        }
+        //Busca todos --todasPorBuscaDescricao($palavra, $estado,  $usuario = NULL, $limite = NULL, $ponteiro = NULL)
+        //$resultado = $this->ocorrencia->todasPorBuscaDescricao($busca, $estado);
+        return $resultado;
+    }
+    
     //Contador de chamados por perfil
     private function contadorChamados($nivel){
         $contadores = array();
@@ -1711,5 +1832,96 @@ class Ocorrencia extends CI_Controller {
             return 0;
         }
     }
+    
+    //Envia notificação para usuarios
+    private function enviaNotificacao($id, $remetente, $destinatario, $tipo){
+        try {
+            //verifica o tipo de notificação (
+            //  Existem 5 tipos:
+            //      aberto: notificações para todos os tecnicos da area do chamado, o id da area é o destinatario
+            //      atendimento: notificação para o destinatario (usuario que abriu o chamado)
+            //      fechado: notificação somente para o destinatario (usuario que abriu o chamado)
+            //      atende: notificação somente para o destinatario (usuario que abriu o chamado)
+            //      encaminha: notificação para o destinatario (tecnico que recebe o chamado)
+            
+            switch ($tipo) {
+                case "aberto":
+                    $titulo = "Novo chamado aberto";                    
+                    $link = base_url('ocorrencia/buscar/'.$id);
+                    $mensagem = "";
+                    //busca todos tecnicos da area de atendimento
+                    //todosTecnicosPorArea($area, $limite = NULL, $ponteiro = NULL)
+                    $tecnicos = $this->usuario->todosTecnicosPorArea($destinatario);
+                    if (isset($tecnicos)){
+                        foreach ($tecnicos as $value) {
+                            //mensagem
+                            $mensagem = 'Chamado '. 
+                                        '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                        ' aberto no sistema por <strong> '.$this->usuario->buscaId($remetente)->getNome().' </strong>';                            
+                            //nova notificação
+                            //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                            $this->notificacao->novo($remetente, $value->getIdusuario(), date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                            //adiciona
+                            $this->notificacao->adiciona();
+                        }                        
+                    }                    
+                    break;
+                case "atendimento":
+                    $titulo = "Alteração no chamado";                          
+                    $link = base_url('ocorrencia/buscar/'.$id);  
+                    $mensagem = 'Chamado '. 
+                                '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                ' foi alterado no sistema por <strong>'.$this->usuario->buscaId($remetente)->getNome().'</strong>';                  
+                    //nova notificação
+                    //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                    $this->notificacao->novo($remetente, $destinatario, date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                    //adiciona
+                    $this->notificacao->adiciona();                                 
+                    break;
+                case "fechado":
+                    $titulo = "Fechamento de chamado";                          
+                    $link = base_url('ocorrencia/buscar/'.$id); 
+                    $mensagem = 'Chamado '. 
+                                '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                ' foi fechado no sistema por <strong>'.$this->usuario->buscaId($remetente)->getNome().'</strong>';                  
+                    //nova notificação
+                    //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                    $this->notificacao->novo($remetente, $destinatario, date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                    //adiciona
+                    $this->notificacao->adiciona(); 
+                    break;
+                case "atende":
+                    $titulo = "Atendimento do chamado";                          
+                    $link = base_url('ocorrencia/buscar/'.$id);  
+                    $mensagem = 'Chamado '. 
+                                '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                ' está sendo atendido por <strong>'.$this->usuario->buscaId($remetente)->getNome().'</strong>';                  
+                    //nova notificação
+                    //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                    $this->notificacao->novo($remetente, $destinatario, date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                    //adiciona
+                    $this->notificacao->adiciona(); 
+                    break;
+                case "encaminha":
+                    $titulo = "Encaminhamento de chamado";                          
+                    $link = base_url('ocorrencia/buscar/'.$id); 
+                    $mensagem = 'Chamado '. 
+                                '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                ' foi encaminhado para você por <strong>'.$this->usuario->buscaId($remetente)->getNome().'</strong>';                  
+                    //nova notificação
+                    //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                    $this->notificacao->novo($remetente, $destinatario, date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                    //adiciona
+                    $this->notificacao->adiciona(); 
+                    break;
+                default:
+                    break;
+            }                                  
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao criar notificação.");
+        }
+        }
    
 }

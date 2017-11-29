@@ -144,7 +144,7 @@
                                     <div class="col-md-12">                                
                                         <div class="form-group">
                                             <label for="iptEdtDesc" class="control-label">Descrição:</label>
-                                            <textarea class="form-control" id="iptEdtDesc" maxlength="1000" name="iptEdtDesc" disabled=""
+                                            <textarea class="form-control" id="iptEdtDesc" name="iptEdtDesc" disabled=""
                                                       placeholder="Descrição do chamado" rows="5"></textarea>
                                         </div>
                                     </div>
@@ -160,7 +160,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="iptEdtComentarioNovo" class="control-label">Comentário:</label>                       
-                                            <textarea class="form-control" id="iptEdtComentarioNovo" maxlength="1000" name="iptEdtComentarioNovo"
+                                            <textarea class="form-control" id="iptEdtComentarioNovo" name="iptEdtComentarioNovo"
                                                       placeholder="Novo comentário" rows="5" required=""></textarea>
                                         </div>
                                     </div>

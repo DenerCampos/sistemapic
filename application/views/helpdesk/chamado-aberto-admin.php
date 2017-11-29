@@ -13,7 +13,7 @@
                             <thead>
                                 <tr>
                                     <th>Número</th>                                    
-                                    <th>Abertura em</th>
+                                    <th>Aberto em</th>
                                     <th>Usuário</th>
                                     <th>Problema</th>
                                     <th>Descrição</th>

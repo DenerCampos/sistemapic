@@ -110,32 +110,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <?php if ($this->session->has_userdata('nome')){ ?>
             <div class="navbar-right">
                 
-                <!-- Notificações -->
-                <ul class="nav navbar-nav">
-                    
+                <!-- Novos chamados -->
+<!--                <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        
-                        <a id="notificacao-link" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
-                           aria-expanded="false" title="Notificações">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
+                           title="Novos chamados">
                             <i class="fa fa-newspaper-o" aria-hidden="true"></i>
-                            <span id="notif-qtd"></span>
+                            
                             <span class="caret"></span>
                         </a>
-                        
-                        <ul id="notificacao" class="dropdown-menu navbar-notificacao">
-                            
-                            <li class="carregamento-notificacao">
-                                <div>
-                                    <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <div class="novos-chamados">
+                                    Nâo há novos chamados
                                 </div>
                             </li>
-                            
                         </ul>
-                        
-                        
                     </li>
-                    
-                </ul>
+                </ul>-->
                 
                 <!-- Perfil usuario logado-->
                 <ul class="nav navbar-nav">

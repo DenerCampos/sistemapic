@@ -193,6 +193,21 @@ class Usuario_model extends CI_Model {
         }
     }
     
+    //Busca usuario por nome
+    public function buscaTecnicoNome($nome){
+        $query = $this->db->query(
+                "SELECT *
+                FROM usuario 
+                WHERE nome = '$nome' AND
+                idestado = 1");
+        //retorna objeto usuario
+        if ($query->num_rows() > 0){
+            return $this->getObjByRow($query->row());
+        } else{
+            return NULL;
+        }
+    }
+    
     //Busca usuario por id
     public function buscaId($id){
         $query = $this->db->query(
@@ -296,6 +311,34 @@ class Usuario_model extends CI_Model {
             return NULL;
         }
     }  
+    
+    //Busca todos tecnicos por area id
+    public function todosTecnicosPorArea($area, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM usuario
+                WHERE nivel = 1 AND
+                    idarea = $area AND
+                    idestado = 1
+                ORDER BY nome
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                "SELECT *
+                FROM usuario 
+                WHERE nivel = 1 AND
+                    idarea = $area AND
+                    idestado = 1
+                ORDER BY nome");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
 
 
     /*------Funções internas--------*/ 
