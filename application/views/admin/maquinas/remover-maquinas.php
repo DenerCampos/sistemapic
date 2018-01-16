@@ -32,14 +32,14 @@
                             <div class="form-group">
                                 <label for="iptRmvNome" class="control-label">Nome:</label>
                                 <input type="text" name="iptRmvNome" id="iptRmvNome" 
-                                       class="form-control" placeholder="Nome" required="true">
+                                       class="form-control" placeholder="Nome">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="iptRmvIp" class="control-label">Ip:</label>
                                 <input type="text" name="iptRmvIp" id="iptRmvIp" 
-                                       class="form-control" placeholder="ip" required="true">
+                                       class="form-control" placeholder="ip" >
                             </div>
                         </div>
                     </div>

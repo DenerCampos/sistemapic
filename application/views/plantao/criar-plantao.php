@@ -13,6 +13,7 @@
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center" id="erro-gerar-plantao" hidden=""></div>
             
+            <!-- Formulario -->
             <form class="formulario" id="frmGeraPlantao" method="post" 
                   action="<?php echo base_url("plantao/gerar") ?>">
                 <div class="modal-body">
@@ -31,8 +32,23 @@
                                        class="form-control" value="<?php echo date("Y-m-d");?>">
                             </div>
                         </div>
-                    </div>   
-                </div>
+                    </div>
+                    <!-- Opções de relatórios -->
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="itpRelAberto" id="itpRelAberto" value="aberto" checked="true"> Abertos.
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="itpRelAtendimento" id="itpRelAtendimento" value="atendimento" checked="true"> Em atendimentos.
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="itpRelFechado" id="itpRelFechado" value="fechado" checked="true"> Fechados.
+                            </label>
+                        </div>
+                    </div>                    
+                </div>                           
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar

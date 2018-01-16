@@ -129,6 +129,27 @@ class LoadFile extends CI_Controller {
     //Grava, atualiza e verifica se existe
     private function gravaDB($dados){
         //Verifica se existe a maquina no banco de dados
+        //existeIpArquivo($ip)
+        if ($this->maquina->existeIpArquivo($dados["ip"])){
+            //Busca a maquina e atualiza
+            //buscaMaquinaIpArquivo($ip)
+            $maquina = $this->maquina->buscaMaquinaIpArquivo($dados["ip"]);
+            //atualizaMaquinaArquivo($id, $nome, $login, $descricao)
+            $this->maquina->atualizaMaquinaArquivo($maquina->getIdmaquina(), $dados["nome"], $dados["user"], "Caixa do PIC Pampulha");
+            //Log
+            $this->gravaLog("ARQUIVO maquina atualizada no BD", "Nome: ".$dados["nome"]." IP: ".$dados["ip"]);
+        } else {
+            //Adiciona maquina newMaquina($nome, $ip, $idlocal, $idtipo, $idunidade, $login = NULL, $descricao = NULL)
+            $this->maquina->newMaquina($dados["nome"], $dados["ip"], 1, 2, 1, $dados["user"], "Caixa do PIC Pampulha");
+            $this->maquina->addMaquina();
+            //Log
+            $this->gravaLog("ARQUIVO maquina nova gravada no BD", "Nome: ".$dados["nome"]." IP: ".$dados["ip"]);
+        }
+    }
+    
+    //Grava, atualiza e verifica se existe
+    private function gravaDBAntigo($dados){
+        //Verifica se existe a maquina no banco de dados
         if ($this->maquina->existeMaquina($dados["nome"])){
             //Busca a maquina e atualiza
             $maquina = $this->maquina->buscaMaquinaNome($dados["nome"]);

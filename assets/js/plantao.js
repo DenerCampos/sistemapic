@@ -40,7 +40,7 @@ function EnviarEmailPlantao(ancor){
 }
 
 //VALIDAÇÔES
-//Novo chamado
+//Novo relatório
 $('#frmGeraPlantao').validate({    
     //regras de validações
     rules: {
@@ -68,5 +68,37 @@ $('#frmGeraPlantao').validate({
         $('#erro-gerar-plantao').html("Por favor, preencha \n\
                                   corretamente os <strong>campos marcados</strong>.");
         $('#erro-gerar-plantao').show();
+    }
+});
+
+$('#frmEmailPlantao').validate({    
+    //regras de validações
+    rules: {
+        iptEmlPara: {            
+            required: true,
+            email: true
+        },      
+        iptEmlCopia: {
+            email: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptEmlPara: {            
+            required: "Informe email valido.",
+            email: "Informe email valido."
+        },      
+        iptEmlCopia: {            
+            email: "Informe email valido."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-email-plantao').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-email-plantao').show();
     }
 });

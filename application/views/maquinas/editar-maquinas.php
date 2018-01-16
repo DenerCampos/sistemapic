@@ -41,7 +41,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptEdtIp" class="control-label">Ip:</label>
-                                <input type="text" name="iptEdtIp" id="iptEdtIp" 
+                                <input type="text" name="iptEdtIp" id="iptEdtIp" disabled=""
                                        class="form-control" placeholder="ip" required="true">
                             </div>
                         </div>
@@ -82,6 +82,20 @@
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
+                                <label for="selEdtUnidade" class="control-label">Unidade:</label>
+                                <select name="selEdtUnidade" id="selEdtUnidade" 
+                                        class="form-control" placeholder="Seleciona unidade">
+                                    <!-- Lista todos estados -->
+                                    <?php foreach ($unidades as $unidade) { ?>
+                                    <option>
+                                        <?php echo $unidade->getNome() ?>
+                                    </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
                                 <label for="iptEdtDesc" class="control-label">Descrição:</label>
                                 <textarea class="form-control" id="iptEdtDesc" maxlength="100" name="iptEdtDesc"
                                   placeholder="Descrição do maquina" rows="3"></textarea>
@@ -93,7 +107,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando">
                         Salvar
                     </button>
                 </div>

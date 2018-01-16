@@ -20,6 +20,7 @@ class Maquina extends CI_Controller {
         $this->load->model('maquina_model', 'maquina');
         $this->load->model('tipo_model', 'tipo');
         $this->load->model('local_model', 'local');
+        $this->load->model('unidade_model', 'unidade');
     }
     
     
@@ -38,21 +39,28 @@ class Maquina extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "local" => new Local_model(),
             "tipo" => new Tipo_model(),
-            "maquinas" => $this->maquina->buscaTodas(6, $this->recuperaOffset()),
+            "unidade" => new Unidade_model(),
+            "mPicPampulha" => $this->ordenaPorIP($this->maquina->buscaTodasPorUnidade(1)),
+            "mPicCidade" => $this->ordenaPorIP($this->maquina->buscaTodasPorUnidade(2)),
+            //"maquinas" => $this->maquina->buscaTodas(6, $this->recuperaOffset()),
             //"maquinas" => $this->maquina->buscaTodas(),
-            "paginas" => $this->listarMaquinas()));
+            "paginas" => NULL));
+            //"paginas" => $this->listarMaquinas()));
         //Modal
         $this->load->view('maquinas/criar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         $this->load->view('maquinas/editar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
-        $this->load->view('maquinas/remover-maquinas', array(
+        $this->load->view('maquinas/livre-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
@@ -106,7 +114,7 @@ class Maquina extends CI_Controller {
     }
     
     //Resultado da busca
-    public function resultado($resultado, $texto){
+    public function resultado($mPicPampulha, $mPicCidade, $texto){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
             "assetsUrl" => base_url("assets")));
@@ -117,22 +125,27 @@ class Maquina extends CI_Controller {
         //Carrega
         $this->load->view('maquinas/resultado', array(
             "assetsUrl" => base_url("assets"),
-            "local" => new Local_model(),
+            "local" => new Local_model(),            
             "tipo" => new Tipo_model(),
+            "unidade" => new Unidade_model(),
             "palavra" => $texto,
-            "maquinas" => $resultado));
+            "mPicPampulha" => $this->ordenaPorIP($mPicPampulha),
+            "mPicCidade" => $this->ordenaPorIP($mPicCidade)));
         //Modal
         $this->load->view('maquinas/criar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         $this->load->view('maquinas/editar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
-        $this->load->view('maquinas/remover-maquinas', array(
+        $this->load->view('maquinas/livre-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
@@ -180,14 +193,16 @@ class Maquina extends CI_Controller {
     //Criar maquina
     public function criarMaquina(){
         try {
-            $nome; $ip; $login; $descricao; $local; $tipo; $url;
+            $nome; $ip; $login; $descricao; $local; $tipo; $unidade; $url;
             //recupera dados
-            $this->recuperaCriar($nome, $ip, $login, $descricao, $local, $tipo, $url);
+            $this->recuperaCriar($nome, $ip, $login, $descricao, $local, $tipo, $unidade, $url);
             //verifica dados
             if (!$this->maquina->existeMaquina($nome)){
                 //cria maquina newMaquina($nome, $ip, $idlocal, $idtipo, $login = NULL, $descricao = NULL)
-                $this->maquina->newMaquina($nome, $ip, $this->geraLocal($local), $this->geraTipo($tipo), $login, $descricao);
-                $this->maquina->addMaquina();
+                //$this->maquina->newMaquina($nome, $ip, $this->geraLocal($local), $this->geraTipo($tipo), $login, $descricao);
+                //$this->maquina->addMaquina();
+                //criaMaquina($ip, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade)
+                $this->maquina->criaMaquina($ip, $nome, $login, $descricao, $this->geraLocal($local), $this->geraTipo($tipo), $this->geraUnidade($unidade));
                 //Log
                 $this->gravaLog("criação maquina", "maquina criada: ".$nome." ip: ". $ip);
                 $this->mensagem("Maquina <strong>".$nome."</strong> criada.", $url);
@@ -206,13 +221,13 @@ class Maquina extends CI_Controller {
     //Atualiza maquina
     public function atualizaMaquina(){
         try {
-            $id; $nome; $ip; $login; $descricao; $local; $tipo; $url;
+            $id; $nome; $ip; $login; $descricao; $local; $tipo; $unidade; $url;
             //Recuperando dados
-            $this->recuperaEditar($id, $nome, $ip, $login, $descricao, $local, $tipo, $url);
+            $this->recuperaEditar($id, $nome, $ip, $login, $descricao, $local, $tipo, $unidade, $url);
             //verifica dados
             if (!$this->maquina->verificaMaquinaAtualiza($id, $nome)){
-                //atualiza  atualizaMaquina($id, $nome, $ip, $login, $descricao, $idlocal, $idtipo)
-                $this->maquina->atualizaMaquina($id, $nome, $ip, $login, $descricao, $this->geraLocal($local), $this->geraTipo($tipo));
+                //atualiza  atualizaMaquina($id, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade)
+                $this->maquina->atualizaMaquina($id, $nome, $login, $descricao, $this->geraLocal($local), $this->geraTipo($tipo), $this->geraUnidade($unidade));
                 //Log
                 $this->gravaLog("alteração maquina", "maquina alterado: ".$nome." ip: ". $ip);
                 $this->mensagem("Alteração concluída.", $url);
@@ -254,8 +269,58 @@ class Maquina extends CI_Controller {
         }
     }
     
+    //Remove maquina
+    public function livreMaquina(){
+        try {
+            $id; $url;
+            $this->recuperaLivre($id, $url);
+            //verifica se existe
+            if ($this->maquina->existe($id)){
+                //busca maquina
+                $maquina = $this->maquina->buscaMaquinaId($id);
+                //liberar LiberaMaquina($id, $idlocal, $idtipo)
+                $this->maquina->LiberaMaquina($id, 1, $this->geraTipo("Livre"));
+                //Log
+                $this->gravaLog("Liberou maquina", "maquina liberada id: ".$id.". nome: ".$maquina->getNome().". ip: ".$maquina->getIp());
+                $this->mensagem("Maquina liberada.", $url);
+            }else {
+                //Log
+                $this->gravaLog("erro liberar maquina", "tentativa de liberar maquina id: ".$id);
+                $this->erro("Não existe está maquina.");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na liberação de maquina. Tentar novamente.");
+        }
+    }
+    
     //Buscar maquina
     public function buscar(){
+        try {
+            $texto;
+            //Recupera dados
+            $this->recuperaBusca($texto);
+            //verifica busca se vazio, caso não seja, ira para url com o seguimento 3 com o valor do campo de busca
+            if (empty($texto)){
+                //recupera o terceiro seguimento da url ocorrencia/buscar/XXXXXX
+                $texto = urldecode(strtoupper(trim($this->uri->segment(3))));
+            } else {
+                redirect(base_url("maquina/buscar/".urlencode($texto)));
+            }
+            //Bucar buscaPorUnidade($unidade, $texto)
+            $mPicPampulha = $this->maquina->buscaPorUnidade(1, $texto);
+            $mPicCidade = $this->maquina->buscaPorUnidade(2, $texto);
+            $this->resultado($mPicPampulha, $mPicCidade, $texto);
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na atualização de maquina. Tentar novamente.");
+        }
+    }
+    
+    //Buscar maquina
+    public function buscarAntigo(){
         try {
             $texto;
             //Recupera dados
@@ -282,6 +347,7 @@ class Maquina extends CI_Controller {
         if (isset($maquina)){
             $local = $this->local->buscaId($maquina->getIdlocal());
             $tipo = $this->tipo->buscaId($maquina->getIdtipo());
+            $unidade = $this->unidade->buscaId($maquina->getIdunidade());
             $mgs = array(
                 "idmaquina" => $maquina->getIdmaquina(),
                 "nome" => $maquina->getNome(),
@@ -289,7 +355,8 @@ class Maquina extends CI_Controller {
                 "login" =>$maquina->getLogin(),
                 "descricao" => $maquina->getDescricao(),
                 "local" => $local->getNome(),
-                "tipo" => $tipo->getNome()
+                "tipo" => $tipo->getNome(),
+                "unidade" => $unidade->getNome()
             );
             echo json_encode($mgs);
         } else {
@@ -325,6 +392,29 @@ class Maquina extends CI_Controller {
         exit();
     }
     
+    //Liberar ajax
+    public function liberarMaquina(){
+        //Recupera Id maquina
+        $id = $this->input->post("idmaquina");
+        $maquina = $this->maquina->buscaMaquinaId($id);
+        
+        if (isset($maquina)){
+            $mgs = array(
+                "idmaquina" => $maquina->getIdmaquina(),
+                "nome" => $maquina->getNome(),
+                "ip" => $maquina->getIp()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Maquina não encontrada"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
     //Remover ajax
     public function verificaNome(){
         //Recupera nome
@@ -334,6 +424,20 @@ class Maquina extends CI_Controller {
             echo json_encode(TRUE); //não existe
         } else {
             echo json_encode(FALSE); //existe
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //verifica ip ajax
+    public function verificaIP(){
+        //Recupera ip
+        $ip = trim($this->input->get_post("iptCriIp"));
+        
+        if ($this->maquina->verificaMaquinaLivre($ip)){
+            echo json_encode(TRUE); //maquina livre
+        } else {
+            echo json_encode(FALSE); //maquina ocupada
         }
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
@@ -354,16 +458,36 @@ class Maquina extends CI_Controller {
         exit();
     }
     
+    //Pegar novo ip ajax
+    public function novoIp(){        
+        $maquina = $this->maquina->buscaNovoIp();
+        
+        if (isset($maquina)){
+            $mgs = array(
+                "ip" => $maquina->getIp()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Não existe mais IP disponivel"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
     /*---------------Funções internas------------*/ 
     
     //Recupera dados de criar maquina
-    private function recuperaCriar(&$nome, &$ip, &$login, &$descricao, &$local, &$tipo, &$url){
+    private function recuperaCriar(&$nome, &$ip, &$login, &$descricao, &$local, &$tipo, &$unidade, &$url){
         $nome = strtoupper(trim($this->input->post("iptCriNome")));
         $ip = trim($this->input->post("iptCriIp"));
         $login = strtolower(trim($this->input->post("iptCriUser")));
         $descricao = trim($this->input->post("iptCriDesc"));
         $local = trim($this->input->post("selCriLocal"));
         $tipo = trim($this->input->post("selCriTipo"));
+        $unidade = trim($this->input->post("selCriUnidade"));
         $url = trim($this->input->post("iptCriUrl"));
         
         //verifica URL existe
@@ -373,7 +497,7 @@ class Maquina extends CI_Controller {
     }
     
     //Recupera dados de editar maquina
-    private function recuperaEditar(&$id, &$nome, &$ip, &$login, &$descricao, &$local, &$tipo, &$url){
+    private function recuperaEditar(&$id, &$nome, &$ip, &$login, &$descricao, &$local, &$tipo, &$unidade, &$url){
         $id = trim($this->input->post("iptEdtId"));
         $nome = strtoupper(trim($this->input->post("iptEdtNome")));
         $ip = trim($this->input->post("iptEdtIp"));
@@ -381,6 +505,7 @@ class Maquina extends CI_Controller {
         $descricao = trim($this->input->post("iptEdtDesc"));
         $local = trim($this->input->post("selEdtLocal"));
         $tipo = trim($this->input->post("selEdtTipo"));
+        $unidade = trim($this->input->post("selEdtUnidade"));
         $url = trim($this->input->post("iptEdtUrl"));
         
         //verifica URL existe
@@ -398,6 +523,17 @@ class Maquina extends CI_Controller {
     private function recuperaRemover(&$id, &$url){
         $id = $this->input->post("iptRmvId");
         $url = trim($this->input->post("iptRmvUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "maquina";
+        }
+    }
+    
+    //Recupera dados de remover maquina
+    private function recuperaLivre(&$id, &$url){
+        $id = $this->input->post("iptLvrId");
+        $url = trim($this->input->post("iptLvrUrl"));
         
         //verifica URL existe
         if (!isset($url)|| $url === ""){
@@ -427,6 +563,11 @@ class Maquina extends CI_Controller {
     //busca tipo
     private function geraTipo($tipo){
         return $this->tipo->buscaTipoNome($tipo)->getIdtipo();
+    }
+    
+    //busca unidade
+    private function geraUnidade($unidade){
+        return $this->unidade->buscaPorNome($unidade)->getIdunidade();
     }
 
     //Grava log no BD
@@ -462,6 +603,21 @@ class Maquina extends CI_Controller {
             //grava log
             $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Maquina.php");
             redirect(base_url());
+        }
+    }
+    
+    //Ordena a lista de objetos por id crescente
+    private function ordenaPorIP($lista){
+        //verifica se lista vazia
+        if (isset($lista)){
+            //Ordena um array pelos valores utilizando uma função de comparação definida pelo usuário
+            usort($lista, function ($a, $b){
+                //Comparação de strings usando o algoritmo "natural order"
+                return strnatcmp($a->getIp(), $b->getIp());
+            });
+            return $lista;
+        } else {
+            return $lista;
         }
     }
 }

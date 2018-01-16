@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
                 <!-- fechados tecnico -->
                 <?php if (isset($fechadas)) { ?>
-                    <div class="panel panel-success">
+                    <div class="panel panel-success" id="chamado-atualiza">
                         <div class="panel-heading">
                             <h3 class="panel-title"><strong>Chamados fechados</strong><small> seus e da sua área de atendimento.</small></h3>
                         </div>
@@ -40,6 +40,14 @@
                                         <td><?php echo $area->buscaId($fechada->getIdarea())->getNome(); ?></td>
                                         <td><?php echo $unidade->buscaId($fechada->getIdunidade())->getNome(); ?></td>
                                         <td class="text-right opcoes">
+                                            <?php if ($fechada->getIdarea() == $this->session->userdata('area')){ ?>
+                                            <a title="Reabrir" role="button" href="#mdlReabrirChamado" 
+                                                data-toggle="modal" data-target="#mdlReabrirChamado"
+                                                data-id="<?php echo $fechada->getIdocorrencia(); ?>"
+                                                onclick="reabrirChamado(this)">
+                                                <i class="fa fa-share-square-o" ></i>
+                                            </a>
+                                            <?php }?>
                                             <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                                data-toggle="modal" data-target="#mdlImprimirChamado"
                                                data-id="<?php echo $fechada->getIdocorrencia(); ?>"

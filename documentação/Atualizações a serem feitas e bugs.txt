@@ -1,18 +1,40 @@
 #bugs
-   - Helpdesk
-	01- A listagem de ocorrencias em atendimento do tecnico esta aparecendo de todas as areas. Colocar para aparecer apenas de cada area. (mudar o sql de pesquisa, talvez vai ter que unificar areas, tipo, apenas um TI, apenas uma manutenção para ambos. para assim todos da area ter acesso a todos os chamados da area ou colocar as duas areas na pesquisa.) (OK - mudei a consulta sql e agrupei as areas, unificando-as)
-	02- A listagem de ocorrencias em aberto para os tecnicos esta errada, quando o tecnico abrir chamado para outra area que não é a dele, ele não pode ter a opção de atender esse chamado. (OK)
-	03- Unificar as areas de atendimento, TI PP e TI PC vai ser so TI, ELETRICA PP e ELETRICA PC vai ser ELETRICA e assim com as outras, isso é para os tecnicos das areas conseguirem visualizarem os mesmo chamados. (OK - criei outro metodo todasAreasAdm para listar todas as areas na parte da administração)
-	04- Na pesquisa, não pode aparecer chamados de outras areas para os tecnicos. (OK)
-	05- Revisar o perfil usuario e admin. (OK)
+    - Impressoras fiscais
+	01- Ao buscar, apresenta erro. (OK)
+    - Help Desk
+	01- Colocar atualização automatica nos chamados em atendimento e fechados. (OK)
+    - Notificações
+ 	01- Correção de varios erros de envio de notificações de abertura e atendimento de chamado. (OK)
 
-#melhorias
+#melhorias - Alterei o banco de dados*** Alterei o arquivo router*****
     - Chek-list
 	01- Implementar o checklist, desenvolver um app android e fazer os lamçamentos via o aplicativo. 
     - Relatórios
-	01- Relatório plantão, ao gerar, buscar todos os chamados em aberto, em atendimento e fechado no sistema, mostrar uma tela para selecionar os que o plantonista deseja e criar o relatório.
+	01- Relatório plantão, ao gerar, ter opção de gerar com chamados em aberto, em atendimento e fechados. (OK)
+	02- Melhorar layout do email. (OK)
+    - HelpDesk
+	01- Adicionar a função de reabrir chamado, somente o usuário que abriu e area de atendimento podem ter acesso a essa função. (OK)
+	02- Melhorar layout do email. (OK)
+    - Notificações
+ 	01- Criar notificação para a função reabrir. (OK)
+    - Caixas
+	01- Ao remover, não aparece nenhuma mensagem, criar mensagem de erro ou sucesso e um botão para voltar para a tela de caixas. (OK)
+    - Maquinas
+	01- Cadastrar todos os IPS e qual que não estiver sendo usado, ter uma indicação que esta livre. (OK)
+	02- Ordernar por IP em ordem crescente. (OK)
+	03- Mostrar todos em uma unica tela. (OK)
+	04- Remover o botão de remover e inserir uma função de liberar o ip. (OK)
+	05- Adicionar os IPs para o PIC Cidade. (OK)
+    - Pinpads
+	01- Mostrar todos em uma unica tela. (OK)
+    - POS
+	01- Mostrar todos em uma unica tela. (OK)
+    - Impressoras Fiscais
+	01- Mostrar todos em uma unica tela. (OK)
+    - Impressoras
+	01- Mostrar todos em uma unica tela. (OK)
 
-
+---------------------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (1.9)
 -Melhorias
     - Helpdesk

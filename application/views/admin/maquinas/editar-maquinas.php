@@ -3,17 +3,21 @@
      aria-labelledby="mdlEditarMaquina" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Editar maquina</h4>
             </div>
+            
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center" hidden=""></div>
+            
             <form class="" method="post" 
                   action="<?php echo base_url("admin/maquina_admin/atualizaMaquina") ?>">
                 <div class="modal-body">
                     <div class="row"> 
+                        
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptEdtId" class="control-label">Id:</label>
@@ -21,6 +25,7 @@
                                        class="form-control" placeholder="" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptEdtUrl" class="control-label">Url:</label>
@@ -28,6 +33,7 @@
                                        class="form-control" placeholder="" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptEdtNome" class="control-label">Nome:</label>
@@ -35,13 +41,15 @@
                                        class="form-control" placeholder="Nome" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptEdtIp" class="control-label">Ip:</label>
-                                <input type="text" name="iptEdtIp" id="iptEdtIp" 
+                                <input type="text" name="iptEdtIp" id="iptEdtIp"
                                        class="form-control" placeholder="ip" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptEdtUser" class="control-label">Usuário:</label>
@@ -49,6 +57,7 @@
                                        class="form-control" placeholder="Login">
                             </div>
                         </div>
+                        
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="selEdtLocal" class="control-label">Local:</label>
@@ -63,6 +72,7 @@
                                 </select>
                             </div>
                         </div>
+                        
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="selEdtTipo" class="control-label">Tipo:</label>
@@ -77,6 +87,22 @@
                                 </select>
                             </div>
                         </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="selEdtUnidade" class="control-label">Unidade:</label>
+                                <select name="selEdtUnidade" id="selEdtUnidade" 
+                                        class="form-control" placeholder="Seleciona unidade">
+                                    <!-- Lista todos estados -->
+                                    <?php foreach ($unidades as $unidade) { ?>
+                                    <option>
+                                        <?php echo $unidade->getNome() ?>
+                                    </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptEdtDesc" class="control-label">Descrição:</label>
@@ -84,8 +110,10 @@
                                   placeholder="Descrição do maquina" rows="3"></textarea>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
@@ -94,6 +122,7 @@
                         Salvar
                     </button>
                 </div>
+                
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

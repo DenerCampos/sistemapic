@@ -18,6 +18,7 @@ class Maquina_model extends CI_Model {
     var $descricao; //descrição, se necessario.
     var $idlocal; //local aonda a maquina se encontra no map pic
     var $idtipo; //tipo de maquina, ex: CAIXAS, SERVIDORES, USUARIO, IMPRESSORA.
+    var $idunidade; //unidade em que se encontra a maquina
 
     /*------Construtor--------*/
     public function __construct() {
@@ -26,7 +27,7 @@ class Maquina_model extends CI_Model {
     
     /*------Requisições--------*/
     //instancia novo ip
-    public function newMaquina($nome, $ip, $idlocal, $idtipo, $login = NULL, $descricao = NULL){
+    public function newMaquina($nome, $ip, $idlocal, $idtipo, $idunidade, $login = NULL, $descricao = NULL){
         $this->setNome($nome);
         $this->setIp($ip);
         if (isset($login)){
@@ -37,6 +38,7 @@ class Maquina_model extends CI_Model {
         }
         $this->setIdlocal($idlocal);
         $this->setIdtipo($idtipo);
+        $this->setIdunidade($idunidade);
     }
     
     //Insere maquina
@@ -45,14 +47,60 @@ class Maquina_model extends CI_Model {
     }
 
     //atualiza maquina
-    public function atualizaMaquina($id, $nome, $ip, $login, $descricao, $idlocal, $idtipo){
+    public function atualizaMaquina($id, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade){
         $dados = array(
             "nome" => $nome,
-            "ip" => $ip,
             "login"=> $login,
             "descricao" => $descricao,
             "idlocal" => $idlocal,
             "idtipo" => $idtipo,
+            "idunidade" => $idunidade,
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idmaquina', $id);
+        $this->db->update('maquina');
+    }
+    
+    //atualiza maquina arquivo txt
+    public function atualizaMaquinaArquivo($id, $nome, $login, $descricao){
+        $dados = array(
+            "nome" => $nome,
+            "login"=> $login,
+            "descricao" => $descricao,
+            "idtipo" => 2,
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idmaquina', $id);
+        $this->db->update('maquina');
+    }
+    
+    //cria maquina
+    public function criaMaquina($ip, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade){
+        $dados = array(
+            "nome" => $nome,
+            "login"=> $login,
+            "descricao" => $descricao,
+            "idlocal" => $idlocal,
+            "idtipo" => $idtipo,
+            "idunidade" => $idunidade,
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('ip', $ip);
+        $this->db->update('maquina');
+    }
+    
+    //liberar maquina
+    public function LiberaMaquina($id, $idlocal, $idtipo){
+        $dados = array(
+            "nome" => "LIVRE",
+            "login" => NULL,
+            "descricao" => NULL,
+            "idlocal" => $idlocal,
+            "idtipo" => $idtipo,
+            
         );
         //atualiza no db
         $this->db->set($dados);
@@ -72,6 +120,20 @@ class Maquina_model extends CI_Model {
                 "SELECT *
                 FROM maquina 
                 WHERE nome = '$nome'");
+        //retorna objeto ip
+        if ($query->num_rows() == 1){
+            return $this->getObjByRow($query->row());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca maquina por ip -- arquito txt
+    public function buscaMaquinaIpArquivo($ip){
+        $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE ip = '$ip'");
         //retorna objeto ip
         if ($query->num_rows() == 1){
             return $this->getObjByRow($query->row());
@@ -146,12 +208,37 @@ class Maquina_model extends CI_Model {
             $query = $this->db->query(
                 "SELECT *
                 FROM maquina 
-                ORDER BY nome
+                ORDER BY ip 
                 LIMIT $ponteiro, $limite");           
         } else {
             $query = $this->db->query(
                     "SELECT *
-                    FROM maquina");
+                    FROM maquina 
+                    ORDER BY ip ");
+        }
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todas maquinas
+    public function buscaTodasPorUnidade($unidade, $limite = NULL, $ponteiro = NULL){
+        if (isset($limite)){
+            $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE idunidade = $unidade
+                ORDER BY nome 
+                LIMIT $ponteiro, $limite");           
+        } else {
+            $query = $this->db->query(
+                    "SELECT *
+                    FROM maquina
+                    WHERE idunidade = $unidade
+                    ORDER BY nome ");
         }
         //retorna objeto ip
         if ($query->num_rows() > 0){
@@ -167,6 +254,33 @@ class Maquina_model extends CI_Model {
                 "SELECT *
                 FROM maquina 
                 WHERE nome = '$nome'");
+        if ($query->num_rows() >= 1){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    
+    //verifica se IP exite -- Arquivo TXT
+    public function existeIpArquivo($ip){
+        $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE ip = '$ip'");
+        if ($query->num_rows() == 1){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    
+    //verifica se ip esta livre
+    public function verificaMaquinaLivre($ip){
+        $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE ip = '$ip' AND 
+                    nome = 'LIVRE'");
         if ($query->num_rows() >= 1){
             return TRUE;
         } else {
@@ -204,6 +318,37 @@ class Maquina_model extends CI_Model {
         //retorna objeto usuario
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca maquinas
+    public function buscaPorUnidade($unidade, $texto){
+        $query = $this->db->query(
+                "SELECT *
+                FROM (SELECT * 
+                        FROM maquina
+                        WHERE idunidade = $unidade) AS m 
+                WHERE m.nome LIKE '%$texto%' OR 
+                    m.ip LIKE '%$texto%'");
+        //retorna objeto usuario
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca maquinas
+    public function buscaNovoIp(){
+        $query = $this->db->query(
+                "SELECT *
+                FROM maquina 
+                WHERE nome = 'LIVRE'");
+        //retorna objeto usuario
+        if ($query->num_rows() > 0){
+            return $this->getObjByRow($query->row());
         } else{
             return NULL;
         }
@@ -250,6 +395,7 @@ class Maquina_model extends CI_Model {
         $maquina->setDescricao($r->descricao);
         $maquina->setIdlocal($r->idlocal);
         $maquina->setIdtipo($r->idtipo);
+        $maquina->setIdunidade($r->idunidade);
         
         return $maquina;
     }
@@ -298,6 +444,10 @@ class Maquina_model extends CI_Model {
         return $this->idtipo;
     }
 
+    function getIdunidade() {
+        return $this->idunidade;
+    }
+
     function setIdmaquina($idmaquina) {
         $this->idmaquina = $idmaquina;
     }
@@ -324,6 +474,10 @@ class Maquina_model extends CI_Model {
 
     function setIdtipo($idtipo) {
         $this->idtipo = $idtipo;
+    }
+
+    function setIdunidade($idunidade) {
+        $this->idunidade = $idunidade;
     }
 
 

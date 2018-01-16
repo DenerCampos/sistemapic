@@ -211,34 +211,74 @@ class Exibir extends CI_Controller {
     private function maquinas(){
         //carregando modelo
         $this->load->model('maquina_model', 'maquina');
-        return $this->maquina->buscaTodas();
+        return $this->ordenaPorIP($this->maquina->buscaTodas());
     }
     
     //PinPads
     private function pinpads(){
         //carregando modelo
         $this->load->model('pinpad_model', 'pinpad');
-        return $this->pinpad->todos();
+        return $this->ordenarPorNome($this->pinpad->todos());
     }
     
     //Pos
     private function poss(){
         //carregando modelo
         $this->load->model('pos_model', 'pos');
-        return $this->pos->todos();
+        return $this->ordenarPorNome($this->pos->todos());
     }
     
     //Impressora fiscal
     private function impressoraFiscal(){
         //carregando modelo
         $this->load->model('Impressora_fiscal_model', 'fiscal');
-        return $this->fiscal->todos();
+        return $this->ordenarPorCaixa($this->fiscal->todos());
     }
     
     //Impressora
     private function impressoras(){
         //carregando modelo
         $this->load->model('Impressora_model', 'impressora');
-        return $this->impressora->todos();
+        return $this->ordenarPorNome($this->impressora->todos());
+    }
+    
+    //Ordena a lista de maquinas por ip
+    private function ordenaPorIP($lista){
+        //Ordena um array pelos valores utilizando uma função de comparação definida pelo usuário
+        usort($lista, function ($a, $b){
+            //Comparação de strings usando o algoritmo "natural order"
+            return strnatcmp($a->getIp(), $b->getIp());
+        });
+        return $lista;
+    }
+    
+    //Ordena a lista de objetos por nome
+    private function ordenarPorNome($lista){
+        //verifica se lista vazia
+        if (isset($lista)){
+            //Ordena um array pelos valores utilizando uma função de comparação definida pelo usuário
+            usort($lista, function ($a, $b){
+                //Comparação de strings usando o algoritmo "natural order"
+                return strnatcmp($a->getNome(), $b->getNome());
+            });
+            return $lista;
+        } else {
+            return $lista;
+        }
+    }
+    
+    //Ordena a lista de objetos por nome
+    private function ordenarPorCaixa($lista){
+        //verifica se lista vazia
+        if (isset($lista)){
+            //Ordena um array pelos valores utilizando uma função de comparação definida pelo usuário
+            usort($lista, function ($a, $b){
+                //Comparação de strings usando o algoritmo "natural order"
+                return strnatcmp($a->getCaixa(), $b->getCaixa());
+            });
+            return $lista;
+        } else {
+            return $lista;
+        }
     }
 }

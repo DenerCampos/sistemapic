@@ -6,28 +6,36 @@
         <title>Mensagem encaminhada do Sistema PIC</title>
     </head>
     <body>
-        <h3>Sistema PIC - Help-Desk</h3>
-        <h4>Chamado atualizado no sistema</h4>
-        <br/>
-        <p><strong>Descrição do chamado:</strong><br/><br/>
-            <strong>Número:</strong> <?php echo $id; ?> <br/>
-            <strong>Estado:</strong> <?php echo $estado; ?> <br/>
-            <strong>Área de atenimento:</strong> <?php echo $area; ?> <br/>
-            <strong>Técnico:</strong> <?php echo $tecnico; ?> <br/>
-            <strong>Usuário:</strong> <?php echo $usuario; ?> <br/>
-            <strong>Problema:</strong> <?php echo $problema; ?> <br/>
-            <strong>Descrição:</strong> <?php echo $descricao; ?> <br/>
-            <strong>Atualização:</strong> <?php echo $comentario; ?> <br/>
-        </p>
-        <p>
-            Para mais informações, favor acessar o chamado clicando 
-            <a href="<?php echo base_url('ocorrencia/atendimento'); ?>">
-                AQUI
-            </a>
-            .
-        </p>
-        <br/>
-        <p>Obrigado!</p>
-        <p>Equipe do Sistema PIC.</p>
+        
+        <div>
+            <div  id="emb-email-header">
+                <img style="border: 0;-ms-interpolation-mode: bicubic;display: block;Margin-left: 0;Margin-right: auto;max-width: 250px" 
+                     src="<?php echo $assetsUrl ?>/img/logo-pic-email.png" alt="" width="400" height="100">
+            </div><br/><br/>
+                
+            <div style="Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px">
+                <h4>Chamado atualizado no sistema</h4>
+                <p><strong>Descrição do chamado:</strong><br/><br/>
+                    Número: <?php echo $id; ?> <br/>
+                    Estado: <?php echo $estado; ?> <br/>
+                    Área de atenimento:</strong> <?php echo $area; ?> <br/>
+                    Técnico: <?php echo $tecnico; ?> <br/>
+                    Usuário: <?php echo $usuario; ?> <br/>
+                    Problema: <?php echo $problema; ?> <br/>
+                    Descrição: <?php echo $descricao; ?> <br/>
+                    Atualização: <?php echo $comentario; ?> <br/>
+                </p>
+                <p>Para mais informações, favor acessar o chamado clicando  
+                    <a href="<?php echo base_url('ocorrencia/buscar').'/'.$id;?>">
+                        AQUI</a>.
+                </p>
+                <p>Obrigado!</p>
+            </div>
+                
+            <p style="Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 12px;line-height: 25px;Margin-bottom: 25px"> 
+                *E-mail automático. Não responda este e-mail*<br/> Equipe <a href="<?php echo base_url(); ?>">Sistema PIC</a>.
+            </p>
+        </div>
+        
     </body>
 </html>

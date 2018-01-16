@@ -49,14 +49,14 @@ $(document).ready(function() {
     });
     
     //Chama a função que atualiza o chamados em aberto em 5 minutos (300000) 2 minutos (120000)
-    var atualizaChamados = setInterval(atualizaChamadoAberto, 300000);
+    var atualizaChamados = setInterval(atualizaChamadoAberto, 120000);
        
 });
 
 //Atualiza pagina de chamados em aberto de 5 em 5 minutos se nenhuma modal estiver aberta.
 function atualizaChamadoAberto(){    
     //verifica se esta na pagina de chamados abertos
-    if ($("#chamado-aberto").length){
+    if ($("#chamado-atualiza").length){
        if ($(".modal-dialog").is(":visible")){
             //console.log("modal aberta");
         } else{
@@ -298,6 +298,33 @@ function encaminharChamado(ancor){
     });
 }
 
+//Reabrir Chamado
+function reabrirChamado(ancor){
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"ocorrencia/reabrirChamado",
+        //Dados
+        data:{
+            "idocorrencia":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptRbrId").val(msg.idocorrencia);
+                $("#iptRbrNumero").val(msg.idocorrencia);
+                $("#iptRbrUsuario").val(msg.nome);
+                $("#iptRbrProblema").val(msg.problema)
+            }
+            else{
+            }
+        }
+    });
+}
+
 //Editar Chamado
 function editarChamado(ancor){
     $(".carregando-modal").show();
@@ -472,7 +499,7 @@ $('#frmCriChamado').validate({
         iptCriDesc: {            
             required: true,
             minlength:3,
-            maxlength:1000
+            maxlength:10000
         }
     },
     //Mensagens da validação
@@ -570,6 +597,30 @@ $('#frmEncChamado').validate({
     }
 });
 
+//Reabrir chamado
+$('#frmRbrChamado').validate({    
+    //regras de validações
+    rules: {
+        iptRbrId: {            
+            required: true
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptRbrId: {            
+            required: "Erro no id."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-reabrir-chamado').html("Erro Geral! \n\ <strong>Informar o TI</strong>.");
+        $('#erro-reabrir-chamado').show();
+    }
+});
+
 //Remover chamado
 $('#frmRmvChamado').validate({    
     //regras de validações
@@ -601,7 +652,7 @@ $('#frmEdtChamado').validate({
         iptEdtComentarioNovo: {            
             required: true,
             minlength:3,
-            maxlength:1000
+            maxlength:10000
         }
     },
     //Mensagens da validação
@@ -630,7 +681,7 @@ $('#frmFchChamado').validate({
         iptFchComentarioNovo: {            
             required: true,
             minlength:3,
-            maxlength:1000
+            maxlength:10000
         }
     },
     //Mensagens da validação

@@ -2,7 +2,7 @@
                 <!-- fechados admin -->
                 <?php if (isset($fechadas)) { ?>
                 <!-- painel -->
-                <div class="panel panel-success">
+                <div class="panel panel-success" id="chamado-atualiza">
                     <div class="panel-heading">
                         <h3 class="panel-title"><strong>Chamados fechados</strong></h3>
                     </div>
@@ -40,6 +40,12 @@
                                     <td><?php echo $area->buscaId($fechada->getIdarea())->getNome(); ?></td>
                                     <td><?php echo $estado->buscaId($fechada->getIdocorrencia_estado())->getNome(); ?></td>
                                     <td class="text-right opcoes">
+                                        <a title="Reabrir" role="button" href="#mdlReabrirChamado" 
+                                           data-toggle="modal" data-target="#mdlReabrirChamado"
+                                           data-id="<?php echo $fechada->getIdocorrencia(); ?>"
+                                           onclick="reabrirChamado(this)">
+                                            <i class="fa fa-share-square-o" ></i>
+                                        </a>
                                         <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                            data-toggle="modal" data-target="#mdlImprimirChamado"
                                            data-id="<?php echo $fechada->getIdocorrencia(); ?>"

@@ -80,7 +80,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="navbar-link" href="<?php echo base_url('maquina'); ?>">Maquinas</a>
+                            <a class="navbar-link" href="<?php echo base_url('maquina'); ?>">Maquinas (IP)</a>
                         </li>
                         <li>
                             <a class="navbar-link" href="<?php echo base_url('pinpad'); ?>" >PinPads</a>

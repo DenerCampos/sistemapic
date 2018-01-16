@@ -22,7 +22,7 @@ class Caixa extends CI_Controller {
     }
     
     
-    /*------Carregamento de views--------*/ 
+    /*-----------Carregamento de views---------*/
     public function index(){
         //Carrega cabeçaho html
         $this->load->view("_html/cabecalho", array( 
@@ -64,7 +64,7 @@ class Caixa extends CI_Controller {
         //Carrega index
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
-            "msgerro" => 'teste de ero'));
+            "msgerro" => $msg));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
@@ -86,8 +86,8 @@ class Caixa extends CI_Controller {
         //Carrega index
         $this->load->view('mensagens/mensagem', array(
             "assetsUrl" => base_url("assets"),
-            "msg" => 'teste de mensagem',
-            "uri" => 'home'));
+            "msg" => $msg,
+            "uri" => $uri));
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
@@ -97,33 +97,68 @@ class Caixa extends CI_Controller {
             "arquivoJS" => "caixa.js"));
     }
     
-    /*------Funções internas--------*/ 
+    /*----------------Funções---------------*/
     
     //Alterar maquina
-    public function alterar(){
-        //Recupera dados
-        $id = $this->input->post("iptEdtId");
-        $nomelocal = $this->input->post("selEdtLocal");
-        
-        //Busca maquina
-        $maquina = $this->maquina->buscaMaquinaId($id);
-        //Busca local
-        $local = $this->local->buscaLocalNome($nomelocal);
-        
-        //Atualiza
-        if (isset($maquina) && isset($local)){
-            //gravar log
-            $this->gravaLog("alteração", "alterou dados do caixa."
-                    . " Caixa antigo: ". $maquina->getNome()
-                    . " - ". $maquina->getIdlocal()
-                    . ". Novo local: ". $local->getNome());
-            $maquina->atualizaMaquina($maquina->getIdmaquina(), $maquina->getNome(), $maquina->getIp(),
-                    $maquina->getLogin(), $maquina->getDescricao(), $local->getIdlocal(), $maquina->getIdtipo());
-            $this->index();
-        } else {
-            echo 'erro ao atualizar maquina';
+    public function alterar(){               
+        try {
+            //Recupera dados
+            $id; $nomelocal; $url;
+            $this->recuperaAlterar($id, $nomelocal, $url);
+            //Busca maquina
+            $maquina = $this->maquina->buscaMaquinaId($id);
+            //Busca local
+            $local = $this->local->buscaLocalNome($nomelocal);
+
+            //Atualiza
+            if (isset($maquina) && isset($local)){
+                //gravar log
+                $this->gravaLog("alteração", "alterou dados do caixa."
+                        . " Caixa antigo: ". $maquina->getNome()
+                        . " - ". $maquina->getIdlocal()
+                        . ". Novo local: ". $local->getNome());
+                $maquina->atualizaMaquina($maquina->getIdmaquina(), $maquina->getNome(), $maquina->getIp(),
+                        $maquina->getLogin(), $maquina->getDescricao(), $local->getIdlocal(), $maquina->getIdtipo());
+                //mensagem
+                $this->mensagem("Caixa alterado!", $url);
+            } else {
+                $this->erro("Não foi possível alterar o caixa. O caixa não existe.");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao tentar alterar um caixa.");
         }
     }
+    
+    //Remover
+    public function remover(){
+        try {
+            //Recupera dados
+            $id; $url;
+            $this->recuperaRemover($id, $url);
+            //Busca maquina
+            $maquina = $this->maquina->buscaMaquinaId($id);
+
+            //remover
+            if (isset($maquina)){
+                //gravar log
+                $this->gravaLog("remove", "removeu caixa id: "
+                        . $id);
+                $maquina->removerMaquina($maquina->getIdmaquina());
+                //mensagem
+                $this->mensagem("Caixa removido!", $url);
+            } else {
+                $this->erro("Erro ao tentar remover um caixa.");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao tentar remover um caixa.");
+        }
+    }
+    
+    /*----------------Funções AJAX---------------*/
 
     //Editar AJAX
     public function editarCaixa(){
@@ -150,23 +185,7 @@ class Caixa extends CI_Controller {
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
     }
-    
-    //Remover
-    public function remover(){
-        //Recupera dados
-        $id = $this->input->post("iptRmvId");
-        
-        //Busca maquina
-        $maquina = $this->maquina->buscaMaquinaId($id);
-        
-        //remover
-        if (isset($maquina)){
-            $maquina->removerMaquina($maquina->getIdmaquina());
-        } else {
-            echo 'Erro ao remover maquina';
-        }
-    }
-    
+          
     //Remover AJAX
     public function removerCaixa(){
         //Recupera Id maquina
@@ -210,7 +229,29 @@ class Caixa extends CI_Controller {
         exit();
     }
     
-    //Verificar maquinas ligadas e desligadas
+    
+    /*---------------Funções internas------------*/ 
+    
+    private function recuperaAlterar(&$id, &$nomelocal, &$url){
+        $id = $this->input->post("iptEdtId");
+        $nomelocal = $this->input->post("selEdtLocal");
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "caixa";
+        }
+    }
+    
+    private function recuperaRemover(&$id, &$url){
+        $id = $this->input->post("iptRmvId");
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "caixa";
+        }
+    }
+
+        //Verificar maquinas ligadas e desligadas
     public function verificarEstado(){
          $id = $this->input->post("idmaquina");
         //busca maquinas

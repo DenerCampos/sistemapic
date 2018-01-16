@@ -111,6 +111,22 @@ class Ocorrencia_model extends CI_Model {
         $this->db->update('ocorrencia');
     }
     
+    //Reabre ocorrencia
+    public function reabre($id, $usuario, $dalteracao){
+        $dados = array(
+            "data_alteracao" => $dalteracao,
+            "usuario_atende" => $usuario,
+            "usuario_fecha" => null,
+            "data_fechamento" => null,
+            "idocorrencia_estado" => 2,
+            
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idocorrencia', $id);
+        $this->db->update('ocorrencia');
+    }
+    
     //Atualiza ocorrencia $descricao, $vnc, $ramal, $data_abertura, $usuario, $usuario_abre, $idunidade, $idarea, $idsetor, $idproblema, $idocorrencia_estado
     public function atualiza($id, $vnc, $ramal, $usuario, $dalteracao, $idunidade, $idarea, $idsetor, $idproblema){
         $dados = array(
@@ -177,7 +193,8 @@ class Ocorrencia_model extends CI_Model {
                 "SELECT *
                 FROM ocorrencia 
                 WHERE idocorrencia = $id AND
-                    idocorrencia_estado = 3");
+                    idocorrencia_estado = 3 AND
+                    idestado = 1");
         //retorna objeto
         if ($query->num_rows() == 1){
             return TRUE;
@@ -192,7 +209,8 @@ class Ocorrencia_model extends CI_Model {
                 "SELECT *
                 FROM ocorrencia 
                 WHERE idocorrencia = $id AND
-                    idocorrencia_estado = 2");
+                    idocorrencia_estado = 2 AND
+                    idestado = 1");
         //retorna objeto
         if ($query->num_rows() == 1){
             return TRUE;
@@ -207,7 +225,8 @@ class Ocorrencia_model extends CI_Model {
                 "SELECT *
                 FROM ocorrencia 
                 WHERE idocorrencia = $id AND
-                    idocorrencia_estado = 1");
+                    idocorrencia_estado = 1 AND
+                    idestado = 1");
         //retorna objeto
         if ($query->num_rows() == 1){
             return TRUE;
@@ -900,15 +919,38 @@ class Ocorrencia_model extends CI_Model {
         }
     }
     
-    //Busca chamados por data
-    public function todasDataFechado($inicio, $fim, $user){
+    //Relatório de plantão
+    //Busca chamados por data de abertura
+    public function todasDataAberto($inicio, $fim){
+        //chamados em aberto
+        $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia 
+                WHERE data_abertura BETWEEN '$inicio' AND
+                    '$fim' AND
+                    idocorrencia_estado = 1 AND
+                    idestado = 1
+                ORDER BY idocorrencia");
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+
+    //Relatório de plantão
+    //Busca chamados por data - atendimento
+    public function todasDataAtendimento($inicio, $fim, $user){
         $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia 
                 WHERE data_fechamento BETWEEN '$inicio' AND
                     '$fim' AND
-                    usuario_fecha = $user
-                ORDER BY data_fechamento"); 
+                    idocorrencia_estado = 2 AND
+                    idestado = 1 AND
+                    usuario_atende = $user
+                ORDER BY idocorrencia"); 
         //retorna objeto ip
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());
@@ -917,20 +959,67 @@ class Ocorrencia_model extends CI_Model {
         }
     }
     
-    //Verifica se contem chamados no periodo especificado e usuario que fechou
-    public function contem($inicio, $fim, $user){
+    //Relatório de plantão
+    //Busca chamados por data - fechado
+    public function todasDataFechado($inicio, $fim, $user){
         $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia 
                 WHERE data_fechamento BETWEEN '$inicio' AND
                     '$fim' AND
-                    usuario_fecha = $user "); 
+                    idocorrencia_estado = 3 AND
+                    idestado = 1 AND
+                    usuario_fecha = $user
+                ORDER BY idocorrencia"); 
         //retorna objeto ip
         if ($query->num_rows() > 0){
-            return TRUE;
+            return $this->getObjByResult($query->result());
         } else{
-            return FALSE;
+            return NULL;
         }
+    }
+    
+    //Relatório de plantão
+    //Verifica se contem chamados abertos no periodo especificado
+    public function contemAberto($inicio, $fim){
+        $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia 
+                WHERE data_abertura BETWEEN '$inicio' AND
+                    '$fim' AND
+                    idocorrencia_estado = 1 AND
+                    idestado = 1
+                ORDER BY idocorrencia");
+        
+        return $query->num_rows();
+    }
+    
+    //Verifica se contem chamados atendimento no periodo especificado
+    public function contemAtendimento($inicio, $fim, $user){
+        $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia 
+                WHERE data_fechamento BETWEEN '$inicio' AND
+                    '$fim' AND
+                    idocorrencia_estado = 2 AND
+                    idestado = 1 AND
+                    usuario_atende = $user
+                ORDER BY idocorrencia"); 
+        return $query->num_rows();
+    }
+    
+    //Verifica se contem chamados fechado no periodo especificado
+    public function contemFechado($inicio, $fim, $user){
+        $query = $this->db->query(
+                "SELECT *
+                FROM ocorrencia 
+                WHERE data_fechamento BETWEEN '$inicio' AND
+                    '$fim' AND
+                    idocorrencia_estado = 3 AND
+                    idestado = 1 AND
+                    usuario_fecha = $user
+                ORDER BY idocorrencia"); 
+        return $query->num_rows();
     }
     
     //Contar todos registros

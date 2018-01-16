@@ -741,6 +741,35 @@ function carregarArquivoMaquina(ancor){
     });
 }
 
+//Gerar maquina
+$('#frmGerMaquinas').validate({    
+    //regras de validações
+    rules: {
+        iptGerIp: {            
+            required: true,
+            minlength:9,
+            maxlength:9
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptGerIp: {            
+            required: "Necessário IP.",
+            minlength: "Exemplo: 192.168.2",
+            maxlength: "Exemplo: 192.168.2"
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-gerar-maquina').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-gerar-maquina').show();
+    }
+});
+
 //CRUD USUARIO
 //Edição de usuario
 function editarUsuario(ancor){

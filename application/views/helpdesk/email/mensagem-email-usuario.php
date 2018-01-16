@@ -6,25 +6,34 @@
         <title>Mensagem encaminhada do Sistema PIC</title>
     </head>
     <body>
-        <h3>Sistema PIC - Help-Desk</h3>
-        <h4><?php echo $usuario; ?>, Você abriu um novo chamado!</h4>
-        <br/>
-        <p>Descrição do chamado:<br/><br/>
-            Número: <?php echo $id; ?> <br/>
-            Problema: <?php echo $problema; ?> <br/>
-            Descrição: <?php echo $descricao; ?> <br/>
-        </p>
-        <p>
-            Aguarde que em instantes iremos atende-lo!
-        </p>
-        <p>Clique 
-            <a href="<?php echo base_url('ocorrencia/aberto'); ?>">
-                AQUI
-            </a>
-             para vizualizar este chamado.
-        </p>
-        <br/>
-        <p>Obrigado!</p>
-        <p>Equipe do Sistema PIC.</p>
+        
+        <div>
+            <div  id="emb-email-header">
+                <img style="border: 0;-ms-interpolation-mode: bicubic;display: block;Margin-left: 0;Margin-right: auto;max-width: 250px" 
+                     src="<?php echo $assetsUrl ?>/img/logo-pic-email.png" alt="" width="400" height="100">
+            </div><br/><br/>
+                
+            <div style="Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 16px;line-height: 25px;Margin-bottom: 25px">
+                <h4><?php echo $usuario; ?>, Você abriu um novo chamado!</h4>
+                <p><strong>Descrição do chamado:</strong><br/><br/>
+                    Número: <?php echo $id; ?> <br/>
+                    Problema: <?php echo $problema; ?> <br/>
+                    Descrição: <?php echo $descricao; ?> <br/>
+                </p>
+                <p>
+                    Aguarde que em instantes iremos atendê-lo!
+                </p>
+                <p>Clique 
+                    <a href="<?php echo base_url('ocorrencia/buscar').'/'.$id;?>">
+                        AQUI</a> para vizualizar o chamado.
+                </p>
+                <p>Obrigado!</p>
+            </div>
+                
+            <p style="Margin-top: 0;color: #565656;font-family: Georgia,serif;font-size: 12px;line-height: 25px;Margin-bottom: 25px"> 
+                *E-mail automático. Não responda este e-mail*<br/> Equipe <a href="<?php echo base_url(); ?>">Sistema PIC</a>.
+            </p>
+        </div>
+        
     </body>
 </html>

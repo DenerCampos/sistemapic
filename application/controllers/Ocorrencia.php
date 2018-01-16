@@ -299,6 +299,8 @@ class Ocorrencia extends CI_Controller {
                 "problemas" => $this->problema->todosProblemas(),
                 "setores" => $this->setor->todosSetores()));
         }
+        $this->load->view("helpdesk/reabrir-chamado", array( 
+            "assetsUrl" => base_url("assets")));
         $this->load->view("helpdesk/imprimir-chamado", array( 
             "assetsUrl" => base_url("assets")));        
         $this->load->view("helpdesk/visualizar-chamado", array( 
@@ -376,6 +378,8 @@ class Ocorrencia extends CI_Controller {
             "locais" => $this->local->todosLocais(),
             "problemas" => $this->problema->todosProblemas(),
             "setores" => $this->setor->todosSetores()));
+        $this->load->view("helpdesk/reabrir-chamado", array( 
+            "assetsUrl" => base_url("assets")));
         $this->load->view("helpdesk/imprimir-chamado", array( 
             "assetsUrl" => base_url("assets")));        
         $this->load->view("helpdesk/visualizar-chamado", array( 
@@ -643,6 +647,9 @@ class Ocorrencia extends CI_Controller {
                 //notificacao
                 //enviaNotificacao($id, $remetente, $destinatario, $tipo)
                 $this->enviaNotificacao($id, $this->session->userdata("id"), $this->geraUsuario($usuario), "encaminha");
+                //notifica o usuario que abriu que seu chamado foi alterado no sistema.
+                //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                $this->enviaNotificacao($id, $this->session->userdata("id"),  $this->ocorrencia->buscaId($id)->getUsuario_abre(), "atendimento");
                 //log
                 $this->gravaLog("chamado emcaminhado", "nome: ".$this->session->userdata("nome")." - chamado: ".$id." para o usuario: ".$usuario);
                 $this->mensagem("Chamado <strong>".$id."</strong> encaminhado para <strong>".$usuario."</strong>.", $url);
@@ -655,6 +662,54 @@ class Ocorrencia extends CI_Controller {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
             $this->erro("Erro ao encaminhar chamado. Favor tentar novamente.");
+        }
+    }
+    
+    //Reabrir ocorrencia
+    public function reabrir(){
+        try {
+            $id; $comentario; $url;
+            //Recuperando dados
+            $this->recuperaDadosReabrir($id, $comentario, $url);
+            //verifica se existe e esta fechada
+             if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->fechado($id)){
+                if (!isset($comentario) || $comentario == ""){
+                    $comentario = $this->session->userdata("nome")." reabriu o chamado ".$id.".";
+                }
+                //adiciona comentario
+                $this->comentario->newComentario($comentario, date('Y-m-d H:i:s'), $id, $this->session->userdata("id"));
+                $this->comentario->addComentario(); 
+                //verifica se o usuario é tecnico ou admin
+                if (($this->session->userdata("nivel") == 0) || ($this->session->userdata("nivel") == 1)){
+                    //pega quem esta reabrindo o chamado
+                    $usuario = $this->session->userdata("id");
+                } else {
+                    //pega usuario que fechou
+                    $usuario = $this->ocorrencia->buscaId($id)->getUsuario_fecha();                    
+                }  
+                //reabre ocorrencia reabre($id, $usuario, $dalteracao)
+                $this->ocorrencia->reabre($id, $usuario, date('Y-m-d H:i:s'));
+                //notificacao
+                //verifica quem esta alterando o chamado
+                if (($this->ocorrencia->buscaId($id)->getUsuario_abre()) == ($this->session->userdata("id"))){
+                    //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                    $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_atende(), "reabre");
+                } else {
+                    //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                    $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_abre(), "reabre");
+                }                              
+                //log
+                $this->gravaLog("chamado reaberto", "nome: ".$this->session->userdata("nome")." - chamado: ".$id." para o usuario: ".$usuario);
+                $this->mensagem("Chamado <strong>".$id."</strong> reaberto.", $url);
+            }else{
+                //log
+                $this->gravaLog("erro chamado reaberto", "nome: ".$this->session->userdata("nome")." - chamado: ".$id." para o usuario: ".$usuario);
+                $this->erro("Chamado <strong>".$id."</strong> não pode ser reaberto.");
+            } 
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao reabrir chamado. Favor tentar novamente."); 
         }
     }
     
@@ -752,8 +807,16 @@ class Ocorrencia extends CI_Controller {
                     $this->envioEmail($this->usuario->buscaId($this->ocorrencia->buscaId($id)->getUsuario_atende())->getLogin(), "Edição chamado (Sistema PIC)", $corpo);
                 }
                 //notificacao
+                //verifica quem esta alterando o chamado
+                if (($this->ocorrencia->buscaId($id)->getUsuario_abre()) == ($this->session->userdata("id"))){
+                    //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                    $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_atende(), "atendimento");
+                } else {
+                    //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                    $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_abre(), "atendimento");
+                }
                 //enviaNotificacao($id, $remetente, $destinatario, $tipo)
-                $this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_abre(), "atendimento");
+                //$this->enviaNotificacao($id, $this->session->userdata("id"), $this->ocorrencia->buscaId($id)->getUsuario_abre(), "atendimento"); adfasd 
                 //log
                 $this->gravaLog("comentario", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
                 $this->gravaLog("atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
@@ -1048,6 +1111,29 @@ class Ocorrencia extends CI_Controller {
                 "nome" => $chamado->getUsuario(),
                 "problema" => $this->problema->buscaId($chamado->getIdproblema())->getNome(),
                 "tecnico" => $this->usuario->buscaId($chamado->getUsuario_atende())->getNome()
+            );
+            echo json_encode($msg);
+        } else {
+            $msg = array(
+                "erro" => "Chamado não encontrado"
+            );
+            echo json_encode($msg);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Reabrir ocorrencia ajax
+    public function reabrirChamado(){
+        //Recupera Id 
+        $id = $this->input->post("idocorrencia");
+        $chamado = $this->ocorrencia->buscaId($id);
+        
+        if (isset($chamado)){
+            $msg = array(
+                "idocorrencia" => $chamado->getIdocorrencia(),
+                "nome" => $chamado->getUsuario(),
+                "problema" => $this->problema->buscaId($chamado->getIdproblema())->getNome()
             );
             echo json_encode($msg);
         } else {
@@ -1408,6 +1494,18 @@ class Ocorrencia extends CI_Controller {
         }
     }
     
+    //Recupera dados da reabrir ocorrencia
+    private function recuperaDadosReabrir(&$id, &$comentario, &$url){
+        $id = trim($this->input->post("iptRbrId"));
+        $comentario = trim($this->input->post("iptRbrComentario"));
+        $url = trim($this->input->post("iptRbrUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "ocorrencia/fechado";
+        }
+    }
+    
     //Recupera dados da imprimir ocorrencia
     private function recuperaDadosImprimir(&$id, &$url){
         $id = trim($this->input->post("iptImpId"));
@@ -1548,6 +1646,7 @@ class Ocorrencia extends CI_Controller {
         $ocorrencia = $this->ocorrencia->buscaId($id);
         //gera dados para view
         if (isset($ocorrencia)){
+            $dados['assetsUrl'] = base_url("assets");
             $dados['id'] = $ocorrencia->getIdocorrencia();
             $dados['area'] = $this->area->buscaId($ocorrencia->getIdarea())->getNome();
             $dados['usuario'] = $this->usuario->buscaId($ocorrencia->getUsuario_abre())->getNome();
@@ -1566,6 +1665,7 @@ class Ocorrencia extends CI_Controller {
         $ocorrencia = $this->ocorrencia->buscaId($id);
         //gera dados para view
         if (isset($ocorrencia)){
+            $dados['assetsUrl'] = base_url("assets");
             $dados['id'] = $ocorrencia->getIdocorrencia();
             $dados['usuario'] = $this->usuario->buscaId($ocorrencia->getUsuario_abre())->getNome();
             $dados['problema'] = $this->problema->buscaId($ocorrencia->getIdproblema())->getNome();
@@ -1584,6 +1684,7 @@ class Ocorrencia extends CI_Controller {
         
         //gera dados para view
         if (isset($ocorrencia)){
+            $dados['assetsUrl'] = base_url("assets");
             $dados['id'] = $ocorrencia->getIdocorrencia();
             $dados['estado'] = "Em atendimento";
             $dados['area'] = $this->area->buscaId($ocorrencia->getIdarea())->getNome();
@@ -1606,6 +1707,7 @@ class Ocorrencia extends CI_Controller {
         
         //gera dados para view
         if (isset($ocorrencia)){
+            $dados['assetsUrl'] = base_url("assets");
             $dados['id'] = $ocorrencia->getIdocorrencia();
             $dados['estado'] = "Fechado";
             $dados['area'] = $this->area->buscaId($ocorrencia->getIdarea())->getNome();
@@ -1839,10 +1941,11 @@ class Ocorrencia extends CI_Controller {
             //verifica o tipo de notificação (
             //  Existem 5 tipos:
             //      aberto: notificações para todos os tecnicos da area do chamado, o id da area é o destinatario
-            //      atendimento: notificação para o destinatario (usuario que abriu o chamado)
-            //      fechado: notificação somente para o destinatario (usuario que abriu o chamado)
-            //      atende: notificação somente para o destinatario (usuario que abriu o chamado)
-            //      encaminha: notificação para o destinatario (tecnico que recebe o chamado)
+            //      atendimento: notificação para o usuario que abriu o chamado ou para o tecnico, depende de quem esta alterando o chamado
+            //      fechado: notificação somente para o usuario que abriu o chamado
+            //      atende: notificação somente para o usuario que abriu o chamado
+            //      encaminha: notificação para o tecnico que recebe o chamado e o usuario que abriu
+            //      reabre: notificação para o usuario que abriu o chamado e para o tecnico que atendeu
             
             switch ($tipo) {
                 case "aberto":
@@ -1864,7 +1967,24 @@ class Ocorrencia extends CI_Controller {
                             //adiciona
                             $this->notificacao->adiciona();
                         }                        
-                    }                    
+                    }
+                    //busca todos admin
+                    //todosAdmin()
+                    $admin = $this->usuario->todosAdmin();
+                    if (isset($admin)){
+                        foreach ($admin as $value) {
+                            //mensagem
+                            $mensagem = 'Chamado '. 
+                                        '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                        ' aberto no sistema por <strong> '.$this->usuario->buscaId($remetente)->getNome().
+                                        ' </strong> para a área <strong>'.$this->area->buscaId($destinatario)->getNome().'</strong>.';                            
+                            //nova notificação
+                            //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                            $this->notificacao->novo($remetente, $value->getIdusuario(), date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                            //adiciona
+                            $this->notificacao->adiciona();
+                        }                        
+                    }
                     break;
                 case "atendimento":
                     $titulo = "Alteração no chamado";                          
@@ -1908,6 +2028,18 @@ class Ocorrencia extends CI_Controller {
                     $mensagem = 'Chamado '. 
                                 '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
                                 ' foi encaminhado para você por <strong>'.$this->usuario->buscaId($remetente)->getNome().'</strong>';                  
+                    //nova notificação
+                    //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                    $this->notificacao->novo($remetente, $destinatario, date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                    //adiciona
+                    $this->notificacao->adiciona(); 
+                    break;
+                case "reabre":
+                    $titulo = "Reabertura de chamado";                          
+                    $link = base_url('ocorrencia/buscar/'.$id); 
+                    $mensagem = 'Chamado '. 
+                                '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                ' foi reaberto no sistema por <strong>'.$this->usuario->buscaId($remetente)->getNome().'</strong>';                  
                     //nova notificação
                     //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
                     $this->notificacao->novo($remetente, $destinatario, date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);

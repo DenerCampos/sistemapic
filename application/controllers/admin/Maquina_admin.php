@@ -19,6 +19,7 @@ class Maquina_admin extends CI_Controller {
         $this->load->model('maquina_model', 'maquina');
         $this->load->model('tipo_model', 'tipo');
         $this->load->model('local_model', 'local');
+        $this->load->model('unidade_model', 'unidade');
     }
     
     /*------Carregamento de views--------*/ 
@@ -39,16 +40,24 @@ class Maquina_admin extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "local" => new Local_model(),
             "tipo" => new Tipo_model(),
+            "unidade" => new Unidade_model(),
             "maquinas" => $this->maquina->buscaTodas(7, $this->recuperaOffset()),
             "paginas" => $this->listarMaquinas()));
         //Modal
         $this->load->view('admin/maquinas/criar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
+            "tipos" => $this->tipo->todosTipos()));
+        $this->load->view('admin/maquinas/gerar-maquinas', array(
+            "assetsUrl" => base_url("assets"),
+            "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         $this->load->view('admin/maquinas/editar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         $this->load->view('admin/maquinas/remover-maquinas', array(
             "assetsUrl" => base_url("assets"),
@@ -123,17 +132,20 @@ class Maquina_admin extends CI_Controller {
         $this->load->view('admin/maquinas/maquinas', array(
             "assetsUrl" => base_url("assets"),
             "local" => new Local_model(),
-            "tipo" => new Tipo_model(),
+            "tipo" => new Tipo_model(),            
+            "unidade" => new Unidade_model(),
             "palavra" => $palavra,
             "resultados" => $resultados));
         //Modal
         $this->load->view('admin/maquinas/criar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         $this->load->view('admin/maquinas/editar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
+            "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
         $this->load->view('admin/maquinas/remover-maquinas', array(
             "assetsUrl" => base_url("assets"),
@@ -240,8 +252,8 @@ class Maquina_admin extends CI_Controller {
              
         //verifica dados
         if (!$this->maquina->verificaMaquinaAtualiza($id, $nome)){
-            //atualiza  atualizaMaquina($id, $nome, $ip, $login, $descricao, $idlocal, $idtipo)
-            $this->maquina->atualizaMaquina($id, $nome, $ip, $login, $descricao, $this->geraLocal($local), $this->geraTipo($tipo));
+            //atualiza  atualizaMaquina($id, $nome, $login, $descricao, $idlocal, $idtipo)
+            $this->maquina->atualizaMaquina($id, $nome, $login, $descricao, $this->geraLocal($local), $this->geraTipo($tipo));
             //Log
             $this->gravaLog("ADMIN alteração maquina", "maquina alterado: ".$nome." ip: ". $ip);
             //redirect(base_url('admin/maquina_admin'));
@@ -272,6 +284,22 @@ class Maquina_admin extends CI_Controller {
         }
     }
     
+    //Gerar tabela de ips - gera a tabela de ips caso não existe. de 192.168.X.1 até 192.168.X.250
+    public function gerarTabelaIp(){
+        //recupera dados
+        $ip; $local; $tipo; $unidade; $url;
+        $this->recuperaGerarTabelaIp($ip, $local, $tipo, $unidade, $url); 
+        //busca os ips que ja existem no banco de dados
+        //buscaTodasPorUnidade($unidade, $limite = NULL, $ponteiro = NULL)
+        $maquinas = $this->maquina->buscaTodasPorUnidade($this->geraUnidade($unidade));
+        //gera ips
+        $this->criaIps($ip, $this->geraLocal($local), $this->geraTipo($tipo), $this->geraUnidade($unidade), $maquinas);  
+        //Log
+        $this->gravaLog("ADMIN gerou tabela ip", "tabela gerada com prefixo ip: ".$ip);
+        $this->mensagem("Tabela de ip gerada", $url);                
+    }
+
+
     /*----------------Funções AJAX---------------*/
     //Editar ajax
     public function editarMaquina(){
@@ -326,6 +354,21 @@ class Maquina_admin extends CI_Controller {
     }    
     
     /*------Funções internas--------*/ 
+    
+    //Recupera dados de gerar tabela ip
+    private function recuperaGerarTabelaIp(&$ip, &$local, &$tipo, &$unidade, &$url){
+        $ip = trim($this->input->post("iptGerIp"));
+        $local = trim($this->input->post("selGerLocal"));
+        $tipo = trim($this->input->post("selGerTipo"));
+        $unidade = trim($this->input->post("selGerUnidade"));
+        $url = trim($this->input->post("iptGerUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "admin/maquina_admin";
+        }
+    }
+    
     //Paginação usuariao, recupera offset
     private function recuperaOffset(){
         if ($this->uri->segment(3)){
@@ -348,6 +391,11 @@ class Maquina_admin extends CI_Controller {
     //busca tipo
     private function geraTipo($tipo){
         return $this->tipo->buscaTipoNome($tipo)->getIdtipo();
+    }
+    
+    //busca unidade
+    private function geraUnidade($unidade){
+        return $this->unidade->buscaPorNome($unidade)->getIdunidade();
     }
 
     //Grava log no BD
@@ -386,6 +434,35 @@ class Maquina_admin extends CI_Controller {
             //grava log
             $this->gravaLog("tentativa de acesso", "acesso ao controlador Maquina_adim.php");
             redirect(base_url());
+        }
+    }
+    
+    //Cria os ips
+    private function criaIps($prefixo, $local, $tipo, $unidade, $maquinas = NULL){
+        $nome = "LIVRE";
+        $ipmax = 254;
+        $prefixo = $prefixo.".";
+        //existe maquinas cadastradas
+        if (isset($maquinas)){
+            //converte array miltibidirecional em array
+            foreach ($maquinas as $key => $value) {
+                $vetor[] = $value->getIp(); 
+            }
+            for ($i = 1; $i <= $ipmax; $i++){
+                if (!in_array($prefixo.$i, $vetor)){
+                    //adiciona maquina
+                    //newMaquina($nome, $ip, $idlocal, $idtipo, $idunidade, $login = NULL, $descricao = NULL)
+                    $this->maquina->newMaquina($nome, $prefixo.$i, $local, $tipo, $unidade);
+                    $this->maquina->addMaquina();
+                }
+            }
+        } else{
+            for ($i = 1; $i <= $ipmax; $i++){
+                //adiciona maquina
+                //newMaquina($nome, $ip, $idlocal, $idtipo, $idunidade, $login = NULL, $descricao = NULL)
+                $this->maquina->newMaquina($nome, $prefixo.$i, $local, $tipo, $unidade);
+                $this->maquina->addMaquina();
+            }
         }
     }
 }

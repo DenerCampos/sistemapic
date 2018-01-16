@@ -339,6 +339,21 @@ class Usuario_model extends CI_Model {
             return NULL;
         }
     }
+    
+    //Busca todos tecnicos por area id
+    public function todosAdmin(){
+        $query = $this->db->query(
+                "SELECT *
+                FROM usuario
+                WHERE nivel = 0 AND
+                    idestado = 1");
+        //retorna objeto
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
 
 
     /*------Funções internas--------*/ 

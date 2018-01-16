@@ -69,7 +69,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <tbody>
                         <?php foreach ($lista as $item) { ?>
                         <tr>
-                            <td><?php echo $item->getNome(); ?></td>
+                            <td><?php echo $item->getCaixa(); ?></td>
                             <td><?php echo $item->getModelo(); ?></td>
                             <td><?php echo $item->getSerial(); ?></td>
                             <td><?php echo $item->getDescricao(); ?></td>

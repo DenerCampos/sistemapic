@@ -2,7 +2,7 @@
                 <!-- fechados -->
                 <?php if (isset($fechadas)) { ?>
                 <!-- painel -->
-                <div class="panel panel-success">
+                <div class="panel panel-success" id="chamado-atualiza">
                     <div class="panel-heading">
                         <h3 class="panel-title"><strong>Chamados fechados</strong></h3>
                     </div>
@@ -36,6 +36,14 @@
                                     </td>
                                     <td><?php echo $usuario->buscaId($fechada->getUsuario_fecha())->getNome(); ?></td>
                                     <td class="text-right opcoes">
+                                        <?php if ($fechada->getUsuario_abre() == $this->session->userdata('id')){ ?>
+                                        <a title="Reabrir" role="button" href="#mdlReabrirChamado" 
+                                            data-toggle="modal" data-target="#mdlReabrirChamado"
+                                            data-id="<?php echo $fechada->getIdocorrencia(); ?>"
+                                            onclick="reabrirChamado(this)">
+                                            <i class="fa fa-share-square-o" ></i>
+                                        </a>
+                                        <?php }?>
                                         <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                            data-toggle="modal" data-target="#mdlImprimirChamado"
                                            data-id="<?php echo $fechada->getIdocorrencia(); ?>"

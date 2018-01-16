@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
                 <!-- em atendimento tecnico-->
                 <?php if (isset($atendimentos)) { ?>
-                    <div class="panel panel-info">
+                    <div class="panel panel-info" id="chamado-atualiza">
                         <div class="panel-heading">
                             <h3 class="panel-title"><strong>Chamados em atendimento</strong><small> seus e da sua área de atendimento.</small></h3>
                         </div>

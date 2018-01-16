@@ -2,7 +2,7 @@
                 <!-- em aberto admin-->
                 <?php if (isset($abertas)) { ?>
                 <!-- painel -->
-                <div class="panel panel-danger" id="chamado-aberto">
+                <div class="panel panel-danger" id="chamado-atualiza">
                     <div class="panel-heading">
                         <h3 class="panel-title"><strong>Chamados em aberto</strong></h3>
                     </div>

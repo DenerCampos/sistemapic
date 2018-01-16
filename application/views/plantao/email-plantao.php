@@ -3,17 +3,22 @@
      aria-labelledby="mdlEmailPlantao" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Enviar e-mail do relatório</h4>
             </div>
+            
             <!-- Mensagem de erro -->
-            <div class="alert alert-danger text-center" hidden=""><strong></strong></div>
-            <form class="formulario" method="post" 
+            <div class="alert alert-danger text-center" id="erro-email-plantao" hidden=""></div>
+            
+            <!-- Formulario -->
+            <form class="formulario" id="frmEmailPlantao" method="post" 
                   action="<?php echo base_url("plantao/enviarEmail") ?>">
                 <div class="modal-body">
                     <div class="row">
+                        
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptEmlId" class="control-label">Id:</label>
@@ -21,6 +26,7 @@
                                        class="form-control" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptEmlUrl" class="control-label">Url:</label>
@@ -28,6 +34,7 @@
                                        class="form-control" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="iptEmlNumero" class="control-label">Numero:</label>
@@ -35,6 +42,7 @@
                                        class="form-control" required="true" disabled="">
                             </div>
                         </div>
+                        
                         <div class="col-md-5">
                             <div class="form-group">
                                 <label for="iptEmlData" class="control-label">Data Emissão:</label>
@@ -42,6 +50,7 @@
                                        class="form-control" required="true" disabled="">
                             </div>
                         </div>
+                        
                         <div class="col-md-5">
                             <div class="form-group">
                                 <label for="iptEmlUsuario" class="control-label">Usuário:</label>
@@ -49,20 +58,23 @@
                                        class="form-control" required="true" disabled="">
                             </div>
                         </div>
+                        
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptEmlPara" class="control-label">Para:</label>
-                                <input type="text" name="iptEmlPara" id="iptEmlPara" 
+                                <input type="email" name="iptEmlPara" id="iptEmlPara" 
                                        class="form-control" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptEmlCopia" class="control-label">Copia:</label>
-                                <input type="text" name="iptEmlCopia" id="iptEmlCopia" 
+                                <input type="email" name="iptEmlCopia" id="iptEmlCopia" 
                                        class="form-control">
                             </div>
                         </div>
+                        
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptEmlAssunto" class="control-label">Assunto:</label>
@@ -70,6 +82,7 @@
                                        class="form-control" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-12">
                             <div class="">
                                 <label for="iptEmlCorpo" class="control-label">Texto:</label>
@@ -77,8 +90,10 @@
                                           placeholder="Corpo do e-mail" rows="3" required=""></textarea>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
@@ -87,6 +102,7 @@
                         Enviar e-mail
                     </button>
                 </div>
+                
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

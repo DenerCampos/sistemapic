@@ -3,6 +3,9 @@
 <div class="menu-chamado col-md-12">
     <div class="row">
         <div class="col-md-6">
+            <a class="btn btn-warning" href="<?php echo base_url("plantao"); ?>" role="button">
+                <i class="fa fa-arrow-circle-o-left"></i> Voltar
+            </a>
             <button class="btn btn-primary" type="submit" href="#mdlCriarPlantao" 
                     data-toggle="modal" data-target="#mdlCriarPlantao" role="button">
                 <i class="fa fa-plus-square-o" aria-hidden="true"></i>

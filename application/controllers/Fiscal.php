@@ -36,8 +36,10 @@ class Fiscal extends CI_Controller {
         $this->load->view('fiscal/fiscal', array(
             "assetsUrl" => base_url("assets"),
             "local" => new Local_model(),
-            "lista" => $this->fiscal->todos(6, $this->recuperaOffset()),
-            "paginas" => $this->listar()));
+            //"lista" => $this->fiscal->todos(6, $this->recuperaOffset()),
+            //"paginas" => $this->listar()));
+            "lista" => $this->ordenarPorCaixa($this->fiscal->todos()),
+            "paginas" => NULL));
         //Modal
         $this->load->view('fiscal/criar-fiscal', array(
             "assetsUrl" => base_url("assets"),
@@ -251,6 +253,13 @@ class Fiscal extends CI_Controller {
             $texto;
             //Recupera dados
             $this->recuperaBusca($texto);
+            //verifica busca se vazio, caso não seja, ira para url com o seguimento 3 com o valor do campo de busca
+            if (empty($texto)){
+                //recupera o terceiro seguimento da url ocorrencia/buscar/XXXXXX
+                $texto = urldecode(trim($this->uri->segment(3)));
+            } else {
+                redirect(base_url("fiscal/buscar/".urlencode($texto)));
+            }
             //Bucar
             $resultado = $this->fiscal->busca($texto);
             $this->resultado($resultado, $texto);
@@ -450,6 +459,21 @@ class Fiscal extends CI_Controller {
             //grava log
             $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Fiscal.php");
             redirect(base_url());
+        }
+    }
+    
+    //Ordena a lista de objetos por nome
+    private function ordenarPorCaixa($lista){
+        //verifica se lista vazia
+        if (isset($lista)){
+            //Ordena um array pelos valores utilizando uma função de comparação definida pelo usuário
+            usort($lista, function ($a, $b){
+                //Comparação de strings usando o algoritmo "natural order"
+                return strnatcmp($a->getCaixa(), $b->getCaixa());
+            });
+            return $lista;
+        } else {
+            return $lista;
         }
     }
 }

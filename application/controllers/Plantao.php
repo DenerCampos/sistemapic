@@ -142,24 +142,7 @@ class Plantao extends CI_Controller {
             "arquivoJS" => "plantao.js"));
     }
 
-    /*------Funções internas--------*/ 
-    
-    //Grava log no BD
-    private function gravaLog($nome, $descricao){
-        //dados
-        $data = date('Y-m-d H:i:s');
-        $ip =  $this->input->ip_address();
-        if ($this->session->has_userdata("nome")){
-            $idusuario = $this->session->userdata("id");
-        } else {
-            $idusuario = 0;
-        }
-        //carrega model
-        $this->load->model("Log_model", "registro");
-        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
-        $this->registro->addLog();
-    }
-    
+    /*------------------Funções------------------*/   
     //Paginação
     public function listarPlantao(){
         //Configuração da paginação codeigniter
@@ -195,6 +178,152 @@ class Plantao extends CI_Controller {
         return $paginas;
     }
     
+    //Gerar relatório plantão
+    public function gerar(){
+        //carregando a biblioteca
+        $this->load->library('pdf');
+        //recupera datas
+        $inicio; $fim; $aberto; $atendimento; $fechado;
+        $this->recuperaDatas($inicio, $fim);
+        //recupera opções do relatorio
+        $this->recuperaOpcoes($aberto, $atendimento, $fechado);
+        //verifica datas validas
+        if ($this->verificaDatas($inicio, $fim)){
+            //Verifica se contem chamados abertos neste periodo verificaExisteChamado($inicio, $fim, $aberto, $atendimento, $fechado)      
+            if ($this->verificaExisteChamado($inicio, $fim, $aberto, $atendimento, $fechado)){
+                //Gera arquivo
+                $resultado = $this->geraArquivoRelatorioPlantao($inicio, $fim, $aberto, $atendimento, $fechado);
+                //Css do relatorio
+                $css = file_get_contents(base_url('assets/css/sistemapic.relatorio.css'));   
+                //gerando paginas
+                $paginas = $this->geraPaginasRelatorioPlantao($resultado);  
+                //grava no bd relatorio plantão
+                $idplantao = $this->gravaPlantao($resultado, $inicio, $fim);
+                //gera pdf
+                $this->pdf->geraRelatorioPDF($paginas, $css, $idplantao);
+                //grava log
+                $this->gravaLog("relatorio", "relatorio plantão gerado. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
+                $this->sucesso($idplantao, "plantao", "Relatório emitido com <strong>sucesso</strong>.<br/>Desaja vizualiza-lo?");
+            } else {
+                //grava log
+                $this->gravaLog("erro relatorio", "nao existe chamados neste periodo para o usuario. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
+                //não existe chamados
+                $this->erro('Não existe chamados fechados neste período para o usuário <strong>'.$this->session->userdata("nome")).'.</strong>';
+            }
+        } else {
+            //grava log
+            $this->gravaLog("erro relatorio", "Datas invalidas. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
+            //erro nas datas
+            $this->erro('Datas inválidas');
+        }
+    }
+    
+    //Busca por ocorrencia
+    public function buscar(){
+        //recupera dados da busca
+        $busca = strtolower(trim($this->input->post("iptBusca")));
+        try {
+            //verifica se foi digitado algo
+            if (isset($busca) && $busca != ""){
+                //busca por data do plantão todasPorBuscaData($data, $limite = NULL, $ponteiro = NULL)
+                //$data = $this->plantao->todasPorBuscaData($busca);
+                //busca por usuario do plantão todasPorBuscaUsuario($usuario, $limite = NULL, $ponteiro = NULL)
+                $usuario = $this->plantao->todasPorBuscaUsuario($busca);
+                // view resultado($palavra, $data = NULL, $usuario = NULL)
+                $this->resultado($busca, $usuario);
+            } else {
+                $this->resultado("'vazio'");
+            }                       
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na busca. Favor tentar novamente.");
+        }
+    }
+    
+    //Enviar email
+    public function enviarEmail(){
+        //recupera dados
+        $id; $para; $copia; $assunto; $texto;
+        
+        try {
+            //recupera dados do post
+            $this->recuperaEnviarEmail($id, $para, $copia, $assunto, $texto);
+            //verificar se existe relatorio de plantão
+            if ($this->plantao->existe($id)){
+                //anexo
+                $anexo = $this->anexo($id);
+                if ($this->envioEmail($para, $copia, $assunto, $texto, $anexo)){
+                    $this->gravaLog("enviar email plantao", "relatorio id: ".$id." enviado: ".$this->session->userdata("id"));
+                    $this->mensagem("E-mail enviado com <strong>sucesso</strong>!", "plantao");
+                }else {
+                    $this->gravaLog("erro enviar email plantao", "relatorio id: ".$id." enviado: ".$this->session->userdata("id"));
+                    $this->erro("Erro ao enviar e-mail, <strong>tente novamente</strong>.");
+                }
+            }else{
+                //erro, não existe plantão
+                $this->gravaLog("erro enviar email plantao", "o relatorio não existe. id: ".$id);
+                $this->erro("Não existe o relatório de número: <strong>".$id.".</strong>. <br>Tente novamente.");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro para enviar e-mail. Favor tentar novamente.");
+        }
+    } 
+    
+     
+    /*----------------Funções AJAX---------------*/
+    //Enviar email AJAX
+    public function enviarEmailPlantao(){
+        //Recupera Id manutencao
+        $id = trim($this->input->post("idplantao"));
+        $plantao = $this->plantao->buscaId($id);
+        
+        //datas
+        $hoje = date("d/m/Y");
+        $ontem = date("d/m/Y", mktime (0, 0, 0, date("m")  , date("d")-1, date("Y")));
+        
+        if (isset($plantao)){
+            $msg = array(
+                "idrelatorio" => $plantao->getIdrelatorio_plantao(),
+                "data" => date("d/m/Y", strtotime($plantao->getData())),
+                "usuario" => $plantao->getUsuario(),
+                "para" => "ricardo.souza@pic-clube.com.br",
+                "copia" => "ti@pic-clube.com.br",
+                "assunto" => "Relatório final de semana (".$ontem." à ".$hoje.").",
+                "corpo" => "Prezados, boa tarde! \n\nSegue em anexo o relatório do final de semana. \n\nAtt. \n".$this->session->userdata("nome")
+                    .".\n",
+            );
+            echo json_encode($msg);
+        } else {
+            $msg = array(
+                "erro" => "Manutencao não encontrada"
+            );
+            echo json_encode($msg);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    /*--------------Funções internas-------------*/ 
+    
+    //Grava log no BD
+    private function gravaLog($nome, $descricao){
+        //dados
+        $data = date('Y-m-d H:i:s');
+        $ip =  $this->input->ip_address();
+        if ($this->session->has_userdata("nome")){
+            $idusuario = $this->session->userdata("id");
+        } else {
+            $idusuario = 0;
+        }
+        //carrega model
+        $this->load->model("Log_model", "registro");
+        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
+        $this->registro->addLog();
+    }  
+    
     //Paginação usuariao, recupera offset
     private function recuperaOffset(){
         if ($this->uri->segment(2)){
@@ -222,44 +351,7 @@ class Plantao extends CI_Controller {
             $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Plantao.php");
             redirect(base_url());
         }
-    }
-    
-    public function gerar(){
-        //carregando a biblioteca
-        $this->load->library('pdf');
-        //recupera datas
-        $inicio; $fim;
-        $this->recuperaDatas($inicio, $fim);
-        //verifica datas validas
-        if ($this->verificaDatas($inicio, $fim)){
-            //Verifica se contem chamados neste periodo para o usuaruio          
-            if ($this->ocorrencia->contem($inicio, $fim, $this->session->userdata("id"))){
-                //Gera arquivo
-                $resultado = $this->geraArquivoRelatorioPlantao($inicio, $fim);
-                //Css do relatorio
-                $css = file_get_contents(base_url('assets/css/sistemapic.relatorio.css'));   
-                //gerando paginas
-                $paginas = $this->geraPaginasRelatorioPlantao($resultado);  
-                //grava no bd relatorio plantão
-                $idplantao = $this->gravaPlantao($inicio, $fim);
-                //gera pdf
-                $this->pdf->geraRelatorioPDF($paginas, $css, $idplantao);
-                //grava log
-                $this->gravaLog("relatorio", "relatorio plantão gerado. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
-                $this->sucesso($idplantao, "plantao", "Relatório emitido com <strong>sucesso</strong>.<br/>Desaja vizualiza-lo?");
-            } else {
-                //grava log
-                $this->gravaLog("erro relatorio", "nao existe chamados neste periodo para o usuario. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
-                //não existe chamados
-                $this->erro('Não existe chamados fechados neste período para o usuário <strong>'.$this->session->userdata("nome")).'.</strong>';
-            }
-        } else {
-            //grava log
-            $this->gravaLog("erro relatorio", "Datas invalidas. data: ".$inicio." a ".$fim." usuario: ".$this->session->userdata("id"));
-            //erro nas datas
-            $this->erro('Datas inválidas');
-        }
-    }
+    }      
     
     //Setores com chamados abertos para relatorio de plantão
     private function setoresRelatorio(&$chamados){
@@ -300,6 +392,25 @@ class Plantao extends CI_Controller {
         $fim = $this->input->post("iptCriDataFim");
     }
     
+    //Recupera opções do relatorio
+    private function recuperaOpcoes(&$aberto, &$atendimento, &$fechado){
+        if (empty($this->input->post("itpRelAberto"))){
+            $aberto = FALSE;
+        } else{
+            $aberto = TRUE;
+        }
+        if (empty($this->input->post("itpRelAtendimento"))){
+            $atendimento = FALSE;
+        } else{
+            $atendimento = TRUE;
+        }
+        if (empty($this->input->post("itpRelFechado"))){
+            $fechado = FALSE;
+        } else{
+            $fechado = TRUE;
+        }        
+    }
+
     //Verifica se datas são validas
     private function verificaDatas(&$inicio, &$fim){
         if (isset($inicio) && (isset($fim))){
@@ -317,21 +428,40 @@ class Plantao extends CI_Controller {
     }
     
     //Gera o relatorio de plantão por data
-    private function geraArquivoRelatorioPlantao($inicio, $fim){
+    private function geraArquivoRelatorioPlantao($inicio, $fim, $aberto, $atendimento, $fechado){
         //intervalo de dias
         $datainicio = new DateTime($inicio);
         $datafim = new DateTime($fim);                
-        $intervalo = $datainicio->diff($datafim)->days;
+        $intervalo = $datainicio->diff($datafim)->days;    
+        
         //Gerando arquivo
         for ($i = 0; $i < $intervalo; $i++){
-            $chamados = $this->ocorrencia->todasDataFechado($inicio, date("Y-m-d", strtotime($inicio) + 86400), $this->session->userdata("id"));
-            if (isset($chamados)){
+            //vetores de chamados
+            $abertos = array();
+            $atendimentos = array();
+            $fechados = array();  
+            if (($aberto) && ($this->ocorrencia->contemAberto($inicio, $fim) > 0)){
+                //todasDataAberto($inicio, $fim)
+                $abertos = $this->ocorrencia->todasDataAberto($inicio, date("Y-m-d", strtotime($inicio) + 86400));
+            }
+            if (($atendimento) && ($this->ocorrencia->contemAtendimento($inicio, $fim, $this->session->userdata("id")) > 0)){
+                //todasDataAtendimento($inicio, $fim, $user)
+                $atendimentos = $this->ocorrencia->todasDataAtendimento($inicio, date("Y-m-d", strtotime($inicio) + 86400), $this->session->userdata("id"));
+            }
+            if (($fechado) && ($this->ocorrencia->contemFechado($inicio, $fim, $this->session->userdata("id")) > 0)){
+                //todasDataFechado($inicio, $fim, $user)
+                $fechados = $this->ocorrencia->todasDataFechado($inicio, date("Y-m-d", strtotime($inicio) + 86400), $this->session->userdata("id"));
+            }
+            //merge os vetores de chamados em um unico
+            $chamados = array_merge($abertos, $atendimentos, $fechados);
+            if (!empty($chamados)){
                 $paginas[] = $chamados;
             }
+            //proximo dia
             $inicio = date("Y-m-d", strtotime($inicio) + 86400);
-        }
+        } 
         return $paginas;
-    }
+    }   
     
     //Gera paginas do relatorio de plantão por data
     private function geraPaginasRelatorioPlantao($resultado){
@@ -343,13 +473,30 @@ class Plantao extends CI_Controller {
                 "assetsUrl" => base_url("assets"),
                 "chamados" => $resultado[$i],
                 "setores" => $setores,
-                "data" => $this->geraDataRelatorioPlantao($resultado[$i][0]->getData_fechamento()),
+                "data" => $this->geraDataRelatorioPlantao($resultado[$i][0]->getData_Abertura()),
                 "comentario" => new Comentario_model()), TRUE);
             $setores = NULL;
         }
         return $paginas;
     }
     
+    //Gera array de chamados com as opções do relatorio
+    private function geraChamadosRelatorioPlantao($resultado, $aberto, $atendimento, $fechado){
+        foreach ($resultado as $value) {
+            if (($aberto) && ($value->getIdocorrencia_estado() == 1)){
+                $chamados[] = $value; 
+            }
+            if (($atendimento) && ($value->getIdocorrencia_estado() == 2)){
+                $chamados[] = $value;
+            }
+            if (($fechado) && ($value->getIdocorrencia_estado() == 3)){
+                $chamados[] = $value;
+            }
+        }
+        return $chamados;
+    }
+
+
     //Gera os setores sem repetição para o relatorio de plantão
     private function geraSetoresRelatorioPlantao($resultado){
         $setores_id[] = array(); $setores;
@@ -399,79 +546,23 @@ class Plantao extends CI_Controller {
     }
     
     //Grava no bd relatorio de plantão
-    private function gravaPlantao($inicio, $fim){
+    private function gravaPlantao($resultado, $inicio, $fim){
         $ocorrencias = NULL;
-        //busca todas ocorrencias no periodo
-        $chamados = $this->ocorrencia->todasPeriodoFechados($inicio, $fim, $this->session->userdata("id"));
-        for ($i = 0; $i < count($chamados); $i++){
-            $numero = $chamados[$i]->getIdocorrencia();
-            $ocorrencias = $ocorrencias.$chamados[$i]->getIdocorrencia();
-            if ($i < count($chamados)-1){
-                $ocorrencias = $ocorrencias.", ";
-            } else{
-                $ocorrencias = $ocorrencias.".";
-            }
+        //percorre resultado e pega a id das ocorrencias e salva na variavel ocorrencias
+        for ($i = 0; $i < count($resultado); $i++){
+            foreach ($resultado[$i] as $value) {
+                $ocorrencias = $ocorrencias.$value->getIdocorrencia().", ";               
+            }            
         }
+        //remove as duas ultimas letras e adiciona o ponto final
+        $ocorrencias = substr($ocorrencias, 0, -2);
+        $ocorrencias = $ocorrencias.".";
         //volta data 
         $fim = date("Y-m-d",strtotime($fim) - 86400);
         //grava no bd
         $data = date('Y-m-d H:i:s');
         $this->plantao->newPlantao($data, $this->session->userdata("nome"), $inicio, $fim, $ocorrencias);
         return $this->plantao->addPlantao();
-    }
-    
-    //Busca por ocorrencia
-    public function buscar(){
-        //recupera dados da busca
-        $busca = strtolower(trim($this->input->post("iptBusca")));
-        try {
-            //verifica se foi digitado algo
-            if (isset($busca) && $busca != ""){
-                //busca por data do plantão todasPorBuscaData($data, $limite = NULL, $ponteiro = NULL)
-                //$data = $this->plantao->todasPorBuscaData($busca);
-                //busca por usuario do plantão todasPorBuscaUsuario($usuario, $limite = NULL, $ponteiro = NULL)
-                $usuario = $this->plantao->todasPorBuscaUsuario($busca);
-                // view resultado($palavra, $data = NULL, $usuario = NULL)
-                $this->resultado($busca, $usuario);
-            } else {
-                $this->resultado("'vazio'");
-            }                       
-        } catch (Exception $exc) {
-            //log
-            $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro na busca. Favor tentar novamente.");
-        }
-    }
-    
-   //Enviar email AJAX
-    public function enviarEmailPlantao(){
-        //Recupera Id manutencao
-        $id = trim($this->input->post("idplantao"));
-        $plantao = $this->plantao->buscaId($id);
-        
-        //datas
-        $hoje = date("d/m/Y");
-        $ontem = date("d/m/Y", mktime (0, 0, 0, date("m")  , date("d")-1, date("Y")));
-        
-        if (isset($plantao)){
-            $msg = array(
-                "idrelatorio" => $plantao->getIdrelatorio_plantao(),
-                "data" => date("d/m/Y", strtotime($plantao->getData())),
-                "usuario" => $plantao->getUsuario(),
-                "para" => "ricardo.souza@pic-clube.com.br",
-                "copia" => "ti@pic-clube.com.br",
-                "assunto" => "Relatório final de semana (".$ontem." à ".$hoje.").",
-                "corpo" => "Prezados, boa tarde! \n\nSegue em anexo o relatório do final de semana. \n\nAtt. \n".$this->session->userdata("nome"),
-            );
-            echo json_encode($msg);
-        } else {
-            $msg = array(
-                "erro" => "Manutencao não encontrada"
-            );
-            echo json_encode($msg);
-        }
-        //WARNNING: requisição ajax é recuperada por impressão
-        exit();
     }
     
     //Recupera dados do email
@@ -482,37 +573,6 @@ class Plantao extends CI_Controller {
         $assunto = trim($this->input->post("iptEmlAssunto"));
         $texto = trim($this->input->post("iptEmlCorpo"));
     }
-
-    //Enviar email
-    public function enviarEmail(){
-        //recupera dados
-        $id; $para; $copia; $assunto; $texto;
-        
-        try {
-            //recupera dados do post
-            $this->recuperaEnviarEmail($id, $para, $copia, $assunto, $texto);
-            //verificar se existe relatorio de plantão
-            if ($this->plantao->existe($id)){
-                //anexo
-                $anexo = $this->anexo($id);
-                if ($this->envioEmail($para, $copia, $assunto, $texto, $anexo)){
-                    $this->gravaLog("enviar email plantao", "relatorio id: ".$id." enviado: ".$this->session->userdata("id"));
-                    $this->mensagem("E-mail enviado com <strong>sucesso</strong>!", "plantao");
-                }else {
-                    $this->gravaLog("erro enviar email plantao", "relatorio id: ".$id." enviado: ".$this->session->userdata("id"));
-                    $this->erro("Erro ao enviar e-mail, <strong>tente novamente</strong>.");
-                }
-            }else{
-                //erro, não existe plantão
-                $this->gravaLog("erro enviar email plantao", "o relatorio não existe. id: ".$id);
-                $this->erro("Não existe o relatório de número: <strong>".$id.".</strong>. <br>Tente novamente.");
-            }
-        } catch (Exception $exc) {
-            //log
-            $this->gravaLog("erro geral", $exc->getTraceAsString());
-            $this->erro("Erro para enviar e-mail. Favor tentar novamente.");
-        }
-    } 
     
     //Busca anexo 
     private function anexo($id){
@@ -526,7 +586,6 @@ class Plantao extends CI_Controller {
         }       
     }
 
-
     //enviar email
     private function envioEmail($para, $copia, $assunto, $texto, $anexo = NULL){
         try {
@@ -534,14 +593,15 @@ class Plantao extends CI_Controller {
             $this->load->library("email");
             //pegando configuração
             $this->load->model("email_conf_model", "configuracao");
-            $config = $this->configuracao->busca("text");
+            $config = $this->configuracao->busca("html");
             //preparando o email
-            $this->email->initialize($config);
+            $this->email->initialize($config);            
             $this->email->from($config["smtp_user"], $this->session->userdata("nome"));
             $this->email->to($para);
             $this->email->cc($copia);
             $this->email->subject($assunto);
-            $this->email->message($texto);
+            //$this->email->message($texto);
+            $this->email->message($this->geraTextoEmail($texto));
             //anexo
             if (isset($anexo)){
                 $this->email->attach($anexo);
@@ -551,7 +611,7 @@ class Plantao extends CI_Controller {
                 return TRUE;
             } else {
                 $head = $this->email->print_debugger(array('headers'));
-                $subject = $this->email->print_debugger(array('subject'));;
+                $subject = $this->email->print_debugger(array('subject'));
                 $body = $this->email->print_debugger(array('body'));
                 $this->gravaLog("erro enviar email plantao", "Usuario: ".$this->session->userdata("id").". Erro: ".$head." - ".$subject." - ".$body);
                 //$this->erro($teste);
@@ -561,6 +621,46 @@ class Plantao extends CI_Controller {
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
+        }
+    }
+    
+    //gera html da mensagem para enviar por email
+    private function geraTextoEmail($texto){
+        //substitui o enter por quebra de linha no html
+        $texto = str_replace("\n", "<br/>", $texto);
+        //gera html da mensagem
+        $email = $this->load->view("plantao/email", array( 
+                "assetsUrl" => base_url("assets"),
+                "texto" => $texto), TRUE);
+        
+        return $email;
+    }
+
+
+
+
+    //verifica se existe chamado para gerar o relatorio de plantão
+    private function verificaExisteChamado($inicio, $fim, $aberto, $atendimento, $fechado){
+        $total = 0;
+        //chamados abertos
+        if ($aberto){
+            //contemAberto($inicio, $fim)
+            $total = $total + $this->ocorrencia->contemAberto($inicio, $fim);            
+        }        
+        //Chamados em atendimentos
+        if ($atendimento){
+            //contemAtendimento($inicio, $fim, $user)
+            $total = $total + $this->ocorrencia->contemAtendimento($inicio, $fim, $this->session->userdata("id"));            
+        }
+        //chamados fechados
+        if ($fechado){
+            //contemFechado($inicio, $fim, $user)
+            $total = $total + $this->ocorrencia->contemFechado($inicio, $fim, $this->session->userdata("id"));            
+        }
+        if ($total > 0){
+            return TRUE;
+        } else {
+            return FALSE;
         }
     }
 }

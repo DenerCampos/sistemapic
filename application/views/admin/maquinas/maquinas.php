@@ -10,8 +10,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="novo-chamado col-md-6">
                 <button class="btn btn-warning" type="submit" href="#mdlCriarMaquina" 
                         data-toggle="modal" data-target="#mdlCriarMaquina" role="button">
-                    Novo maquina
+                    Nova maquina
                 </button>
+                
+                <button class="btn btn-danger" type="submit" href="#mdlGerarMaquina" 
+                        data-toggle="modal" data-target="#mdlGerarMaquina" role="button">
+                    Gerar tabela IP completa
+                </button>
+                
             </div>
             
             <!-- Pesquisa-->

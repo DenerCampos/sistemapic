@@ -35,7 +35,7 @@
                             <div class="form-group">
                                 <label for="iptCriIp" class="control-label">Ip:</label>
                                 <input type="text" name="iptCriIp" id="iptCriIp" 
-                                       class="form-control" placeholder="ip" value="192.168.2.">
+                                       class="form-control" placeholder="ip">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -75,6 +75,20 @@
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
+                                <label for="selCriUnidade" class="control-label">Unidade:</label>
+                                <select name="selCriUnidade" id="selCriUnidade" 
+                                        class="form-control" placeholder="Seleciona unidade">
+                                    <!-- Lista todos estados -->
+                                    <?php foreach ($unidades as $unidade) { ?>
+                                    <option>
+                                        <?php echo $unidade->getNome() ?>
+                                    </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
                                 <label for="iptCriDesc" class="control-label">Descrição:</label>
                                 <textarea class="form-control" id="iptCriDesc" maxlength="100" name="iptCriDesc"
                                   placeholder="Descrição do maquina" rows="3"></textarea>
@@ -86,7 +100,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary carregando" id="btnCriar">
                         Criar
                     </button>
                 </div>

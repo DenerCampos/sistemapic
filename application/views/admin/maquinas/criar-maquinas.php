@@ -4,15 +4,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                
                 <button type="button" class="close" data-dismiss="modal" 
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="formModalLabel">Criar maquina</h4>
+                
             </div>
+            
             <!-- Mensagem de erro -->
             <div class="alert alert-danger text-center" hidden=""></div>
+            
             <form class="" method="post" 
                   action="<?php echo base_url("admin/maquina_admin/criarMaquina") ?>">
                 <div class="modal-body">
+                    
                     <div class="row">                        
                         <div class="col-md-4">
                             <div class="form-group">
@@ -21,6 +26,7 @@
                                        class="form-control" placeholder="Nome" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptCriIp" class="control-label">Ip:</label>
@@ -28,6 +34,7 @@
                                        class="form-control" placeholder="ip" required="true">
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="iptCriUser" class="control-label">Usuário:</label>
@@ -35,6 +42,7 @@
                                        class="form-control" placeholder="Login">
                             </div>
                         </div>
+                        
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="selCriLocal" class="control-label">Local:</label>
@@ -49,6 +57,7 @@
                                 </select>
                             </div>
                         </div>
+                        
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="selCriTipo" class="control-label">Tipo:</label>
@@ -63,6 +72,22 @@
                                 </select>
                             </div>
                         </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="selCriUnidade" class="control-label">Unidade:</label>
+                                <select name="selCriUnidade" id="selCriUnidade" 
+                                        class="form-control" placeholder="Seleciona unidade">
+                                    <!-- Lista todos estados -->
+                                    <?php foreach ($unidades as $unidade) { ?>
+                                    <option>
+                                        <?php echo $unidade->getNome() ?>
+                                    </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptCriDesc" class="control-label">Descrição:</label>
@@ -70,8 +95,10 @@
                                   placeholder="Descrição do maquina" rows="3"></textarea>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         Cancelar
@@ -80,6 +107,7 @@
                         Criar
                     </button>
                 </div>
+                
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -78,14 +78,19 @@ $route['plantao/(:num)'] = 'Plantao';
 //Equipamentos
 //Maquinas
 $route['maquina/(:num)'] = 'Maquina';
+$route['maquina/buscar/(:any)'] = 'Maquina/buscar/$1';
 //PinPad
 $route['pinpad/(:num)'] = 'Pinpad';
+$route['pinpad/buscar/(:any)'] = 'pinpad/buscar/$1';
 //Pos
 $route['pos/(:num)'] = 'Pos';
+$route['pos/buscar/(:any)'] = 'pos/buscar/$1';
 //Impressora fiscal
 $route['fiscal/(:num)'] = 'Fiscal';
+$route['fiscal/buscar/(:any)'] = 'fiscal/buscar/$1';
 //Impressoras
 $route['impressora/(:num)'] = 'Impressora';
+$route['impressora/buscar/(:any)'] = 'impressora/buscar/$1';
 
 //Manutenção
 $route['manutencao/defeito/(:num)'] = 'Manutencao/defeito';

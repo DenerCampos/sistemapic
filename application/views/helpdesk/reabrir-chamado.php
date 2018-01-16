@@ -1,0 +1,84 @@
+<!-- Modal de reabrir chamado -->
+<div id="mdlReabrirChamado"  class="modal fade" tabindex="-1" role="dialog" 
+     aria-labelledby="mdlReabrirChamado" aria-hidden="true">
+    
+    <div class="modal-dialog">
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" 
+                        aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="formModalLabel">Reabrir chamado</h4>
+            
+            </div>
+            
+            <!-- Mensagem de erro -->
+            <div class="alert alert-danger text-center" id="erro-reabrir-chamado" hidden=""></div>
+            
+            <form class="formulario" id="frmRbrChamado" method="post" 
+                  action="<?php echo base_url("ocorrencia/reabrir") ?>">
+                <div class="modal-body">
+                    <div class="row">
+                        
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptRbrId" class="control-label">Id:</label>
+                                <input type="text" name="iptRbrId" id="iptRbrId" 
+                                       class="form-control" required="true">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12 hidden">
+                            <div class="form-group">
+                                <label for="iptRbrUrl" class="control-label">Url:</label>
+                                <input type="text" name="iptRbrUrl" id="iptRbrUrl" value="<?php echo $this->uri->uri_string(); ?>"
+                                       class="form-control" required="true">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="iptRbrNumero" class="control-label">Numero:</label>
+                                <input type="text" name="iptRbrNumero" id="iptRbrNumero" 
+                                       class="form-control" required="true" disabled="">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="iptRbrUsuario" class="control-label">Usuário:</label>
+                                <input type="text" name="iptRbrUsuario" id="iptRbrUsuario" 
+                                       class="form-control" required="true" disabled="">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="iptRbrProblema" class="control-label">Problema:</label>
+                                <input type="text" name="iptRbrProblema" id="iptRbrProblema" 
+                                       class="form-control" required="true" disabled="">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="iptRbrComentario" class="control-label">Comentário:</label>                       
+                                <textarea class="form-control" id="iptRbrComentario"  name="iptRbrComentario"
+                                  placeholder="Novo comentário" rows="3"></textarea>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary carregando">
+                        Reabrir
+                    </button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

@@ -71,7 +71,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptEncComentario" class="control-label">Comentário:</label>                       
-                                <textarea class="form-control" id="iptEncComentario" maxlength="1000" name="iptEncComentario"
+                                <textarea class="form-control" id="iptEncComentario"  name="iptEncComentario"
                                   placeholder="Novo comentário" rows="3"></textarea>
                             </div>
                         </div>

@@ -2,7 +2,7 @@
                 <!-- em atendimento admin -->
                 <?php if (isset($atendimentos)) { ?>
                 <!-- painel -->
-                <div class="panel panel-info">
+                <div class="panel panel-info" id="chamado-atualiza">
                     <div class="panel-heading">
                         <h3 class="panel-title"><strong>Chamados em atendimento</strong></h3>
                     </div>

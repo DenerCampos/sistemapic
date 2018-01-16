@@ -22,7 +22,7 @@
             <p>Caso não consiga ou não tenha esses navegadores, informar o departamento de TI.</p>
             <p></p>
             <p>
-                <a href="<?php echo $baseUrl ?>/document/programa/ChromeStandaloneSetup.exe" download>Download Chrome</a>
+                <a href="<?php echo $baseUrl ?>document/programas/ChromeStandaloneSetup.exe" download>Download Chrome</a>
             </p>
         </div>
         

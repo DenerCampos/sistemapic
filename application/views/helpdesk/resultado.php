@@ -245,7 +245,17 @@
                                 </td>
                                 <td><?php echo $usuario->buscaId($numero->getUsuario_fecha())->getNome(); ?></td>
                                 <td><?php echo $area->buscaId($numero->getIdarea())->getNome(); ?></td>
-                                <td class="text-right opcoes">                                    
+                                <td class="text-right opcoes">    
+                                    <?php if (($numero->getUsuario_abre() == $this->session->userdata('id')) || 
+                                            ($numero->getIdarea() == $this->session->userdata('area')) || 
+                                            ($this->session->userdata('nivel') == 0)){ ?>
+                                    <a title="Reabrir" role="button" href="#mdlReabrirChamado" 
+                                        data-toggle="modal" data-target="#mdlReabrirChamado"
+                                        data-id="<?php echo $numero->getIdocorrencia(); ?>"
+                                        onclick="reabrirChamado(this)">
+                                        <i class="fa fa-share-square-o" ></i>
+                                    </a>
+                                    <?php }?>
                                     <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                        data-toggle="modal" data-target="#mdlImprimirChamado"
                                        data-id="<?php echo $numero->getIdocorrencia(); ?>"
