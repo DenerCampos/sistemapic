@@ -4,6 +4,47 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (2.0)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Relatórios</u></h3>
+        <p>01- Relatório plantão, ao gerar, ter opção de gerar com chamados em aberto, em atendimento e fechados.</p>
+        <p>02- Melhoria do layout do email.</p>
+        <h3><u>Helpdesk</u></h3>
+        <p>01- Adicionado a função de reabrir chamado, somente o usuário que abriu e area de atendimento podem ter acesso a essa função.</p>
+        <p>02- Melhoria do layout do email.</p>
+        <h3><u>Notificação</u></h3>
+        <p>01- Criado notificação para a função reabrir</p>   
+        <h3><u>Caixas</u></h3>
+        <p>01- Criado mensagem de erro e de sucesso nas funções.</p>  
+        <h3><u>Maquinas</u></h3>
+        <p>01- Agora tem o cadastro de todos os IP´s, e os diponiveis estão com LIVRE.</p> 
+        <p>02- Lista ordenada por IP.</p>
+        <p>03- Todos estão listado em um única tela.</p>
+        <p>04- Não tem mais a opção de remover a maquina.</p>
+        <p>05- Implementada nova função de liberar a maquina.</p>    
+        <p>06- Adicionado os IP´s do PIC Cidade.</p>    
+        <h3><u>Pinpads</u></h3>
+        <p>01- Todos estão listado em um única tela.</p>     
+        <h3><u>POS</u></h3>
+        <p>01- Todos estão listado em um única tela.</p>     
+        <h3><u>Impressoras Fiscais</u></h3>
+        <p>01- Todos estão listado em um única tela.</p>     
+        <h3><u>Impressoras</u></h3>
+        <p>01- Todos estão listado em um única tela.</p> 
+    </div>    
+    <div class="">
+        <h2>-Bugs</h2>
+        <h3><u>Impressoras fiscais</u></h3>
+        <p>01- Corrigido resultado da busca.</p>
+        <h3><u>Helpdesk</u></h3>
+        <p>01- Configurado atualização automatica da pagina de chamados em atendimento e fechado.</p>
+        <h3><u>Notificações</u></h3>
+        <p>01- Correção de varios erros de envio de notificações de abertura e atendimento de chamado..</p>        
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (1.9)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>
