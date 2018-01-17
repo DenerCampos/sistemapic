@@ -119,9 +119,9 @@ class LoadFile extends CI_Controller {
         if (substr($ip, 0, 3) != "192"){
             return NULL;
         } else {
-            $dados["nome"] = $nome;
-            $dados["ip"] = $ip;
-            $dados["user"] = $user;
+            $dados["nome"] = trim($nome);
+            $dados["ip"] = trim($ip);
+            $dados["user"] = trim($user);
             return $dados;
         }
     }

@@ -117,8 +117,8 @@ class Caixa extends CI_Controller {
                         . " Caixa antigo: ". $maquina->getNome()
                         . " - ". $maquina->getIdlocal()
                         . ". Novo local: ". $local->getNome());
-                $maquina->atualizaMaquina($maquina->getIdmaquina(), $maquina->getNome(), $maquina->getIp(),
-                        $maquina->getLogin(), $maquina->getDescricao(), $local->getIdlocal(), $maquina->getIdtipo());
+                //atualizaMaquina($id, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade)
+                $maquina->atualizaMaquina($maquina->getIdmaquina(), $maquina->getNome(), $maquina->getLogin(), $maquina->getDescricao(), $local->getIdlocal(), $maquina->getIdtipo(), 1);
                 //mensagem
                 $this->mensagem("Caixa alterado!", $url);
             } else {
@@ -143,9 +143,11 @@ class Caixa extends CI_Controller {
             //remover
             if (isset($maquina)){
                 //gravar log
-                $this->gravaLog("remove", "removeu caixa id: "
+                $this->gravaLog("remove", "deixou ip do caixa livre id: "
                         . $id);
-                $maquina->removerMaquina($maquina->getIdmaquina());
+                //$maquina->removerMaquina($maquina->getIdmaquina());
+                //LiberaMaquina($id, $idlocal, $idtipo)
+                $maquina->LiberaMaquina($maquina->getIdmaquina(), $maquina->getIdlocal(), $maquina->getIdtipo());
                 //mensagem
                 $this->mensagem("Caixa removido!", $url);
             } else {

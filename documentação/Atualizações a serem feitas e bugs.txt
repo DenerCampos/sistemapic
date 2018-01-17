@@ -1,3 +1,18 @@
+#Nova Versão (2.0)
+
+--corrigir duplicação tabela ip, duplicando ips dos caixa.
+--corrigir atualizar maquina na aba caixas.
+
+Error Number: 1452
+
+Cannot add or update a child row: a foreign key constraint fails (`sistemapic`.`maquina`, CONSTRAINT `fk_maquina_local` FOREIGN KEY (`idlocal`) REFERENCES `local` (`idlocal`) ON DELETE NO ACTION ON UPDATE NO ACTION)
+
+UPDATE `maquina` SET `nome` = 'CAIXA48', `login` = '192.168.2.122\r\n', `descricao` = 'ppcaixa', `idlocal` = 'Caixa do PIC Pampulha', `idtipo` = '5', `idunidade` = '2' WHERE `idmaquina` = '14'
+
+Filename: D:/Dener_Junio/www/systems/sistemapic/application/models/Maquina_model.php
+
+Line Number: 62
+
 #bugs
     - Impressoras fiscais
 	01- Ao buscar, apresenta erro. (OK)
@@ -34,6 +49,40 @@
     - Impressoras
 	01- Mostrar todos em uma unica tela. (OK)
 
+#Nova Versão (2.0)
+-Melhorias - Alterei o banco de dados*** Alterei o arquivo router*****
+    - Relatórios
+	01- Relatório plantão, ao gerar, ter opção de gerar com chamados em aberto, em atendimento e fechados. (OK)
+	02- Melhorar layout do email. (OK)
+    - HelpDesk
+	01- Adicionar a função de reabrir chamado, somente o usuário que abriu e area de atendimento podem ter acesso a essa função. (OK)
+	02- Melhorar layout do email. (OK)
+    - Notificações
+ 	01- Criar notificação para a função reabrir. (OK)
+    - Caixas
+	01- Ao remover, não aparece nenhuma mensagem, criar mensagem de erro ou sucesso e um botão para voltar para a tela de caixas. (OK)
+    - Maquinas
+	01- Cadastrar todos os IPS e qual que não estiver sendo usado, ter uma indicação que esta livre. (OK)
+	02- Ordernar por IP em ordem crescente. (OK)
+	03- Mostrar todos em uma unica tela. (OK)
+	04- Remover o botão de remover e inserir uma função de liberar o ip. (OK)
+	05- Adicionar os IPs para o PIC Cidade. (OK)
+    - Pinpads
+	01- Mostrar todos em uma unica tela. (OK)
+    - POS
+	01- Mostrar todos em uma unica tela. (OK)
+    - Impressoras Fiscais
+	01- Mostrar todos em uma unica tela. (OK)
+    - Impressoras
+	01- Mostrar todos em uma unica tela. (OK)
+
+-Bugs
+    - Impressoras fiscais
+	01- Ao buscar, apresenta erro. (OK)
+    - Help Desk
+	01- Colocar atualização automatica nos chamados em atendimento e fechados. (OK)
+    - Notificações
+ 	01- Correção de varios erros de envio de notificações de abertura e atendimento de chamado. (OK)
 ---------------------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (1.9)
 -Melhorias
