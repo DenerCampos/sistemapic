@@ -51,12 +51,12 @@ class Comentario_model extends CI_Model {
     }
     
     //Busca por id ocorrencia
-    public function buscaIdOcorrencia($id){
+    public function buscaIdOcorrencia($id, $ordem = "DESC"){
         $query = $this->db->query(
                 "SELECT *
                 FROM comentario 
                 WHERE idocorrencia = $id 
-                ORDER BY data DESC");
+                ORDER BY data $ordem");
         //retorna objeto
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());

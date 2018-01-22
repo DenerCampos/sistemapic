@@ -935,7 +935,7 @@ class Ocorrencia_model extends CI_Model {
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());
         } else{
-            return NULL;
+            return array();
         }
     }
 
@@ -945,7 +945,7 @@ class Ocorrencia_model extends CI_Model {
         $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia 
-                WHERE data_fechamento BETWEEN '$inicio' AND
+                WHERE data_abertura BETWEEN '$inicio' AND
                     '$fim' AND
                     idocorrencia_estado = 2 AND
                     idestado = 1 AND
@@ -955,7 +955,7 @@ class Ocorrencia_model extends CI_Model {
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());
         } else{
-            return NULL;
+            return array();
         }
     }
     
@@ -965,7 +965,7 @@ class Ocorrencia_model extends CI_Model {
         $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia 
-                WHERE data_fechamento BETWEEN '$inicio' AND
+                WHERE data_abertura BETWEEN '$inicio' AND
                     '$fim' AND
                     idocorrencia_estado = 3 AND
                     idestado = 1 AND
@@ -975,7 +975,7 @@ class Ocorrencia_model extends CI_Model {
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());
         } else{
-            return NULL;
+            return array();
         }
     }
     
@@ -990,7 +990,6 @@ class Ocorrencia_model extends CI_Model {
                     idocorrencia_estado = 1 AND
                     idestado = 1
                 ORDER BY idocorrencia");
-        
         return $query->num_rows();
     }
     
@@ -999,12 +998,12 @@ class Ocorrencia_model extends CI_Model {
         $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia 
-                WHERE data_fechamento BETWEEN '$inicio' AND
+                WHERE data_abertura BETWEEN '$inicio' AND
                     '$fim' AND
                     idocorrencia_estado = 2 AND
                     idestado = 1 AND
                     usuario_atende = $user
-                ORDER BY idocorrencia"); 
+                ORDER BY idocorrencia");
         return $query->num_rows();
     }
     
@@ -1013,12 +1012,12 @@ class Ocorrencia_model extends CI_Model {
         $query = $this->db->query(
                 "SELECT *
                 FROM ocorrencia 
-                WHERE data_fechamento BETWEEN '$inicio' AND
+                WHERE data_abertura BETWEEN '$inicio' AND
                     '$fim' AND
                     idocorrencia_estado = 3 AND
                     idestado = 1 AND
                     usuario_fecha = $user
-                ORDER BY idocorrencia"); 
+                ORDER BY idocorrencia");
         return $query->num_rows();
     }
     

@@ -440,15 +440,15 @@ class Plantao extends CI_Controller {
             $abertos = array();
             $atendimentos = array();
             $fechados = array();  
-            if (($aberto) && ($this->ocorrencia->contemAberto($inicio, $fim) > 0)){
+            if (($aberto) && ($this->ocorrencia->contemAberto($inicio, date("Y-m-d", strtotime($inicio) + 86400)) > 0)){
                 //todasDataAberto($inicio, $fim)
                 $abertos = $this->ocorrencia->todasDataAberto($inicio, date("Y-m-d", strtotime($inicio) + 86400));
             }
-            if (($atendimento) && ($this->ocorrencia->contemAtendimento($inicio, $fim, $this->session->userdata("id")) > 0)){
+            if (($atendimento) && ($this->ocorrencia->contemAtendimento($inicio, date("Y-m-d", strtotime($inicio) + 86400), $this->session->userdata("id")) > 0)){
                 //todasDataAtendimento($inicio, $fim, $user)
                 $atendimentos = $this->ocorrencia->todasDataAtendimento($inicio, date("Y-m-d", strtotime($inicio) + 86400), $this->session->userdata("id"));
             }
-            if (($fechado) && ($this->ocorrencia->contemFechado($inicio, $fim, $this->session->userdata("id")) > 0)){
+            if (($fechado) && ($this->ocorrencia->contemFechado($inicio, date("Y-m-d", strtotime($inicio) + 86400), $this->session->userdata("id")) > 0)){
                 //todasDataFechado($inicio, $fim, $user)
                 $fechados = $this->ocorrencia->todasDataFechado($inicio, date("Y-m-d", strtotime($inicio) + 86400), $this->session->userdata("id"));
             }
