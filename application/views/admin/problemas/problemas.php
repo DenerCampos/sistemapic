@@ -43,6 +43,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <thead>
                             <tr>
                                 <th>Nome</th>
+                                <th>Tempo <small>em horas</small></th>
                                 <th>Descrição</th>
                                 <th>Estado</th>
                                 <th class="text-right">Ações</th>
@@ -53,6 +54,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php foreach ($problemas as $problema) { ?>
                             <tr>
                                 <td><?php echo $problema->getNome(); ?></td>
+                                <td><?php echo $problema->getTempo(); ?></td>
                                 <td><?php echo $problema->getDescricao(); ?></td>
                                 <td><?php echo $estado->buscaId($problema->getIdestado())->getNome(); ?></td>
                                 <td class="text-right opcoes">
@@ -97,6 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <thead>
                             <tr>
                                 <th>Nome</th>
+                                <th>Tempo <small>em horas</small></th>
                                 <th>Descrição</th>
                                 <th>Estado</th>
                                 <th class="text-right">Ações</th>
@@ -107,6 +110,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php foreach ($resultados as $resultado) { ?>
                             <tr>
                                 <td><?php echo $resultado->getNome(); ?></td>
+                                <td><?php echo $resultado->getTempo(); ?></td>
                                 <td><?php echo $resultado->getDescricao(); ?></td>
                                 <td><?php echo $estado->buscaId($resultado->getIdestado())->getNome(); ?></td>
                                 <td class="text-right opcoes">

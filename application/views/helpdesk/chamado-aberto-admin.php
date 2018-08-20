@@ -27,7 +27,14 @@
                             <tbody>
                                 <?php foreach ($abertas as $aberta) { ?>
                                 <tr>
-                                    <td><?php echo $aberta->getIdocorrencia(); ?></td>
+                                    <td>
+                                        <?php if (strtotime(date("Y-m-d H:i:s")) < strtotime($aberta->getData_sla())) {?>
+                                            <i class="fa fa-clock-o sla-ok" aria-hidden="true" title="Dentro do prazo até: <?php echo date("d/m - H:i", strtotime($aberta->getData_sla()))?>"></i>
+                                        <?php } else { ?> 
+                                            <i class="fa fa-clock-o sla-alert" aria-hidden="true" title="Fora do prazo, venceu: <?php echo date("d/m - H:i", strtotime($aberta->getData_sla()))?>"></i>
+                                        <?php } ?>
+                                        <?php echo $aberta->getIdocorrencia(); ?>
+                                    </td>
                                     <td><?php echo date("d/m/Y - H:i", strtotime($aberta->getData_abertura())); ?></td>
                                     <td><?php echo $aberta->getUsuario(); ?></td>
                                     <td><?php echo $problema->buscaId($aberta->getIdproblema())->getNome(); ?></td>                                    

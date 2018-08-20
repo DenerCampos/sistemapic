@@ -18,6 +18,8 @@ class Ocorrencia_model extends CI_Model {
     var $data_abertura;
     var $data_fechamento;
     var $data_alteracao;
+    var $sla;
+    var $data_sla;
     var $usuario;
     var $usuario_atende;
     var $usuario_fecha;
@@ -37,11 +39,13 @@ class Ocorrencia_model extends CI_Model {
 
     /* ------Requisições-------- */
     //Instancia novo
-    public function newOcorrencia($descricao, $vnc, $ramal, $data_abertura, $usuario, $usuario_abre, $idunidade, $idarea, $idsetor, $idproblema, $idocorrencia_estado){
+    public function newOcorrencia($descricao, $vnc, $ramal, $data_abertura, $sla, $data_sla, $usuario, $usuario_abre, $idunidade, $idarea, $idsetor, $idproblema, $idocorrencia_estado){
         $this->setDescricao($descricao);
         $this->setVnc($vnc);
         $this->setRamal($ramal);
         $this->setData_abertura($data_abertura);
+        $this->setSla($sla);
+        $this->setData_sla($data_sla);
         $this->setUsuario($usuario);
         $this->setUsuario_abre($usuario_abre);
         $this->setIdunidade($idunidade);
@@ -128,11 +132,13 @@ class Ocorrencia_model extends CI_Model {
     }
     
     //Atualiza ocorrencia $descricao, $vnc, $ramal, $data_abertura, $usuario, $usuario_abre, $idunidade, $idarea, $idsetor, $idproblema, $idocorrencia_estado
-    public function atualiza($id, $vnc, $ramal, $usuario, $dalteracao, $idunidade, $idarea, $idsetor, $idproblema){
+    public function atualiza($id, $vnc, $ramal, $usuario, $dalteracao, $sla, $data_sla, $idunidade, $idarea, $idsetor, $idproblema){
         $dados = array(
             "vnc" => $vnc,
             "ramal" => $ramal,
             "data_alteracao" => $dalteracao,
+            "sla" => $sla,
+            "data_sla" => $data_sla,
             "usuario" => $usuario,
             "idunidade" => $idunidade,
             "idarea" => $idarea,
@@ -1230,6 +1236,8 @@ class Ocorrencia_model extends CI_Model {
         $ocorrencia->setData_abertura($r->data_abertura);
         $ocorrencia->setData_fechamento($r->data_fechamento);
         $ocorrencia->setData_alteracao($r->data_alteracao);
+        $ocorrencia->setSla($r->sla);
+        $ocorrencia->setData_sla($r->data_sla);
         $ocorrencia->setUsuario($r->usuario);
         $ocorrencia->setUsuario_atende($r->usuario_atende);
         $ocorrencia->setUsuario_fecha($r->usuario_fecha);
@@ -1285,6 +1293,14 @@ class Ocorrencia_model extends CI_Model {
 
     function getData_alteracao() {
         return $this->data_alteracao;
+    }
+
+    function getSla() {
+        return $this->sla;
+    }
+
+    function getData_sla() {
+        return $this->data_sla;
     }
 
     function getUsuario() {
@@ -1355,6 +1371,14 @@ class Ocorrencia_model extends CI_Model {
         $this->data_alteracao = $data_alteracao;
     }
 
+    function setSla($sla) {
+        $this->sla = $sla;
+    }
+
+    function setData_sla($data_sla) {
+        $this->data_sla = $data_sla;
+    }
+
     function setUsuario($usuario) {
         $this->usuario = $usuario;
     }
@@ -1395,6 +1419,7 @@ class Ocorrencia_model extends CI_Model {
         $this->idocorrencia_estado = $idocorrencia_estado;
     }
 
+    
     //reduzir descrição de uma ocorrencia
     public function reduzirDescricao($descricao){
         $tamanho = strlen($descricao);

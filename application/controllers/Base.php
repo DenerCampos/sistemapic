@@ -13,6 +13,8 @@ class Base extends CI_Controller {
     /*------Construtor--------*/
     public function __construct() {
         parent::__construct();
+        //verifica acesso
+        $this->verificaNivel();
         //carregando modelo
     }
     
@@ -92,4 +94,40 @@ class Base extends CI_Controller {
     
     
     /*------------Funções internas---------------*/ 
+    
+    //Grava log no BD
+    private function gravaLog($nome, $descricao){
+        //dados
+        $data = date('Y-m-d H:i:s');
+        $ip =  $this->input->ip_address();
+        if ($this->session->has_userdata("nome")){
+            $idusuario = $this->session->userdata("id");
+        } else {
+            $idusuario = 0;
+        }
+        //carrega model
+        $this->load->model("Log_model", "registro");
+        $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
+        $this->registro->addLog();
+    }
+    
+    //Verifica nivel de usuario para acesso ao sistema
+    private function verificaNivel(){
+        //verifica nivel usuario
+        //verifica se tem alguem logado
+        if ($this->session->has_userdata('acesso')){
+            //verifica nivel de acesso
+            if (unserialize($this->session->userdata('acesso'))->getBase() == 1){
+                //acesso permitido                
+            } else {
+                //acesso negado
+                $this->gravaLog("acesso negado", "acesso ao controlador Base.php");
+                redirect(base_url());
+            }
+        } else {
+            //grava log
+            $this->gravaLog("tentativa de acesso sem usuario", "acesso ao controlador Base.php");
+            redirect(base_url());
+        }
+    }
 }

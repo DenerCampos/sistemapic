@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
 <!-- Codigo html  -->
+<div class="imagem-fundo">
 <div class="home-pic col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="text-center">
         <h1 class="titulo-home"><strong>Sistema PIC</strong></h1>
@@ -14,5 +15,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
 </div>
 <div class="versao">
-    <a href="<?php echo base_url('home/versao'); ?>">Versão: 2.0 - Dener Campos.</a>
+    <a href="<?php echo base_url('home/versao'); ?>">Versão: 2.1 - Dener Campos.</a>
 </div>
+    </div>

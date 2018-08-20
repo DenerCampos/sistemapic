@@ -19,7 +19,6 @@ class Usuario_admin extends CI_Controller {
         $this->load->model('Usuario_model', 'usuario');
         $this->load->model('estado_model', 'estado');
         $this->load->model("Area_model", "area");
-        //$this->load->model("Acesso_model", "acesso");
     }
     
     
@@ -210,9 +209,9 @@ class Usuario_admin extends CI_Controller {
                 }
                 //adiciona usuario
                 $this->usuario->addUsuario();
-                //cria nivel de acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
+                //cria nivel de acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
                 $this->acesso->novo($acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"], 
-                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $this->usuario->buscaUsuario($login)->getIdusuario());
+                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $this->usuario->buscaUsuario($login)->getIdusuario());
                 $this->acesso->adiciona();
                 //Log
                 $this->gravaLog("ADMIN criação usuario", "usuario criado: ".$nome." Email: ". $login);
@@ -269,14 +268,13 @@ class Usuario_admin extends CI_Controller {
                 $idacesso = $this->acesso->buscaIdUsuario($id);
                 //verifica se existe acesso para o usuario
                 if (isset($idacesso)){
-                    //atualiza acesso atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
+                    //atualiza acesso atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
                     $this->acesso->atualiza($idacesso->getIdacesso(), $acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"],
-                            $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $id);   
+                            $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $id);   
                 } else {
-                    //novo acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
-                    $this->acesso->novo($acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"],
-                            $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $id);
-                    //adiciona adiciona()
+                    //cria nivel de acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
+                    $this->acesso->novo($acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"], 
+                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $this->usuario->buscaUsuario($login)->getIdusuario());
                     $this->acesso->adiciona();
                 }
                 //Log
@@ -645,6 +643,17 @@ class Usuario_admin extends CI_Controller {
         } else {
             $acesso['equipamento'] = 0;
         }
+        if (!empty($this->input->post("chkCriAvaliacao"))){
+            $acesso['avaliacao'] = 1;
+        } else {
+            $acesso['avaliacao'] = 0;
+        }
+        if (!empty($this->input->post("chkCriUtilitario"))){
+            $acesso['utilitario'] = 1;
+        } else {
+            $acesso['utilitario'] = 0;
+        }
+        
     }
     
     //recupera dados do post atualiza usuario
@@ -702,6 +711,16 @@ class Usuario_admin extends CI_Controller {
             $acesso['equipamento'] = 1;
         } else {
             $acesso['equipamento'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtAvaliacao"))){
+            $acesso['avaliacao'] = 1;
+        } else {
+            $acesso['avaliacao'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtUtilitario"))){
+            $acesso['utilitario'] = 1;
+        } else {
+            $acesso['utilitario'] = 0;
         }
     }
     

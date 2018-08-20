@@ -26,7 +26,14 @@
                             <tbody>
                                 <?php foreach ($atendimentos as $atendimento) { ?>
                                 <tr>
-                                    <td><?php echo $atendimento->getIdocorrencia(); ?></td>
+                                    <td>
+                                        <?php if (strtotime(date("Y-m-d H:i:s")) < strtotime($atendimento->getData_sla())) {?>
+                                            <i class="fa fa-clock-o sla-ok" aria-hidden="true" title="Dentro do prazo até: <?php echo date("d/m - H:i", strtotime($atendimento->getData_sla()))?>"></i>
+                                        <?php } else { ?> 
+                                            <i class="fa fa-clock-o sla-alert" aria-hidden="true" title="Fora do prazo, venceu: <?php echo date("d/m - H:i", strtotime($atendimento->getData_sla()))?>"></i>
+                                        <?php } ?>
+                                        <?php echo $atendimento->getIdocorrencia(); ?>
+                                    </td>
                                     <td><?php echo date("d/m/Y - H:i", strtotime($atendimento->getData_abertura())); ?></td>
                                     <td><?php echo date("d/m/Y - H:i", strtotime($atendimento->getData_alteracao())); ?></td>
                                     <td><?php echo $atendimento->getUsuario(); ?></td>

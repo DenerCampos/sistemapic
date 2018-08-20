@@ -556,13 +556,14 @@ class Ocorrencia extends CI_Controller {
     
     //Cria nova ocorrencia
     public function novaOcorrencia(){
-        $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $descricao; $url; $emailarea; $emailusuario;
+        $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $descricao; $sla; $datasla; $url; $emailarea; $emailusuario;
         try {
-            //recuperda dados
-            $this->recuperaDadosNovaOcorrencia($unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao, $url, $emailarea, $emailusuario);
+            //recuperda dados 
+            $this->recuperaDadosNovaOcorrencia($unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao, $sla, $datasla, $url, $emailarea, $emailusuario);
             //gera ocorrencia //data abertura
             $data = date('Y-m-d H:i:s');
-            $this->ocorrencia->newOcorrencia($descricao, $vnc, $ramal, $data, $usuario, 
+            //newOcorrencia($descricao, $vnc, $ramal, $data_abertura, $sla, $data_sla, $usuario, $usuario_abre, $idunidade, $idarea, $idsetor, $idproblema, $idocorrencia_estado)
+            $this->ocorrencia->newOcorrencia($descricao, $vnc, $ramal, $data, $sla, $datasla, $usuario,
                     $this->session->userdata("id"), $unidade, $area, $setor, $problema, 1);
             //inseri no bd
             $id = $this->ocorrencia->addOcorrencia();
@@ -778,9 +779,9 @@ class Ocorrencia extends CI_Controller {
     //Editar ocorrencia
     public function editar(){        
         try {
-            $id; $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $comentario; $url; $email;
+            $id; $unidade; $setor; $problema; $area; $usuario;  $vnc; $ramal; $comentario; $url; $email; $sla; $datasla;
             //Recupera dados
-            $this->recuperaDadosEditar($id, $unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $comentario, $url, $email);
+            $this->recuperaDadosEditar($id, $unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $comentario, $url, $email, $sla, $datasla);
             //verifica se existe e se ocorrencia esta em atendimento
             if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->atendimento($id)){
                 if ($comentario != ""){
@@ -788,8 +789,8 @@ class Ocorrencia extends CI_Controller {
                     $this->comentario->newComentario($comentario, date('Y-m-d H:i:s'), $id, $this->session->userdata("id"));
                     $this->comentario->addComentario();
                 }
-                //atualiza chamado
-                $this->ocorrencia->atualiza($id, $vnc, $ramal, $usuario, date('Y-m-d H:i:s'), $unidade, $area, $setor, $problema);
+                //atualiza chamado atualiza($id, $vnc, $ramal, $usuario, $dalteracao, $sla, $data_sla, $idunidade, $idarea, $idsetor, $idproblema)
+                $this->ocorrencia->atualiza($id, $vnc, $ramal, $usuario, date('Y-m-d H:i:s'), $sla, $datasla, $unidade, $area, $setor, $problema);
                 //salva anexos
                 foreach ($_FILES as $key => $value) {
                     if ($this->salvaAnexo($key, $id)){
@@ -1379,7 +1380,7 @@ class Ocorrencia extends CI_Controller {
     }
 
     //Recupera dados da nova ocorrencia
-    private function recuperaDadosNovaOcorrencia(&$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao, &$url, &$emailarea, &$emailusuario){
+    private function recuperaDadosNovaOcorrencia(&$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao, &$sla, &$datasla, &$url, &$emailarea, &$emailusuario){
         $unidade = $this->input->post("selCriUnidade");
         $setor = $this->input->post("selCriSetor");
         $problema = $this->input->post("selCriProblema");
@@ -1424,11 +1425,15 @@ class Ocorrencia extends CI_Controller {
             $emailusuario = TRUE;
         } else{
             $emailusuario = FALSE;
-        }
+        }        
+        //SLA
+        $sla = $this->problema->buscaId($problema)->getTempo();
+        //Gerando data do SLA
+        $datasla = $this->geraDataSla($sla);
     }
     
     //Recupera dados da editar ocorrencia
-    private function recuperaDadosEditar(&$id, &$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$comentario, &$url, &$email){
+    private function recuperaDadosEditar(&$id, &$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$comentario, &$url, &$email, &$sla, &$datasla){
         $id = $this->input->post("iptEdtId");
         $unidade = $this->input->post("selEdtUnidade");
         $setor = $this->input->post("selEdtSetor");
@@ -1467,7 +1472,19 @@ class Ocorrencia extends CI_Controller {
             $email = TRUE;
         } else{
             $email = FALSE;
-        }
+        }               
+        //SLA
+        //verifica se alterou o problema
+        if ($this->ocorrencia->buscaId($id)->getIdproblema() == $problema){
+            $sla = $this->ocorrencia->buscaId($id)->getSla();
+            //Gerando data do SLA
+            $datasla = $this->ocorrencia->buscaId($id)->getData_sla();
+        } else {
+            $sla = $this->problema->buscaId($problema)->getTempo();
+            //Gerando data do SLA
+            $datasla = $this->geraDataSla($sla, $this->ocorrencia->buscaId($id)->getData_abertura()); 
+        }      
+        
     }
     
     //Recupera dados da atender ocorrencia
@@ -2054,6 +2071,26 @@ class Ocorrencia extends CI_Controller {
             $this->gravaLog("erro geral", $exc->getTraceAsString());
             $this->erro("Erro ao criar notificação.");
         }
-        }
+    }
    
+    //gerar data do SLA
+    private function geraDataSla($sla, $dtabertura = NULL){
+        if (isset($sla)){
+            //data atual ou da ocorrencia caso ja aberta
+            if(isset($dtabertura)){
+                $data = new DateTime($dtabertura);
+            }else {
+                $data = new DateTime();
+            }            
+            $dsla = explode(":", $sla);
+            $interval = new DateInterval("PT".$dsla[0]."H".$dsla[1]."M".$dsla[2]."S");
+            $data->add($interval);
+            //data com sla
+            $datasla = $data->format("Y-m-d H:i:s");
+            return $datasla;
+        } else {
+            return $data = date(("Y-m-d H:i:s"));
+        }
+        
+    }
 }

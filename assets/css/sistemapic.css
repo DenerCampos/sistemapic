@@ -13,6 +13,7 @@ body{
     padding-top: 70px;
 }
 
+
 /*Error do bootstrap*/
 .help-block{
     font-size: smaller;
@@ -47,6 +48,11 @@ body{
 .criar-conta{
     margin-right: 5px;
     margin-bottom: 2px;
+}
+
+.esqueci-senha{
+    padding-top: 5px;
+    padding-right: 5px;
 }
 
 .opcoes-caixa{
@@ -247,6 +253,14 @@ a:hover, a:focus{
     margin: 0 0 2px;
 }
 
+.sla-ok{
+    color: #2E8B57;
+}
+
+.sla-alert{
+    color: #A52A2A;
+}
+
 
 /*Anexos*/
 .imagem-anexo-preview{
@@ -375,9 +389,21 @@ input[type=file] {
 
 /***Home***/
 
+/*.imagem-fundo{
+    display: block;
+    width: 100vw;
+    height: 80vh;
+    text-align: center;
+    background-image: url(../img/fundo.jpg);
+    background-repeat: no-repeat;
+    background-position: 0px 70px;
+    background-attachment: fixed;
+    background-size: contain;
+}*/
+
 .home-pic{
     /*background-color: #31b0d5;*/
-    margin-top: 20px;
+    margin-top: 20px;    
 }
 
 .img-home{
@@ -480,3 +506,18 @@ input[type=file] {
     color: red;
     display: none;
 }
+
+/*Utilitarios*/
+.borda-bottom{
+    border-bottom: solid 2px #337ab7;
+}
+
+.titulo-filial{
+    margin: 0 0 20px 0;
+    padding: 10px 0px;
+    font-size: 17.5px;
+    background-color: #eee;
+    text-align: center;
+    font-weight: bold;
+}
+

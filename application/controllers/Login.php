@@ -4,8 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Login extends CI_Controller {
 
     /**
-     * Base para controller.
-     *
+     * Login.
+     * Cria usuario padrão, com acesso ao helpdesk e usuario.
+     * Realiza login e logoff
      * @author Dener Junio
      * 
      */
@@ -15,7 +16,6 @@ class Login extends CI_Controller {
         parent::__construct();
         //carregando modelo
         $this->load->model("Usuario_model", "usuario");
-        //$this->load->model("Acesso_model", "acesso");
     }
     
     
@@ -83,8 +83,8 @@ class Login extends CI_Controller {
                 //cria usuario
                 $this->usuario->newUsuario($nome, $login, $this->geraSenha($senha), 2, 1);
                 $this->usuario->addUsuario();
-                //cria acesso padrão novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $idusuario)
-                $this->acesso->novo(1, 0, 0, 0, 0, 1, 0, $this->usuario->buscaUsuario($login)->getIdusuario());
+                //cria acesso padrão novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
+                $this->acesso->novo(1, 0, 0, 0, 0, 1, 0, 0, 0, $this->usuario->buscaUsuario($login)->getIdusuario());
                 $this->acesso->adiciona();
                 //Log
                 $this->gravaLog("criação usuario", "usuario criado: " . $nome . " Email: " . $login);
@@ -158,6 +158,46 @@ class Login extends CI_Controller {
         }  
     }
     
+    //Recuperar senha
+    public function recuperarSenha(){
+        $login; $url; $senha;
+        try {
+            //recuperar dados post
+            $this->recuperaRecuperarSenha($login, $url);
+            //gerar nova senha
+            $senha = $this->gerarSenhaLogin($login);
+            //verifica se usuario existe
+            if ($this->usuario->verificaEmailAtivo($login)){
+                //altera no bd
+                $this->usuario->atualizaSenhaRecuperar($login, $this->geraSenha($senha));
+                //envia por e-mail
+                //criando corpo email
+                $texto = $this->emailRecuperarSenha($login, $senha);
+                $assunto = "Nova senha do Sistema PIC";
+                if ($this->envioEmail($login, $assunto, $texto)){
+                    //log
+                    $this->gravaLog("recuperacao de senha", "usuario ".$login." senha gerada: ".$senha);
+                    //mensagem ok
+                    $this->mensagem("Solicitação se nova senha OK. Você receberá um e-mail com a nova senha", $url);
+                } else{
+                    //log
+                    $this->gravaLog("erro recuperacao de senha", "erro ao enviar email usuario ".$login." senha gerada: ".$senha);
+                    //msg erro
+                    $this->erro("Não foi possivel enviar e-mail para: ".$login." Favor tentar novamente.");
+                }                
+            }
+            //mensagem de erro
+            //log
+            $this->gravaLog("erro recuperacao de senha", "erro ao verificar usuario existe ou ativo. usuario ".$login." senha gerada: ".$senha);
+
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral recuperar senha", "erro: ".$exc->getTraceAsString());
+            $this->erro('Erro geral: '.$exc->getTraceAsString());
+        }
+    }
+
+
     /*------------Funções AJAX-------------*/ 
     
     //Verifica se existe o email cadastrado
@@ -180,6 +220,18 @@ class Login extends CI_Controller {
             echo json_encode(FALSE);
         }else {
             echo json_encode(TRUE);
+        }
+            exit();
+    }
+    
+    //Verifica se existe o email cadastrado
+    public function verificaEsqueciSenha(){
+        $email = trim($this->input->get_post("iptEsqueciSenhaEmail"));
+        //verifica se existe
+        if ($this->usuario->verificaEmailAtivo($email)){
+            echo json_encode(TRUE);
+        }else {
+            echo json_encode(FALSE);
         }
             exit();
     }
@@ -318,6 +370,82 @@ class Login extends CI_Controller {
         //verifica URL existe
         if (!isset($url)|| $url === ""){
             $url = "home";
+        }
+    }
+    
+    //recupera dados post recuperar senha
+    private function recuperaRecuperarSenha(&$login, &$url){
+        //recuperando dados do formulario
+        $login = strtolower(trim($this->input->post("iptEsqueciSenhaEmail")));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "home";
+        }
+    }
+    
+    //gerar senha aleatorio por login (recuperar senha)
+    private function gerarSenhaLogin($login){
+        if (isset($login)){
+            $nome = explode("@", $login);
+            $numero = rand(strlen($nome[0])*1024, strlen($nome[0])*2131);
+            $senha = $nome[0].$numero;
+            
+            return $senha;
+        }
+    }
+    
+    //Corpo do e-mail para recuperar senha
+    private function emailRecuperarSenha($login, $senha){
+        //recupera ocorrencia
+        $usuario = $this->usuario->buscaUsuario($login);
+        //gera dados para view
+        if (isset($usuario)){
+            $dados['assetsUrl'] = base_url("assets");
+            $dados['nome'] = $usuario->getNome();
+            $dados['email'] = $usuario->getLogin();
+            $dados['senha'] = $senha;
+        } else{
+            return "Erro ao gerar e-mail para recuperar senha, usuário não existe!";
+        }
+        //Carrega view
+        return $this->load->view("usuario/email/mensagem-email-recuperar-senha", $dados, TRUE);
+    }
+    
+    //enviar email
+    private function envioEmail($para, $assunto, $texto, $anexo = NULL){
+        try {
+            //carregando biblioteca de email
+            $this->load->library("email");
+            //pegando configuração
+            $this->load->model("email_conf_model", "configuracao");
+            $config = $this->configuracao->busca("text");
+            //preparando o email
+            $this->email->initialize($config);
+            $this->email->from($config["smtp_user"], "Sistema PIC (Recuperação de senha)");
+            $this->email->to($para);
+            $this->email->subject($assunto);
+            $this->email->message($texto);
+            $this->email->set_mailtype("html");
+            //anexo
+            if (isset($anexo)){
+                $this->email->attach($anexo);
+            }
+            if ($this->email->send()) {
+                //email enviado com sucesso
+                return TRUE;
+            } else {
+                $head = $this->email->print_debugger(array('headers'));
+                $subject = $this->email->print_debugger(array('subject'));;
+                $body = $this->email->print_debugger(array('body'));
+                $this->gravaLog("erro enviar email plantao", "Usuario: ".$this->session->userdata("id").". Erro: ".$head." - ".$subject." - ".$body);
+                //$this->erro($teste);
+                return FALSE;
+            }
+            //enviando email
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
         }
     }
     

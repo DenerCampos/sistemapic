@@ -38,7 +38,7 @@ class Problema_admin extends CI_Controller {
         $this->load->view('admin/problemas/problemas', array(
             "assetsUrl" => base_url("assets"),
             "estado" => new Estado_model(),
-            "problemas" => $this->problema->todosProblemas(7, $this->recuperaOffset()),
+            "problemas" => $this->problema->todosProblemasAdm(7, $this->recuperaOffset()),
             "paginas" => $this->listarProblemas()));
         //Modal
         $this->load->view('admin/problemas/criar-problemas', array(
@@ -144,26 +144,30 @@ class Problema_admin extends CI_Controller {
     }
     
     /*------Funções--------*/
-    //Criar usuario
+    //Criar
     public function criarProblema(){
-        //recupera dados
-        $nome = $this->input->post("iptCriNome");
-        $descricao = $this->input->post("iptCriDesc");
-        $estado = $this->input->post("selCriEstado");
-        
-        //verifica dados
-        if (!$this->problema->problemaExiste($nome)){
-            //cria problema
-            $this->problema->newProblema($nome, $descricao, $this->geraEstado($estado));
-            $this->problema->addProblema();
-            //Log
-            $this->gravaLog("ADMIN criação problema", "problema criado: ".$nome." Descrição: ". $descricao);
-            redirect(base_url('admin/problema_admin'));
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro criação problema", "tentativa de criar problema: ".$nome." Descrição: ". $descricao);
-            echo'erro ao criar problema';
-        }
+        $nome; $tempo; $descricao; $estado;        
+        try {
+            //recupera dados
+            $this->recuperaCriarProblema($nome, $tempo, $descricao, $estado);
+            //verifica dados 
+            if (!$this->problema->problemaExiste($nome)){
+                //cria problema newProblema($nome, $descricao, $tempo, $idestado)
+                $this->problema->newProblema($nome, $descricao, $this->geraTempo($tempo), $this->geraEstado($estado));
+                $this->problema->addProblema();
+                //Log
+                $this->gravaLog("ADMIN criação problema", "problema criado: ".$nome." Descrição: ". $descricao);
+                redirect(base_url('admin/problema_admin'));
+            }else{
+                //Log
+                $this->gravaLog("ADMIN erro criação problema", "tentativa de criar problema: ".$nome." Descrição: ". $descricao);
+                $this->mensagem("O problema <strong>".$nome."</strong> já existe.", "admin/problema_admin");
+            }
+       } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na criação do problema. Erro: ".$exc->getTraceAsString());
+        }        
     }
     
     //Paginação usuario
@@ -203,65 +207,82 @@ class Problema_admin extends CI_Controller {
     
     //Atualiza problema
     public function atualizaProblema(){
-        //recuperando dados do problema
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $descricao = $this->input->post("iptEdtDesc");
-        $estado = $this->input->post("selEdtEstado");
-        $url = $this->input->post("iptEdtUrl");
+        $id; $nome; $tempo; $descricao; $estado; $url;        
+        try {
+            //recuperando dados
+            $this->recuperaEditarProblema($id, $nome, $tempo, $descricao, $estado, $url);
+            //verifica dados 
+            if (!$this->problema->verificaProblemaAtualiza($id, $nome)){
+                //atualiza atualizaProblema($id, $nome, $descricao, $tempo, $idestado)
+                $this->problema->atualizaProblema($id, $nome, $descricao, $this->geraTempo($tempo), $this->geraEstado($estado));
+                //Log
+                $this->gravaLog("ADMIN alteração problema", "problema alterado: ".$nome." Descrição: ". $descricao." Tempo: ".$tempo);
+                redirect($url);
+            }else{
+                //Log
+                $this->gravaLog("ADMIN erro alteração problema", "tentativa de alterar problema: ".$nome." Descrição: ". $descricao);
+                $this->erro("Erro ao atualizar o problema");
+                } 
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro na atualização do problema. Erro: ".$exc->getTraceAsString());
+        }
+
         
-        //verifica dados
-        if (!$this->problema->verificaProblemaAtualiza($id, $nome)){
-            //atualiza 
-            $this->problema->atualizaProblema($id, $nome, $descricao, $this->geraEstado($estado));
-            //Log
-            $this->gravaLog("ADMIN alteração problema", "problema alterado: ".$nome." Descrição: ". $descricao);
-            redirect($url);
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro alteração problema", "tentativa de alterar problema: ".$nome." Descrição: ". $descricao);
-            echo'erro ao alterar problema';
-        }            
+                   
     }
     
     //Desabilitar problema
     public function desabilitaProblema(){
-        //recupera id
-        $id = $this->input->post("iptRmvId");
-        $url = $this->input->post("iptRmvUrl");
-        
-        //verifica se existe e esta ativo
-        if ($this->problema->verificaAtivo($id)){
-            //desativa 
-            $this->problema->desativaProblema($id);
-            //Log
-            $this->gravaLog("ADMIN desabilita problema", "problema desabilitado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro desabilitar problema", "tentativa de desabilitar problema id: ".$id);
-            echo'erro ao desabilitar problema';
-        }
+        $id; $url;
+        try {
+            //recupera dados
+            $this->recuperaDesativarProblema($id, $url);        
+            //verifica se existe e esta ativo
+            if ($this->problema->verificaAtivo($id)){
+                //desativa 
+                $this->problema->desativaProblema($id);
+                //Log
+                $this->gravaLog("ADMIN desabilita problema", "problema desabilitado id: ".$id);
+                redirect($url);
+            }else {
+                //Log
+                $this->gravaLog("ADMIN erro desabilitar problema", "tentativa de desabilitar problema id: ".$id);
+                $this->erro("Erro ao desativar o problema");
+            }
+        } catch (Exception $exc) {
+             //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao desativar um problema. Erro: ".$exc->getTraceAsString());
+        }    
     }
     
     //Ativar problema
     public function ativaProblema(){
-        //recupera id 
-        $id = $this->input->post("iptAtvId");
-        $url = $this->input->post("iptAtvUrl");
-        
-        //verifica se existe e esta ativo
-        if ($this->problema->verificaDesativo($id)){
-            //desativa
-            $this->problema->ativaProblema($id);
-            //Log
-            $this->gravaLog("ADMIN ativa problema", "problema ativado id: ".$id);
-            redirect($url);
-        }else {
-            //Log
-            $this->gravaLog("ADMIN erro ativar problema", "tentativa de ativar problema id: ".$id);
-            echo'erro ao ativar problema';
+        $id; $url;
+        try {
+            //recupera
+            $this->recuperaAtivaProblema($id, $url);        
+            //verifica se existe e esta ativo
+            if ($this->problema->verificaDesativo($id)){
+                //desativa
+                $this->problema->ativaProblema($id);
+                //Log
+                $this->gravaLog("ADMIN ativa problema", "problema ativado id: ".$id);
+                redirect($url);
+            }else {
+                //Log
+                $this->gravaLog("ADMIN erro ativar problema", "tentativa de ativar problema id: ".$id);
+                $this->erro("Erro ao ativar o problema");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao ativar um problema. Erro: ".$exc->getTraceAsString());
         }
+
+        
     }
     
     //buscar
@@ -296,6 +317,7 @@ class Problema_admin extends CI_Controller {
             $mgs = array(
                 "idproblema" => $problema->getIdproblema(),
                 "nome" => $problema->getNome(),
+                "tempo" => $this->geraTempoInteiro($problema->getTempo()),
                 "descricao" => $problema->getDescricao(),
                 "estado" => $estado->getNome()
             );
@@ -407,6 +429,78 @@ class Problema_admin extends CI_Controller {
             //grava log
             $this->gravaLog("tentativa de acesso", "acesso ao controlador Problema_adim.php");
             redirect(base_url());
+        }
+    }
+    
+    //Recupera dados criarProblema
+    private function recuperaCriarProblema (&$nome, &$tempo, &$descricao, &$estado){
+        //recupera dados
+        $nome = trim($this->input->post("iptCriNome"));
+        $tempo = trim($this->input->post("iptCriTempo"));
+        $descricao = trim($this->input->post("iptCriDesc"));
+        $estado = trim($this->input->post("selCriEstado"));             
+    }
+    
+    //Gerando tempo HH:MM:SS
+    private function geraTempo($tempo){
+        //convertentado tempo
+        $n = abs(intval($tempo));
+        if ($n > 830){
+            $n = 830; //valor maximo de horas no TIME sql
+        }
+        $result = $n.':00:00';
+        return $result;                
+    }
+    
+    //Gerando tempo para int
+    private function geraTempoInteiro($tempo){
+        //convertentado tempo
+        $n = explode(":", $tempo);
+        if ((is_array($n)) && ($n[0] != "")){
+            $result = $n[0];
+        } else{
+            $result = 0;
+        }
+        return $result;                
+    }
+    
+    //Recupera dados editarProblema
+    private function recuperaEditarProblema (&$id, &$nome, &$tempo, &$descricao, &$estado, &$url){      
+        //recuperando dados do problema
+        $id = trim($this->input->post("iptEdtId"));
+        $nome = trim($this->input->post("iptEdtNome"));
+        $tempo = trim($this->input->post("iptEdtTempo"));
+        $descricao = trim($this->input->post("iptEdtDesc"));
+        $estado = trim($this->input->post("selEdtEstado"));
+        $url = trim($this->input->post("iptEdtUrl"));  
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "admin/problema_admin";
+        }
+    }
+    
+    //Recupera dados desativarProblema
+    private function recuperaDesativarProblema (&$id, &$url){      
+        //recuperando dados do problema
+        $id = trim($this->input->post("iptRmvId"));
+        $url = trim($this->input->post("iptRmvUrl")); 
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "admin/problema_admin";
+        }
+    }
+    
+    //Recupera dados ativaProblema
+    private function recuperaAtivaProblema (&$id, &$url){      
+        //recuperando dados do problema
+        $id = trim($this->input->post("iptAtvId"));
+        $url = trim($this->input->post("iptAtvUrl"));
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "admin/problema_admin";
         }
     }
 }

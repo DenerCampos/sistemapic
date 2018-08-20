@@ -35,7 +35,14 @@
                                        class="form-control" placeholder="Nome" required="true">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="iptEdtTempo" class="control-label">Tempo:</label>
+                                <input type="number" name="iptEdtTempo" id="iptEdtTempo" 
+                                       class="form-control" placeholder="horas" required="true">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="selEdtEstado" class="control-label">Estado:</label>
                                 <select name="selEdtEstado" id="selEdtEstado" 

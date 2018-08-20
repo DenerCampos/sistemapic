@@ -14,6 +14,7 @@ class Problema_model extends CI_Model {
     var $idproblema;
     var $nome;
     var $descricao;
+    var $tempo;
     var $idestado;
 
     /*------Construtor--------*/
@@ -23,9 +24,10 @@ class Problema_model extends CI_Model {
     
     /*------Requisições--------*/
     //Instancia novo problema
-    public function newProblema($nome, $descricao, $idestado){
+    public function newProblema($nome, $descricao, $tempo, $idestado){
         $this->setNome($nome);
         $this->setDescricao($descricao);
+        $this->setTempo($tempo);
         $this->setIdestado($idestado);
     }
     
@@ -35,10 +37,11 @@ class Problema_model extends CI_Model {
     }
     
     //Atualiza problema
-    public function atualizaProblema($id, $nome, $descricao, $idestado){
+    public function atualizaProblema($id, $nome, $descricao, $tempo, $idestado){
         $dados = array(
             "nome" => $nome,
             "descricao" => $descricao,
+            "tempo" => $tempo,
             "idestado" => $idestado
         );
         //atualiza no db
@@ -246,6 +249,7 @@ class Problema_model extends CI_Model {
         $problema->setIdproblema($r->idproblema);
         $problema->setNome($r->nome);
         $problema->setDescricao($r->descricao);
+        $problema->setTempo($r->tempo);
         $problema->setIdestado($r->idestado);
         
         return $problema;
@@ -279,6 +283,10 @@ class Problema_model extends CI_Model {
         return $this->descricao;
     }
 
+    function getTempo() {
+        return $this->tempo;
+    }
+
     function getIdestado() {
         return $this->idestado;
     }
@@ -295,9 +303,11 @@ class Problema_model extends CI_Model {
         $this->descricao = $descricao;
     }
 
+    function setTempo($tempo) {
+        $this->tempo = $tempo;
+    }
+
     function setIdestado($idestado) {
         $this->idestado = $idestado;
     }
-
-
 }

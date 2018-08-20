@@ -98,12 +98,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </li>
                 <?php } ?>
                 
+                <!--Utilitarios-->
+                <?php if (unserialize($this->session->userdata('acesso'))->getUtilitario() == 1){ ?> 
+                <li role="presentation" class="dropdown <?php if (isset($ativo) && ($ativo == 'utilitario')){ echo 'active';} ?>">
+                    <a class="dropdown-toggle nav-link navbar-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        Utilitários <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('contato'); ?>">Contatos</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('utilitario'); ?>" >Programas</a>
+                        </li>
+                        <li>
+                            <a class="navbar-link" href="<?php echo base_url('tutorial'); ?>" >Tutoriais</a>
+                        </li>
+                    </ul>
+                </li>
+                <?php } ?>
+                
+                <!--Avaliação-->
+                <?php if (unserialize($this->session->userdata('acesso'))->getAvaliacao() == 1){ ?> 
+                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'avaliacao')){ echo 'active';} ?>">
+                    <a class="nav-link navbar-link" href="<?php echo base_url('avaliacao'); ?>">Avaliação</a>
+                </li>
+                <?php } ?>
+                
                 <!--Admin-->
                 <?php if ($this->session->userdata('nivel') == 0){ ?> 
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'admin')){ echo 'active';} ?>">
                     <a class="nav-link navbar-link" href="<?php echo base_url('administracao'); ?>">Admin</a>
                 </li>
                 <?php } ?>
+                
             </ul>
             <?php } ?>
                        
@@ -225,12 +253,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     Entrar
                                                 </button>
                                             </form>
+                                            <div class="text-right esqueci-senha">
+                                                <a class="" href="#mdlEsqueciSenha" data-toggle="modal" 
+                                                    data-target="#mdlEsqueciSenha" role="button">
+                                                     Esqueci minha senha
+                                                </a>
+                                            </div>                                            
                                         </div>
                                     </div>                                    
                                 </div>
                             </li>
                             <li class="divider"></li>
-                            <li>                                
+                            <li>
                                 <div class="text-right criar-conta">
                                     <a class="criar-conta btn btn-warning" href="#mdlCriarUsuario" data-toggle="modal" 
                                        data-target="#mdlCriarUsuario" role="button">

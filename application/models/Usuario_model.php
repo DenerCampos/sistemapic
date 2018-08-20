@@ -354,6 +354,33 @@ class Usuario_model extends CI_Model {
             return NULL;
         }
     }
+    
+    //Verifica email existe e esta ativo (recuperar senha)
+    public function verificaEmailAtivo($login){
+        $query = $this->db->query(
+                "SELECT *
+                FROM usuario 
+                WHERE login = '$login' AND
+                    idestado = 1");
+        //retorna objeto usuario
+        if ($query->num_rows() > 0){
+            return TRUE;
+        } else{
+            return FALSE;
+        }
+    }
+    
+    //Atualiza senha do recuperar senha
+    public function atualizaSenhaRecuperar($login, $senha){
+        $dados = array(
+            "login" => $login,
+            "senha" => $senha
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('login', $login);
+        $this->db->update('usuario');
+    }
 
 
     /*------Funções internas--------*/ 

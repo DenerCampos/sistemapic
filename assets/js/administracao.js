@@ -297,6 +297,7 @@ function editarProblema(ancor){
             if(!msg.erro){
                 $("#iptEdtId").val(msg.idproblema);
                 $("#iptEdtNome").val(msg.nome);
+                $("#iptEdtTempo").val(msg.tempo);
                 $("#iptEdtDesc").val(msg.descricao);
                 $("#selEdtEstado").val(msg.estado);
             }

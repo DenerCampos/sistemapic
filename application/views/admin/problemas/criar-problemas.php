@@ -21,7 +21,14 @@
                                        class="form-control" placeholder="Nome" required="true">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="iptCriTempo" class="control-label">Tempo:</label>
+                                <input type="number" name="iptCriTempo" id="iptCriTempo" value="0"
+                                       class="form-control" placeholder="horas" required="true">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="selCriEstado" class="control-label">Estado:</label>
                                 <select name="selCriEstado" id="selCriEstado" 

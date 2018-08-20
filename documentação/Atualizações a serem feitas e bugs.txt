@@ -1,22 +1,31 @@
-#Nova Versão (2.1)
+#Nova Versão (2.1) 	- Alteração no BD (Problema e ocorrencias)
+			- Adicionado pasta tutorial dentro de document 
 #bugs
     -Relatório plantão
 	01- Erro ao criar o relatório (OK)
 	02- Datas desconfiguradas. (OK)
 	03- Não esta aparecendo todos os dias, erro nas datas. (OK)
+
 #melhorias
     - Banco de dados
 	01- Criar script para fazer backup do banco de dados, o script antigo corrompi as tabelas. (OK)
     - Avaliação
 	01- Criar um novo modulo de avaliação.
     - Acesso
-	01- Adicionar acesso a função avaliação
-    - Programas 
-	01- Adiconar novo modulo de programas, onde vai ser possivel fazer donwloads de alguns softwares basico
-    - Contatos importantes
-	01- Adicionar novo modulo de contatos, tela vai informar todos os contatos importantes do pic, como algar, chart, criem, net e etc	
+	01- Adicionar acesso a função avaliação (OK)
+	02- Adicionar acesso a função utilitários (OK)
+    - Utilitários
+	01- Adiconar novo modulo de programas, onde vai ser possivel fazer donwloads de alguns softwares basico (OK)
+	02- Adicionar novo modulo de contatos, tela vai informar todos os contatos importantes do pic, como algar, chart, criem, net e etc (OK)
+	03- Adicionar novo modulo de tutoriais, onde posso adicionar novos tutoriais e anexar arquivos. (OK)
+    - HelpDesk
+	01- Colocar um cor diferente nos chamados sendo atendido pelo tecnico que esta logado no sistema. (OK)	
+	02- Adicionar SLA nos chamados, definido o tempo em horas e na parte dos problemas pela ADM. Contar o tempo atravez da data de abertura do chamado. (OK)
+    - Usuarios
+	01- Criar função de recuperar senha por e-mail. (OK)
+	02- Validar campos de alteração de dados do usuario. (OK)
 
-
+--------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (2.0)
 -Melhorias - Alterei o banco de dados*** Alterei o arquivo router*****
     - Relatórios

@@ -116,3 +116,30 @@ $('#frmCriUsuario').validate({
         $('#erro-cria-usuario').show();
     }
 });
+
+//Recuperar senha
+$('#frmEsqueciSenha').validate({
+    //regras de validações
+    rules: {
+        iptEsqueciSenhaEmail: {            
+            required: true,
+            email: true,
+            remote:baseUrl+"login/verificaEsqueciSenha" 
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptEsqueciSenhaEmail: {            
+            required: "Necessário email.", 
+            email: "Necessário email valido.",
+            remote: $.validator.format("{0} não esta cadastrado no sistema ou esta inativo. Entre em contato com o TI.")
+        }
+    },   
+    submitHandler: function (form) {     
+        form.submit();    
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {
+        console.log("erro");
+    }
+});

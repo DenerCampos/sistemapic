@@ -18,7 +18,44 @@ class Base_model extends CI_Model {
     }
     
     /*------Requisições--------*/
+    //novo contato
+    public function novo($base){
+        $this->setBase($base);
+    }
     
+    //Adiciona
+    public function adiciona(){
+        $this->db->insert("base", $this);
+    }
+    
+    //Atualiza
+    public function atualiza($id, $base){
+        $dados = array(
+            "base" => $base
+        );
+        $this->db->set($dados);
+        $this->db->where('idbase', $id);
+        $this->db->update('base');
+    }
+    
+    //Remove
+    public function remove($id){
+        $this->db->where('idbase', $id);
+        $this->db->delete('base');
+    }
+    
+    //Buscar todos
+    public function todos(){
+         $query = $this->db->query(
+                "SELECT *
+                FROM base");
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
     
     /*------Funções internas--------*/ 
     //Retorna objeto

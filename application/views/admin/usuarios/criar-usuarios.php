@@ -114,6 +114,12 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox" id="chkCriEquipamento" name="chkCriEquipamento" value="equipamento" > Equipamentos
                             </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriAvaliacao" name="chkCriAvaliacao" value="avaliacao" > Avaliação
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriUtilitario" name="chkCriUtilitario" value="utilitario" > Utilitários
+                            </label>
                         </div>
                     </div>
                 </div>

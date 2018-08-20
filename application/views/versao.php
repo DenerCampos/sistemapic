@@ -4,6 +4,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (2.1)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Banco de dados</u></h3>
+        <p>01- Criado script para fazer backup do banco de dados.</p>
+        <h3><u>Acesso</u></h3>
+        <p>01- Adicionado acesso a função utilitários</p>
+        <h3><u>Utilitários</u></h3>
+        <p>01- Adicionado novo modulo de programas, onde vai ser possivel fazer donwloads de alguns softwares basico</p> 
+        <p>02- Adicionado novo modulo de contatos, tela vai informar todos os contatos importantes do pic, como algar, chart, criem, net e etc</p> 
+        <p>03- Adicionado novo modulo de tutoriais, onde posso adicionar novos tutoriais e anexar arquivos.</p> 
+        <h3><u>HelpDesk</u></h3>
+        <p>01- Cor diferente nos chamados sendo atendido pelo tecnico que esta logado no sistema.</p> 
+        <p>02- Adicionado SLA nos chamados, definido o tempo em horas e na parte dos problemas pela ADM. Contar o tempo atravez da data de abertura do chamado. Verde significa que o chamado esta no prazo, vermellho segnifica que o chamado já se encontra fora do prazo de solução</p> 
+        <h3><u>Usuários</u></h3>
+        <p>01- Criado função de recuperar senha por e-mail.</p> 
+        <p>02- Validados os campos de alteração de dados do usuario.</p>        
+    </div>    
+    <div class="">
+        <h2>-Bugs</h2>
+        <h3><u>Relatório plantão</u></h3>
+        <p>01- Erro ao criar o relatório</p>  
+        <p>02- Datas desconfiguradas.</p>
+        <p>03- Não esta aparecendo todos os dias, erro nas datas. </p>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (2.0)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>

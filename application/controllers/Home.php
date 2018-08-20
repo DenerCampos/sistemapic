@@ -34,6 +34,8 @@ class Home extends CI_Controller {
         //Modal
         $this->load->view("usuario/criar-usuario", array( 
             "assetsUrl" => base_url("assets")));
+        $this->load->view("usuario/esqueci-senha", array( 
+            "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
