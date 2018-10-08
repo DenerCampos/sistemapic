@@ -103,6 +103,13 @@ class Ocorrencia extends CI_Controller {
                 "problemas" => $this->problema->todosProblemas(),
                 "setores" => $this->setor->todosSetores()));
         }
+        $this->load->view("helpdesk/editar-chamado-aberto", array( 
+            "assetsUrl" => base_url("assets"),
+            "unidades" => $this->unidade->todasUnidades(),
+            "areas" => $this->area->todasAreas(),
+            "locais" => $this->local->todosLocais(),
+            "problemas" => $this->problema->todosProblemas(),
+            "setores" => $this->setor->todosSetores()));
         $this->load->view("helpdesk/imprimir-chamado", array( 
             "assetsUrl" => base_url("assets")));        
         $this->load->view("helpdesk/visualizar-chamado", array( 
@@ -112,13 +119,6 @@ class Ocorrencia extends CI_Controller {
             "locais" => $this->local->todosLocais(),
             "problemas" => $this->problema->todosProblemas(),
             "setores" => $this->setor->todosSetores()));
-        $this->load->view("helpdesk/editar-chamado", array( 
-                "assetsUrl" => base_url("assets"),
-                "unidades" => $this->unidade->todasUnidades(),
-                "areas" => $this->area->todasAreas(),
-                "locais" => $this->local->todosLocais(),
-                "problemas" => $this->problema->todosProblemas(),
-                "setores" => $this->setor->todosSetores()));
         $this->load->view("helpdesk/criar-chamado", array( 
             "assetsUrl" => base_url("assets"),
             "vnc" => $this->gerarVnc(),
@@ -835,6 +835,61 @@ class Ocorrencia extends CI_Controller {
         }
     }
     
+    //Editar ocorrencia
+    public function editarAberto(){        
+        try {
+            $id; $unidade; $setor; $problema; $area; $usuario; $vnc; $ramal; $descricao; $url; $email; $sla; $datasla; $notifica = FALSE;
+            //Recupera dados
+            $this->recuperaDadosEditarAberto($id, $unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao, $url, $email, $sla, $datasla);
+            //verifica se existe e se ocorrencia esta em aberto
+            if ($this->ocorrencia->verificaExiste($id) && $this->ocorrencia->aberto($id)){
+                //Verifica se existe algo a ser alterado
+                if ($this->verificaAlteracao($id, $unidade, $setor, $problema, $area, $usuario, $vnc, $ramal, $descricao)){
+                    //altera e manda e-mail caso marcado no checkbox
+                    $this->ocorrencia->atualizaAberto($id, $usuario, $vnc, $ramal, $descricao, $sla, $datasla, $unidade, $area, $setor, $problema);
+                    //Teve notificação
+                    $notifica = TRUE;                    
+                }
+                //Verifica alteração nos anexos
+                if ($this->verificaAnexo()){
+                    //salva anexos
+                    foreach ($_FILES as $key => $value) {
+                        if ($this->salvaAnexo($key, $id)){
+                            //Log
+                            $this->gravaLog("anexo chamado", "usuario: ".$this->session->userdata("id")."Nome original: ".$value["name"]);  
+                        }
+                    }
+                    //Teve notificação
+                    $notifica = TRUE;
+                }
+                //Enviar e-mail caso tenha alteração
+                if ($email && $notifica){
+                    //criando corpo da mensagem
+                    $corpo = $this->emailEdicaoChamadoAberto($id);
+                    //Envia e-mail para area de atendimento do chamado
+                    $this->envioEmail($this->area->buscaId($area)->getEmail(), "Edição chamado aberto (Sistema PIC)", $corpo);
+                }
+                //notificacao
+                if ($notifica){
+                    //enviaNotificacao($id, $remetente, $destinatario, $tipo)
+                    $this->enviaNotificacao($id, $this->session->userdata("id"), $area, "editaberto");
+                    //log
+                    $this->gravaLog("atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                }                    
+                //msg tela
+                $this->mensagem("Chamado <strong>".$id."</strong> atualizado.", $url);
+            }else{
+                //log
+                $this->gravaLog("erro atualiza", "chamado: ".$id." - usuario: ".$this->session->userdata("id"));
+                $this->erro("Chamado <strong>".$id."</strong> não esta em aberto");
+            }
+        } catch (Exception $exc) {
+            //log
+            $this->gravaLog("erro geral", $exc->getTraceAsString());
+            $this->erro("Erro ao editar chamado. Favor tentar novamente.");
+        }
+    }
+    
      //fechar ocorrencia
     public function fechar(){
         try {
@@ -1227,6 +1282,46 @@ class Ocorrencia extends CI_Controller {
         exit();
     }
     
+    //Editar ocorrencia aberto (somente usuario que abriu) ajax
+    public function editarChamadoAberto(){
+        //Recupera Id 
+        $id = $this->input->post("idocorrencia");
+        $chamado = $this->ocorrencia->buscaId($id);
+        $arquivos = $this->arquivo->buscaOcorrencia($id);
+        
+        if (isset($chamado)){
+            $msg = array(
+                "idocorrencia" => $chamado->getIdocorrencia(),
+                "unidade" => $this->unidade->buscaId($chamado->getIdunidade())->getNome(),
+                "setor" => $this->setor->buscaId($chamado->getIdsetor())->getNome(),
+                "problema" => $this->problema->buscaId($chamado->getIdproblema())->getNome(),
+                "area" => $this->area->buscaId($chamado->getIdarea())->getNome(),
+                "nome" => $chamado->getUsuario(),
+                "vnc" => $chamado->getVnc(),
+                "ramal" => $chamado->getRamal(),
+                "descricao" => $chamado->getDescricao()
+            );
+            if (isset($arquivos)){                
+                foreach ($arquivos as $value) {
+                    $arquivo[] = array(
+                        "url" => base_url($value->getLocal().$value->getNome()),
+                        "nome" => $value->getNome_antigo(),
+                        "imagem" => $this->verificaTipoAnexo($value->getNome())
+                        ); 
+                }
+                $msg["arquivos"] = $arquivo;
+            }
+            echo json_encode($msg);
+        } else {
+            $msg = array(
+                "erro" => "Chamado não encontrado"
+            );
+            echo json_encode($msg);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
     //fechar ocorrencia ajax
     public function fecharChamado(){
         //Recupera Id 
@@ -1276,7 +1371,22 @@ class Ocorrencia extends CI_Controller {
         }
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
-    }  
+    } 
+    
+    //Buscar todos usuarios AJAX
+    public function buscarUsuario(){
+        //Recupera letras
+        $termo = $this->input->get("termo");
+        $usuarios = $this->ocorrencia->buscaUsuarioTermo($termo);
+        //Gera json
+        foreach ($usuarios as $usuario){
+            $resultado[] = $usuario["usuario"];
+        }
+        //$teste = json_encode($resultado);
+        echo json_encode($resultado);
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
     
     
     /*---------Funções internas------------*/ 
@@ -1449,6 +1559,60 @@ class Ocorrencia extends CI_Controller {
         
         //verifica URL existe
         if (!isset($url)){
+            $url = base_url("ocorrencia/atendimento");
+        }        
+        //pegar unidade
+        if (isset($unidade)){
+            $unidade = $this->geraUnidade($unidade);
+        }
+        //pegar setor
+        if (isset($setor)){
+            $setor = $this->geraSetor($setor);
+        }
+        //pegar problema
+        if (isset($problema)){
+            $problema = $this->geraProblema($problema);
+        }
+        //pegar area
+        if (isset($area)){
+            $area = $this->geraArea($area);
+        }
+        //Verifica acompanhamento por email
+        if (isset($email)){
+            $email = TRUE;
+        } else{
+            $email = FALSE;
+        }               
+        //SLA
+        //verifica se alterou o problema
+        if ($this->ocorrencia->buscaId($id)->getIdproblema() == $problema){
+            $sla = $this->ocorrencia->buscaId($id)->getSla();
+            //Gerando data do SLA
+            $datasla = $this->ocorrencia->buscaId($id)->getData_sla();
+        } else {
+            $sla = $this->problema->buscaId($problema)->getTempo();
+            //Gerando data do SLA
+            $datasla = $this->geraDataSla($sla, $this->ocorrencia->buscaId($id)->getData_abertura()); 
+        }      
+        
+    }
+    
+    //Recupera dados da editar ocorrencia
+    private function recuperaDadosEditarAberto(&$id, &$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao, &$url, &$email, &$sla, &$datasla){
+        $id = $this->input->post("iptEdtId");
+        $unidade = $this->input->post("selEdtUnidade");
+        $setor = $this->input->post("selEdtSetor");
+        $problema = $this->input->post("selEdtProblema");
+        $area = $this->input->post("selEdtArea");
+        $usuario = $this->palavraLetraMaiuscula(trim($this->input->post("iptEdtUsuario")));
+        $vnc = trim($this->input->post("iptEdtVnc"));
+        $ramal = trim($this->input->post("iptEdtRamal"));
+        $descricao = $this->input->post("iptEdtDesc");
+        $url = trim($this->input->post("iptEdtUrl"));
+        $email = $this->input->post("iptCriEnviarArea");
+        
+        //verifica URL existe
+        if (!isset($url)){
             $url = base_url("ocorrencia/aberto");
         }        
         //pegar unidade
@@ -1563,6 +1727,16 @@ class Ocorrencia extends CI_Controller {
             $email = FALSE;
         }
     }
+    
+    //Verifica se tem anexos e retorna verdade para caso tenha algum anexo
+    private function verificaAnexo(){
+        foreach ($_FILES as $key => $value) {
+            if ($value['error'] == 0){
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
 
     //Salva anexo no servidor
     private function salvaAnexo($nome, $idchamado){
@@ -1592,7 +1766,7 @@ class Ocorrencia extends CI_Controller {
             }
         }
         //Não existe arquivo
-        return TRUE;
+        return FALSE;
     }
     
     //Gerar comentarios das ocorrencias
@@ -1694,6 +1868,27 @@ class Ocorrencia extends CI_Controller {
         return $this->load->view("helpdesk/email/mensagem-email-usuario", $dados, TRUE);
     }
     
+    //Corpo do e-mail para ediçao de chamado aberto
+    private function emailEdicaoChamadoAberto($id){
+        //recupera ocorrencia
+        $ocorrencia = $this->ocorrencia->buscaId($id);
+        
+        //gera dados para view
+        if (isset($ocorrencia)){
+            $dados['assetsUrl'] = base_url("assets");
+            $dados['id'] = $ocorrencia->getIdocorrencia();
+            $dados['estado'] = "Em aberto";
+            $dados['area'] = $this->area->buscaId($ocorrencia->getIdarea())->getNome();
+            $dados['usuario'] = $this->usuario->buscaId($ocorrencia->getUsuario_abre())->getNome();
+            $dados['problema'] = $this->problema->buscaId($ocorrencia->getIdproblema())->getNome();
+            $dados['descricao'] = str_replace("\r\n", "<br/>", $ocorrencia->getDescricao());
+        } else{
+            return "Erro ao gerar e-mail do chamado!";
+        }
+        //Carrega view
+        return $this->load->view("helpdesk/email/mensagem-email-atualiza-aberto", $dados, TRUE);
+    }
+    
     //Corpo do e-mail para ediçao de chamado
     private function emailEdicaoChamado($id, $comentario){
         //recupera ocorrencia
@@ -1764,7 +1959,7 @@ class Ocorrencia extends CI_Controller {
                 return TRUE;
             } else {
                 $head = $this->email->print_debugger(array('headers'));
-                $subject = $this->email->print_debugger(array('subject'));;
+                $subject = $this->email->print_debugger(array('subject'));
                 $body = $this->email->print_debugger(array('body'));
                 $this->gravaLog("erro enviar email plantao", "Usuario: ".$this->session->userdata("id").". Erro: ".$head." - ".$subject." - ".$body);
                 //$this->erro($teste);
@@ -1956,8 +2151,9 @@ class Ocorrencia extends CI_Controller {
     private function enviaNotificacao($id, $remetente, $destinatario, $tipo){
         try {
             //verifica o tipo de notificação (
-            //  Existem 5 tipos:
+            //  Existem 6 tipos:
             //      aberto: notificações para todos os tecnicos da area do chamado, o id da area é o destinatario
+            //      editaberto: notificações para todos os tecnicos da area do chamado, o id da area é o destinatario
             //      atendimento: notificação para o usuario que abriu o chamado ou para o tecnico, depende de quem esta alterando o chamado
             //      fechado: notificação somente para o usuario que abriu o chamado
             //      atende: notificação somente para o usuario que abriu o chamado
@@ -1994,6 +2190,44 @@ class Ocorrencia extends CI_Controller {
                             $mensagem = 'Chamado '. 
                                         '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
                                         ' aberto no sistema por <strong> '.$this->usuario->buscaId($remetente)->getNome().
+                                        ' </strong> para a área <strong>'.$this->area->buscaId($destinatario)->getNome().'</strong>.';                            
+                            //nova notificação
+                            //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                            $this->notificacao->novo($remetente, $value->getIdusuario(), date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                            //adiciona
+                            $this->notificacao->adiciona();
+                        }                        
+                    }
+                    break;
+                case "editaberto":
+                    $titulo = "Edição de chamado em aberto";                    
+                    $link = base_url('ocorrencia/buscar/'.$id);
+                    $mensagem = "";
+                    //busca todos tecnicos da area de atendimento
+                    //todosTecnicosPorArea($area, $limite = NULL, $ponteiro = NULL)
+                    $tecnicos = $this->usuario->todosTecnicosPorArea($destinatario);
+                    if (isset($tecnicos)){
+                        foreach ($tecnicos as $value) {
+                            //mensagem
+                            $mensagem = 'Chamado '. 
+                                        '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                        ' aberto no sistema e editado por <strong> '.$this->usuario->buscaId($remetente)->getNome().' </strong>';                            
+                            //nova notificação
+                            //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
+                            $this->notificacao->novo($remetente, $value->getIdusuario(), date('Y-m-d H:i:s'), NULL, $titulo, $mensagem, FALSE, FALSE, $link);
+                            //adiciona
+                            $this->notificacao->adiciona();
+                        }                        
+                    }
+                    //busca todos admin
+                    //todosAdmin()
+                    $admin = $this->usuario->todosAdmin();
+                    if (isset($admin)){
+                        foreach ($admin as $value) {
+                            //mensagem
+                            $mensagem = 'Chamado '. 
+                                        '<a href="'.$link.'"><strong>'.$id.'</strong></a>'. 
+                                        ' aberto no sistema e editado por <strong> '.$this->usuario->buscaId($remetente)->getNome().
                                         ' </strong> para a área <strong>'.$this->area->buscaId($destinatario)->getNome().'</strong>.';                            
                             //nova notificação
                             //novo($remetente, $destinatario, $data_envio, $data_lida, $titulo, $mensagem, $entregue, $lida, $link)
@@ -2092,5 +2326,28 @@ class Ocorrencia extends CI_Controller {
             return $data = date(("Y-m-d H:i:s"));
         }
         
+    }
+    
+    //Verifica se algo foi alterado na edição de chamado por quem abriu e em aberto
+    private function verificaAlteracao(&$id, &$unidade, &$setor, &$problema, &$area, &$usuario, &$vnc, &$ramal, &$descricao){
+        //busca chamado
+        $chamado = $this->ocorrencia->buscaId($id);
+        if (isset($chamado)){
+            //Verifica se algo foi mudado
+            if ($chamado->getIdunidade() == $unidade &&
+                $chamado->getIdsetor() == $setor &&
+                $chamado->getIdProblema() == $problema &&
+                $chamado->getIdarea() == $area &&
+                $chamado->getUsuario() == $usuario &&
+                $chamado->getVnc() == $vnc &&
+                $chamado->getRamal() == $ramal &&
+                $chamado->getDescricao() == $descricao){
+                return FALSE;
+                } else{
+                    return TRUE;
+                }
+        } else {
+            return FALSE;
+        }
     }
 }

@@ -93,7 +93,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-group">
+                                    <div class="form-group ui-front">
                                         <label for="iptCriUsuario" class="control-label">Nome do usuário:</label>
                                         <input type="text" name="iptCriUsuario" id="iptCriUsuario" 
                                                class="form-control" placeholder="Nome do usuário reclamante" required="true"
@@ -188,5 +188,5 @@
                 </div>
             </form>
         </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+    </div><!-- /.modal-dialog -->    
 </div>

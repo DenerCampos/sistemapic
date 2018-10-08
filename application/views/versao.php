@@ -4,6 +4,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (2.2)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Avaliação</u></h3>
+        <p>01- Novo modulo adicionado, criação de avaliaçãos funcionais, envio de e-mail e geração de PDF da avalição.</p>
+        <h3><u>Patrimonio</u></h3>
+        <p>01- Novo modulo adicionado, com mapa indicando os locais e os equipamentos desses locais, integrado com a manutenção por numero de patrimônio.</p>
+        <h3><u>Manutenção</u></h3>
+        <p>01- Ao digitar o patrimonio puxar os dados do patrimonio se exister.</p>
+        <h3><u>HelpDesk</u></h3>
+        <p>01- Permitir quem abriu o chamado editar o chamado.</p> 
+        <p>02- Criado autocomplete do nome nos chamados.</p>       
+    </div>    
+    <div class="">
+        <h2>-Bugs</h2>
+        <h3><u>PinPad</u></h3>
+        <p>01- Corrigido erro de limite de caracteres na descrição</p>
+    </div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (2.1)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>

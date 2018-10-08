@@ -200,6 +200,29 @@ class Exibir extends CI_Controller {
             "arquivoJS" => "exibir.js"));
     }
     
+    //Exibir patrimonios
+    public function patrimonio(){
+        //Carrega cabeçaho html
+        $this->load->view("_html/cabecalho", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega menu
+        $this->load->view("menu/principal", array( 
+            "assetsUrl" => base_url("assets"),
+            "ativo" => ""));     
+        //Carrega index
+        $this->load->view('exibir/patrimonio', array(
+            "assetsUrl" => base_url("assets"),
+            "lista" => $this->patrimonios(),
+            "local" => new Local_model()));
+        //Modal
+        $this->load->view("usuario/criar-usuario", array( 
+            "assetsUrl" => base_url("assets")));
+        //Carrega fechamento html
+        $this->load->view("_html/rodape", array( 
+            "assetsUrl" => base_url("assets"), 
+            "arquivoJS" => "exibir.js"));
+    }
+    
     /*------------------Funções------------------*/   
 
 
@@ -275,6 +298,28 @@ class Exibir extends CI_Controller {
             usort($lista, function ($a, $b){
                 //Comparação de strings usando o algoritmo "natural order"
                 return strnatcmp($a->getCaixa(), $b->getCaixa());
+            });
+            return $lista;
+        } else {
+            return $lista;
+        }
+    }
+    
+    //Patrimonio
+    private function patrimonios(){
+        //carregando modelo
+        $this->load->model('Patrimonio_model', 'patrimonio');
+        return $this->ordenarPorEquipamento($this->patrimonio->todos());
+    }
+    
+    //Ordena a lista de objetos por nome
+    private function ordenarPorEquipamento($lista){
+        //verifica se lista vazia
+        if (isset($lista)){
+            //Ordena um array pelos valores utilizando uma função de comparação definida pelo usuário
+            usort($lista, function ($a, $b){
+                //Comparação de strings usando o algoritmo "natural order"
+                return strnatcmp($a->getEquipamento(), $b->getEquipamento());
             });
             return $lista;
         } else {

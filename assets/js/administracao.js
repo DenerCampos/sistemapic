@@ -504,10 +504,13 @@ function editarLocal(ancor){
             if(!msg.erro){
                 $("#iptEdtId").val(msg.idlocal);
                 $("#iptEdtNome").val(msg.nome);
-                $("#iptEdtShape").val(msg.shape);
+                $("#selEdtShape").val(msg.shape);
                 $("#iptEdtCoords").val(msg.coords);
-                if (msg.caixa === "0"){
-                    $("#chkEdtCaixa").attr("checked", "0");
+                if (msg.caixa === "1"){
+                    $("#chkEdtCaixa").attr("checked", "1");
+                }
+                if (msg.patrimonio === "1"){
+                    $("#chkEdtPatrimonio").attr("checked", "1");
                 }
                 $("#selEdtEstado").val(msg.estado);
             }

@@ -77,7 +77,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptEdtDesc" class="control-label">Descrição:</label>
-                                <textarea class="form-control" id="iptEdtDesc" maxlength="2000" name="iptEdtDesc"
+                                <textarea class="form-control" id="iptEdtDesc" name="iptEdtDesc"
                                   placeholder="Dados adicionais" rows="3"></textarea>
                             </div>
                         </div>

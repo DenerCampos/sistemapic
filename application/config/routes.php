@@ -55,47 +55,59 @@ $route['translate_uri_dashes'] = FALSE;
 
 //paginação 
 //Admin
-$route['admin/usuario_admin/(:num)'] = 'Admin/Usuario_admin';
-$route['admin/area_admin/(:num)'] = 'Admin/Area_admin';
-$route['admin/setor_admin/(:num)'] = 'Admin/Setor_admin';
-$route['admin/problema_admin/(:num)'] = 'Admin/Problema_admin';
-$route['admin/unidade_admin/(:num)'] = 'Admin/Unidade_admin';
-$route['admin/ocorrencia_estado_admin/(:num)'] = 'Admin/Ocorrencia_estado_admin';
-$route['admin/email_conf_admin/(:num)'] = 'Admin/Email_conf_admin';
-$route['admin/local_maquina_admin/(:num)'] = 'Admin/Local_maquina_admin';
-$route['admin/tipo_maquina_admin/(:num)'] = 'Admin/Tipo_maquina_admin';
-$route['admin/maquina_admin/(:num)'] = 'Admin/Maquina_admin';
+$route['admin/usuario_admin/(:num)'] = 'admin/usuario_admin';
+$route['admin/area_admin/(:num)'] = 'admin/area_admin';
+$route['admin/setor_admin/(:num)'] = 'admin/setor_admin';
+$route['admin/problema_admin/(:num)'] = 'admin/problema_admin';
+$route['admin/unidade_admin/(:num)'] = 'admin/unidade_admin';
+$route['admin/ocorrencia_estado_admin/(:num)'] = 'admin/ocorrencia_estado_admin';
+$route['admin/email_conf_admin/(:num)'] = 'admin/email_conf_admin';
+$route['admin/local_maquina_admin/(:num)'] = 'admin/local_maquina_admin';
+$route['admin/tipo_maquina_admin/(:num)'] = 'admin/tipo_maquina_admin';
+$route['admin/maquina_admin/(:num)'] = 'admin/maquina_admin';
 
 //Ocorrencia
-$route['ocorrencia/buscar/(:any)'] = 'Ocorrencia/buscar/$1';
-$route['ocorrencia/aberto/(:num)'] = 'Ocorrencia/aberto';
-$route['ocorrencia/atendimento/(:num)'] = 'Ocorrencia/atendimento';
-$route['ocorrencia/fechado/(:num)'] = 'Ocorrencia/fechado';
+$route['ocorrencia/buscar/(:any)'] = 'ocorrencia/buscar/$1';
+$route['ocorrencia/aberto/(:num)'] = 'ocorrencia/aberto';
+$route['ocorrencia/atendimento/(:num)'] = 'ocorrencia/atendimento';
+$route['ocorrencia/fechado/(:num)'] = 'ocorrencia/fechado';
 
 //Plantão
-$route['plantao/(:num)'] = 'Plantao';
+$route['plantao/(:num)'] = 'plantao';
 
 //Equipamentos
 //Maquinas
-$route['maquina/(:num)'] = 'Maquina';
+$route['maquina/(:num)'] = 'maquina';
 $route['maquina/buscar/(:any)'] = 'Maquina/buscar/$1';
 //PinPad
-$route['pinpad/(:num)'] = 'Pinpad';
+$route['pinpad/(:num)'] = 'pinpad';
 $route['pinpad/buscar/(:any)'] = 'pinpad/buscar/$1';
 //Pos
-$route['pos/(:num)'] = 'Pos';
+$route['pos/(:num)'] = 'pos';
 $route['pos/buscar/(:any)'] = 'pos/buscar/$1';
 //Impressora fiscal
-$route['fiscal/(:num)'] = 'Fiscal';
+$route['fiscal/(:num)'] = 'fiscal';
 $route['fiscal/buscar/(:any)'] = 'fiscal/buscar/$1';
 //Impressoras
-$route['impressora/(:num)'] = 'Impressora';
+$route['impressora/(:num)'] = 'impressora';
 $route['impressora/buscar/(:any)'] = 'impressora/buscar/$1';
 
 //Manutenção
-$route['manutencao/defeito/(:num)'] = 'Manutencao/defeito';
-$route['manutencao/manutencao/(:num)'] = 'Manutencao/manutencao';
-$route['manutencao/conserto/(:num)'] = 'Manutencao/conserto';
-$route['manutencao/garantia/(:num)'] = 'Manutencao/garantia';
-$route['manutencao/buscar/(:num)'] = 'Manutencao/buscar';
-$route['manutencao/semconserto/(:num)'] = 'Manutencao/semconserto';
+$route['manutencao/defeito/(:num)'] = 'manutencao/defeito';
+$route['manutencao/manutencao/(:num)'] = 'manutencao/manutencao';
+$route['manutencao/conserto/(:num)'] = 'manutencao/conserto';
+$route['manutencao/garantia/(:num)'] = 'manutencao/garantia';
+$route['manutencao/buscar/(:any)'] = 'manutencao/buscar/$1';
+$route['manutencao/semconserto/(:num)'] = 'manutencao/semconserto';
+
+//Patrimonio
+$route['patrimonio/(:num)'] = 'patrimonio';
+$route['patrimonio/buscar/(:any)'] = 'patrimonio/buscar/$1';
+
+//Alaliacao
+$route['avaliacao/visualizar'] = 'avaliacao';
+$route['avaliacao/editar'] = 'avaliacao';
+$route['avaliacao/visualizar/(:num)'] = 'avaliacao/visualizar/$1';
+$route['avaliacao/editar/(:num)'] = 'avaliacao/editar/$1';
+$route['avaliacao/buscar/(:any)'] = 'avaliacao/buscar/$1';
+$route['avaliacao/pdf/(:num)'] = 'avaliacao/pdf/$1';

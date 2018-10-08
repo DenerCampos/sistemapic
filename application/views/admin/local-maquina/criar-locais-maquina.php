@@ -23,38 +23,30 @@
                         </div>                        
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="iptCriShape" class="control-label">Shape:</label>
-                                <input type="text" name="iptCriShape" id="iptCriShape"
-                                       class="form-control" placeholder="Tipo geometrico">
+                                <label for="selCriShape" class="control-label">Shape:</label>
+                                <select name="selCriShape" id="selCriShape" 
+                                        class="form-control" placeholder="Seleciona tipo">
+                                    <!-- Lista todos tipos de shape permitido -->
+                                    <option>rect</option>
+                                    <option>circle</option>
+                                    <option>poly</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label for="iptCriCoords" class="control-label">Coordenadas:</label>
                                 <input type="text" name="iptCriCoords" id="iptCriCoords"
                                        class="form-control" placeholder="Coordenadas">
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="selCriEstado" class="control-label">Estado:</label>
-                                <select name="selCriEstado" id="selCriEstado" 
-                                        class="form-control" placeholder="Seleciona estado">
-                                    <!-- Lista todos estados -->
-                                    <?php foreach ($estados as $estado) { ?>
-                                    <option>
-                                        <?php echo $estado->getNome() ?>
-                                    </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        </div>
+                        </div>                        
                         <div class="col-md-12 text-right text-danger">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="chkCriCaixa" id="chkCriCaixa" value="0"> é um local de caixa?
-                                </label>
-                            </div>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriCaixa" name="chkCriCaixa" value="caixa" > é um local de caixa?
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCriPatrimonio" name="chkCriPatrimonio" value="patrimonio" > é um local de patrimônio?
+                            </label>
                         </div>
                     </div>
                 </div>

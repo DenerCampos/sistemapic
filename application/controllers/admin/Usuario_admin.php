@@ -211,7 +211,7 @@ class Usuario_admin extends CI_Controller {
                 $this->usuario->addUsuario();
                 //cria nivel de acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
                 $this->acesso->novo($acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"], 
-                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $this->usuario->buscaUsuario($login)->getIdusuario());
+                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $acesso["patrimonio"], $this->usuario->buscaUsuario($login)->getIdusuario());
                 $this->acesso->adiciona();
                 //Log
                 $this->gravaLog("ADMIN criação usuario", "usuario criado: ".$nome." Email: ". $login);
@@ -270,11 +270,11 @@ class Usuario_admin extends CI_Controller {
                 if (isset($idacesso)){
                     //atualiza acesso atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
                     $this->acesso->atualiza($idacesso->getIdacesso(), $acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"],
-                            $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $id);   
+                            $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $acesso["patrimonio"], $id);   
                 } else {
                     //cria nivel de acesso novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
                     $this->acesso->novo($acesso["ocorrencia"], $acesso["admin"], $acesso["caixa"], $acesso["manutencao"], 
-                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $this->usuario->buscaUsuario($login)->getIdusuario());
+                        $acesso["relatorio"], $acesso["usuario"], $acesso["equipamento"], $acesso["avaliacao"], $acesso["utilitario"], $acesso["patrimonio"], $this->usuario->buscaUsuario($login)->getIdusuario());
                     $this->acesso->adiciona();
                 }
                 //Log
@@ -653,6 +653,11 @@ class Usuario_admin extends CI_Controller {
         } else {
             $acesso['utilitario'] = 0;
         }
+        if (!empty($this->input->post("chkCriPatrimonio"))){
+            $acesso['patrimonio'] = 1;
+        } else {
+            $acesso['patrimonio'] = 0;
+        }
         
     }
     
@@ -721,6 +726,11 @@ class Usuario_admin extends CI_Controller {
             $acesso['utilitario'] = 1;
         } else {
             $acesso['utilitario'] = 0;
+        }
+        if (!empty($this->input->post("chkEdtPatrimonio"))){
+            $acesso['patrimonio'] = 1;
+        } else {
+            $acesso['patrimonio'] = 0;
         }
     }
     

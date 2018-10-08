@@ -2,6 +2,35 @@
  * Funções JS para parte de manutenção
  * Autor: Dener Campos
  */
+//Apos carregamento da pagina 
+$(document).ready(function() {
+    $("#iptCriPatrimonio").focusout(function (){
+        $.ajax({
+            //tipo de requisição
+            type:"post",
+            //URL a ser invocada
+            url:baseUrl+"manutencao/buscaDadosPatrimonio",
+            //Dados
+            data:{
+                patrimonio: function(){
+                        return $("#iptCriPatrimonio").val();
+                    }
+            },
+            //tipo de formato de dados
+            dataType:"json",
+            //se tudo ocorrer bem
+            success:function(msg){
+                if(!msg.erro){
+                    $("#iptCriEquipamento").val(msg.nome);
+                    $("#iptCriFornecedor").val(msg.fornecedor);
+                    $("#iptCriDescricao").val(msg.descricao);
+                }
+                else{
+                }
+            }
+        });
+    });
+});
 
 //FUNÇÔES DA MANUTENÇÂO (IMPRESSORAS)
 //Enviar para manutenção

@@ -5,6 +5,26 @@
 
 $(document).ready(function() {
     
+    //Autocomplete nome do aluno em nova avaliação
+    $('#iptCriUsuario').autocomplete({
+        source: function(request, response){
+            $.ajax({
+                type:"get",
+                dataType: "json",
+                url: baseUrl+"ocorrencia/buscarUsuario",
+                data: {
+                    termo: request.term
+                },
+                success: function(data){
+                    response(data);
+                },
+                error: function(erro){
+                console.log(erro);
+                }
+            });
+        }
+    });
+    
     //Anexar help desk
     // Criar chamado
     $('#cria-anexo0').change(function(){
@@ -410,6 +430,74 @@ function editarChamado(ancor){
     $(".corpo-modal").delay(1000).show("slow");
 }
 
+//Editar Chamado aberto (usuarios do chamado)
+function editarChamadoAberto(ancor){
+    $(".carregando-modal").show();
+    $(".corpo-modal").hide();
+    $(".editar-anexo").remove();
+    //remove html dos anexos.
+    $(".corpo-anexo").remove();
+    $("#imagem-anexo-edita").remove();
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"ocorrencia/editarChamadoAberto",
+        //Dados
+        data:{
+            "idocorrencia":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){            
+            if(!msg.erro){
+                $("#iptEdtId").val(msg.idocorrencia);
+                $("#selEdtUnidade").val(msg.unidade);
+                $("#selEdtSetor").val(msg.setor);
+                $("#selEdtProblema").val(msg.problema);
+                $("#selEdtArea").val(msg.area);
+                $("#iptEdtUsuario").val(msg.nome);
+                $("#iptEdtVnc").val(msg.vnc);
+                $("#iptEdtRamal").val(msg.ramal);
+                $("#iptEdtDesc").val(msg.descricao);
+                $("#iptEdtComentario").text("");                
+                
+                if (msg.arquivos){
+                    $("#edita-anexo-badge").html(msg.arquivos.length);
+                    $cabecalho = '<div class="col-md-12 corpo-anexo">'+
+                                '<label for="" class="control-label">Anexos:</label></div>'+
+                                '<div class="col-md-12" id="imagem-anexo-edita"></div>';
+                    $("#edita-anexo-antigo").append($cabecalho);
+                    for (var i = 0, len = msg.arquivos.length; i < len; ++i){ 
+                        //verifica se é imagem ou arquivo                       
+                        if (msg.arquivos[i].imagem === 1){
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="lightview"><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    msg.arquivos[i].url+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-edita").append($html);
+                        } else {
+                            $html = '<div class="vizualiza-anexo"><a href="'+msg.arquivos[i].url+
+                                    '" class="" download><img class="img-vizualiza-anexo img-thumbnail img-responsive" src="'+
+                                    baseUrl+'/assets/img/default-arq.png'+'"></a><div class="nome-arquivo-anexo-vi">'+
+                                    msg.arquivos[i].nome+'</div></div>';
+                            $("#imagem-anexo-edita").append($html);
+                        }
+                    } 
+                } else {
+                    $("#edita-anexo-badge").html("");
+                }
+            } else{                
+                $('#erro-editar-chamado-aberto').html("<strong>"+msg.erro+"</strong>.");
+                $('#erro-editar-chamado-aberto').show();
+            }
+        }
+    });
+    $(".carregando-modal").delay(700).hide("slow");
+    $(".corpo-modal").delay(1000).show("slow");
+}
+
 //Fechar Chamado
 function fecharChamado(ancor){
     $(".carregando-modal").show();
@@ -651,16 +739,14 @@ $('#frmEdtChamado').validate({
     rules: {      
         iptEdtComentarioNovo: {            
             required: true,
-            minlength:3,
-            maxlength:10000
+            minlength:3
         }
     },
     //Mensagens da validação
     messages:{      
         iptEdtComentarioNovo: {            
             required: "Necessário um aditamento.",
-            minlength:"Deve ter mais de 2 caracteres.",
-            maxlength:"Deve ter menos de 1000 caracteres."
+            minlength:"Deve ter mais de 2 caracteres."
         }
     },    
     submitHandler: function (form) {     
@@ -671,6 +757,49 @@ $('#frmEdtChamado').validate({
         $('#erro-editar-chamado').html("Por favor, preencha \n\
                                   corretamente o <strong>campo de comentário</strong>.");
         $('#erro-editar-chamado').show();
+    }
+});
+
+//Editar chamado
+$('#frmEdtChamadoAberto').validate({    
+    //regras de validações
+    rules: {
+        iptEdtId: {
+            required: true
+        },
+        iptEdtUsuario: {            
+            required: true,
+            minlength:3,
+            maxlength:50
+        },      
+        iptEdtDesc: {            
+            required: true,
+            minlength:3
+        }
+    },
+    //Mensagens da validação
+    messages:{
+        iptEdtId: {
+            required: "Necessário id."
+        },
+        iptEdtUsuario: {            
+            required: "Necessário nome.",
+            minlength:"Deve ter mais de 2 caracteres.",
+            maxlength:"Deve ter menos de 50 caracteres."
+        },      
+        iptEdtDesc: {            
+            required: "Necessário descrição do problema.",
+            minlength:"Deve ter mais de 2 caracteres."
+        }
+    },    
+    submitHandler: function (form) {     
+        form.submit();   
+        carregando($(form).find(".carregando"));
+    },
+    invalidHandler: function (event, validator) {          
+        $('#erro-editar-chamado-aberto').html("Por favor, preencha \n\
+                                  corretamente os <strong>campos marcados</strong>.");
+        $('#erro-editar-chamado-aberto').show();
     }
 });
 

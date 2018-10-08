@@ -151,6 +151,26 @@ class Ocorrencia_model extends CI_Model {
         $this->db->update('ocorrencia');
     }
     
+    //Atualiza ocorrencia em aberto $id, $usuario, $vnc, $ramal, $descricao, $sla, $data_sla, $idunidade, $idarea, $idsetor, $idproblema
+    public function atualizaAberto($id, $usuario, $vnc, $ramal, $descricao, $sla, $data_sla, $idunidade, $idarea, $idsetor, $idproblema){
+        $dados = array(
+            "usuario" => $usuario,
+            "vnc" => $vnc,
+            "ramal" => $ramal,
+            "descricao" => $descricao,
+            "sla" => $sla,
+            "data_sla" => $data_sla,
+            "idunidade" => $idunidade,
+            "idarea" => $idarea,
+            "idsetor" => $idsetor,
+            "idproblema" => $idproblema
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idocorrencia', $id);
+        $this->db->update('ocorrencia');
+    }
+    
     //Fecha ocorrencia
     public function fecha($id, $usuario, $dfecha, $estado){
         $dados = array(
@@ -1217,6 +1237,21 @@ class Ocorrencia_model extends CI_Model {
         //retorna objeto
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca usuario por caracter (ocorrencia novo)
+    public function buscaUsuarioTermo($termo){
+        $query = $this->db->query(
+                "SELECT DISTINCT usuario
+                FROM ocorrencia                 
+                WHERE usuario like '%$termo%'
+                ORDER BY usuario ASC");
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $query->result_array();
         } else{
             return NULL;
         }

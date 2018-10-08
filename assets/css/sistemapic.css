@@ -521,3 +521,87 @@ input[type=file] {
     font-weight: bold;
 }
 
+/*Patrimonio*/
+.img-mapa-patrimonio{
+    position:relative;
+    left:50%;
+    top:50%;
+    margin-left:-401.5px;
+    /*margin-top:-224px;*/
+}
+
+.desc-ponto-mapa{
+    position: fixed;
+    top: 420px;
+    left: 650px;
+}
+
+/*Painel de todos locais de patrimonio*/
+.painel-patrimonio{
+    margin-top: 18px;
+}
+/*Titulo do painel de patrimonio*/
+.titulo-patrimonio{
+    border-bottom: 2px solid #337ab7;
+    background-color: rgba(0,0,0,.075);
+    padding: 5px;
+}
+
+/*Titulo segundario do painel de patrimonio*/
+.titulo-s-patrimonio{
+    background-color: rgba(0,0,0,.075);
+    padding: 5px;
+}
+
+/*Texto manutenção patrimonio*/
+.texto-patrimonio{
+    padding-left: 5px;
+}
+
+/*icone voltar ao top pagina*/
+.voltar-top{
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    /*border: 2px solid #337ab7;*/
+    padding: 5px 10px;
+    /*border-radius: 10px 10px;*/
+    background-color: #337ab7cc;
+    color: white;
+    display: none;
+}
+
+/* AVALIACAO */
+/*Titulo nova avaliacao*/
+.titulo-nova-avaliacao{
+    background-color: #d9edf7;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+    border-bottom: 3px solid #337ab7;
+}
+
+.btn-nova-avaliacao{
+    margin-top: 10px;
+}
+
+.box-dados-tab{
+    margin-top: 10px;
+}
+
+.tabela-aerobica{
+    width: 80%;
+    margin-left: 10%;
+    text-align: center;
+}
+
+.avalaicao-op{
+    padding-bottom: 10px;
+    padding-left: 5px;
+    float: left;
+}
+
+.graficobio{
+    width: 410px;
+    height: 210px;
+    margin: auto;
+}

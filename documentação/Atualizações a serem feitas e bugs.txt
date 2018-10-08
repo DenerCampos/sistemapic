@@ -1,3 +1,52 @@
+<map name="image-map">
+    <area target="" alt="Secretaria" title="Secretaria" href="" coords="342,226,11" shape="circle">
+    <area target="" alt="Nucleo" title="Nucleo" href="" coords="379,129,10" shape="circle">
+    <area target="" alt="Suprimentos" title="Suprimentos" href="" coords="624,146,12" shape="circle">
+    <area target="" alt="Contabilidade" title="Contabilidade" href="" coords="648,143,11" shape="circle">
+    <area target="" alt="Tesouraria" title="Tesouraria" href="" coords="671,144,11" shape="circle">
+    <area target="" alt="Academia" title="Academia" href="" coords="630,188,11" shape="circle">    
+    <area target="" alt="TI" title="TI" href="" coords="664,183,11" shape="circle">
+
+    <area target="" alt="11" title="11" href="" coords="33,178,12" shape="circle">
+    <area target="" alt="10" title="10" href="" coords="95,182,13" shape="circle">
+    <area target="" alt="9" title="9" href="" coords="132,262,12" shape="circle">
+    <area target="" alt="8" title="8" href="" coords="181,216,11" shape="circle">
+    <area target="" alt="14" title="14" href="" coords="197,294,12" shape="circle">
+    <area target="" alt="13" title="13" href="" coords="241,384,13" shape="circle">
+    <area target="" alt="12" title="12" href="" coords="333,356,12" shape="circle">
+    <area target="" alt="6" title="6" href="" coords="299,252,11" shape="circle">
+    <area target="" alt="7" title="7" href="" coords="283,175,12" shape="circle">
+    <area target="" alt="4" title="4" href="" coords="349,196,12" shape="circle">
+    <area target="" alt="16" title="16" href="" coords="401,184,13" shape="circle">
+    <area target="" alt="3" title="3" href="" coords="501,159,12" shape="circle">
+    <area target="" alt="5" title="5" href="" coords="334,54,12" shape="circle">
+    <area target="" alt="15" title="15" href="" coords="388,51,13" shape="circle">
+    <area target="" alt="1" title="1" href="" coords="625,43,13" shape="circle">
+    <area target="" alt="2" title="2" href="" coords="665,60,12" shape="circle">
+</map>
+
+
+#Nova Versão (2.2) 	- Alteração no BD (Local, acesso)
+			- Alterei arquivo routes.php no admin e avaliacão
+			- Criei uma nova pasta para colocar os PDF das avaliações (sistemapic\document\avaliacao)
+#bugs
+    - PinPad
+	01- Tirar limite de caracteres da descrição. (OK)
+
+#melhorias
+    - Avaliação
+	01- Criar um novo modulo de avaliação. (OK)
+    - Patrimonio
+	01- Criar um novo modulo de patrimonio. (Desenhar um mapa e nos pontos aonde tem os itens do patrimonio ser possivel clicar e verificar quais itens tem dentro deste local. Verificar se esta em manutenção) (OK)
+    - Acesso
+	01- Adicionado acesso a função Patrimonio. (OK) 
+    - Manutenção
+	01- Ao digitar o patrimonio puxar os dados do patrimonio se exister. (OK)
+    - Help desk
+	01- Permitir quem abriu o chamado editar o chamado. (OK)
+	02- Criar um autocomplete do nome nos chamados. (OK)
+
+--------------------------------------------------------------------------------------------------------------------------------
 #Nova Versão (2.1) 	- Alteração no BD (Problema e ocorrencias)
 			- Adicionado pasta tutorial dentro de document 
 #bugs

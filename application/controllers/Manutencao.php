@@ -580,28 +580,27 @@ class Manutencao extends CI_Controller {
 
     //Busca por manutenção (equipamento)
     public function buscar(){ //criar rota para que depois da uri buscar o numero ser a pesquisa
-        //recupera dados da busca
-        if ($this->recuperaBusca() != 0){
-            $busca = $this->recuperaBusca();
+        $texto;
+        //Recupera dados
+        $this->recuperaBusca($texto);
+        //verifica busca se vazio, caso não seja, ira para url com o seguimento 3 com o valor do campo de busca
+        if (empty($texto)){
+            //recupera o terceiro seguimento da url ocorrencia/buscar/XXXXXX
+            $texto = urldecode(trim($this->uri->segment(3)));
         } else {
-            $busca = strtolower(trim($this->input->post("iptBusca")));
+            redirect(base_url("manutencao/buscar/".urlencode($texto)));
         }
-        try {
-            //verifica se foi digitado algo
-            if (isset($busca) && $busca != ""){
-                //busca por equipamento buscaPorEquipamento($equipamento, $limite = NULL, $ponteiro = NULL)
-                $defeitos = $this->manutencao->buscaPorDefeito($busca);
-                $manutencoes = $this->manutencao->buscaPorManutecao($busca);
-                $fechadas = $this->manutencao->buscaPorFechada($busca);
-                $garantia =$this->manutencao->buscaPorGarantia($busca);
-                $semconserto = $this->manutencao->buscaPorSemconserto($busca);
-                //total
-                $total = count($defeitos)+count($manutencoes)+count($fechadas)+count($garantia)+count($semconserto);
-                //view resultado resultado($palavra, $defeitos = NULL, $manutencoes = NULL, $fechadas = NULL, $garantia = NULL)
-                $this->resultado($busca, $defeitos, $manutencoes, $fechadas, $garantia, $semconserto, $total);
-            } else {
-                $this->resultado("'vazio'");
-            }                       
+        try {            
+            //busca por equipamento buscaPorEquipamento($equipamento, $limite = NULL, $ponteiro = NULL)
+            $defeitos = $this->manutencao->buscaPorDefeito($texto);
+            $manutencoes = $this->manutencao->buscaPorManutecao($texto);
+            $fechadas = $this->manutencao->buscaPorFechada($texto);
+            $garantia =$this->manutencao->buscaPorGarantia($texto);
+            $semconserto = $this->manutencao->buscaPorSemconserto($texto);
+            //total
+            $total = count($defeitos)+count($manutencoes)+count($fechadas)+count($garantia)+count($semconserto);
+            //view resultado resultado($palavra, $defeitos = NULL, $manutencoes = NULL, $fechadas = NULL, $garantia = NULL)
+            $this->resultado($texto, $defeitos, $manutencoes, $fechadas, $garantia, $semconserto, $total);                                  
         } catch (Exception $exc) {
             //log
             $this->gravaLog("erro geral", $exc->getTraceAsString());
@@ -769,6 +768,32 @@ class Manutencao extends CI_Controller {
         //WARNNING: requisição ajax é recuperada por impressão
         exit();
     }
+    
+    //Busca dados do equipamento por patrimonio ajax
+    public function buscaDadosPatrimonio(){
+        //Recupera patrimonio
+        $numero = trim($this->input->post("patrimonio"));
+        //Carrega modelo
+        $this->load->model('Patrimonio_model', 'patrimonio');
+        //busca patrimonio caso exista
+        $equipamento = $this->patrimonio->buscaPorPatrimonio($numero);
+        
+        if (isset($equipamento)){
+            $mgs = array(
+                "nome" => $equipamento->getEquipamento(),
+                "fornecedor" => $equipamento->getFornecedor(),
+                "descricao" => $equipamento->getDescricao()
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Equipamento não encontrado"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
    
     /*---------Funções internas------------*/ 
     
@@ -780,14 +805,10 @@ class Manutencao extends CI_Controller {
             return 0;
         }
     }
-    
-    //recupera url da busca
-    private function recuperaBusca(){
-        if ($this->uri->segment(3)){
-            return $this->uri->segment(3);
-        } else {
-            return 0;
-        }
+        
+    //Recupera dados post BUSCAR
+    private function recuperaBusca(&$texto){
+        $texto = strtolower(trim($this->input->post("iptBusca")));
     }
 
     //busca estado

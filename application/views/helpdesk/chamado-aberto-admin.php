@@ -51,6 +51,12 @@
                                            onclick="atenderChamado(this)">
                                            <i class="fa fa-sign-in" ></i>
                                         </a>
+                                        <a title="Editar" role="button" href="#mdlEditarChamadoAberto" 
+                                           data-toggle="modal" data-target="#mdlEditarChamadoAberto"
+                                           data-id="<?php echo $aberta->getIdocorrencia(); ?>"
+                                           onclick="editarChamadoAberto(this)">
+                                            <i class="fa fa-pencil-square-o" ></i>
+                                        </a>
                                         <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                            data-toggle="modal" data-target="#mdlImprimirChamado"
                                            data-id="<?php echo $aberta->getIdocorrencia(); ?>"

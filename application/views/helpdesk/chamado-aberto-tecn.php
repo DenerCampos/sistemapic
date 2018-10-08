@@ -51,6 +51,14 @@
                                                <i class="fa fa-sign-in" ></i>
                                             </a>
                                             <?php } ?>
+                                            <?php if ($this->session->userdata("id") == $aberta->getUsuario_abre()) { //tecnico não atende area diferente ?>
+                                            <a title="Editar" role="button" href="#mdlEditarChamadoAberto" 
+                                               data-toggle="modal" data-target="#mdlEditarChamadoAberto"
+                                               data-id="<?php echo $aberta->getIdocorrencia(); ?>"
+                                               onclick="editarChamadoAberto(this)">
+                                                <i class="fa fa-pencil-square-o" ></i>
+                                            </a>
+                                            <?php } ?>
                                             <a title="Imprimir" role="button" href="#mdlImprimirChamado" 
                                                data-toggle="modal" data-target="#mdlImprimirChamado"
                                                data-id="<?php echo $aberta->getIdocorrencia(); ?>"

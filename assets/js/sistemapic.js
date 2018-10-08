@@ -19,13 +19,13 @@ $(document).ready(function() {
         }
     });
     
-    //popover bootstrap mapa
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover',
-        html: 'true',
-        placement: 'left',
-        container: 'map'
-    });
+//    //popover bootstrap mapa
+//    $('[data-toggle="popover"]').popover({
+//        trigger: 'hover',
+//        html: 'true',
+//        placement: 'left',
+//        container: 'map'
+//    });
         
     //tooltip bootstrap
     $('[data-toggle="tooltip"]').tooltip();

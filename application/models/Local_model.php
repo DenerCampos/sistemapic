@@ -16,6 +16,7 @@ class Local_model extends CI_Model {
     var $shape; //tipo de desenho
     var $coords; //pontos do desenho
     var $caixa; //0 para caixa e 1 para não caixa
+    var $patrimonio; //controle para mostrar no mapa de patrimonio
     var $idestado; //ativo ou desativo
 
     /*------Construtor--------*/
@@ -26,11 +27,12 @@ class Local_model extends CI_Model {
     /*------Requisições--------*/
     
     //Novo local
-    public function newLocal($nome, $shape, $coords, $caixa){
+    public function newLocal($nome, $shape, $coords, $caixa, $patrimonio){
         $this->setNome($nome);
         $this->setShape($shape);
         $this->setCoords($coords);
         $this->setCaixa($caixa); //0 para caixa e 1 para não caixa
+        $this->setPatrimonio($patrimonio);
         $this->setIdestado(1); //1=ativo, 2=desativo
     }
     
@@ -40,12 +42,13 @@ class Local_model extends CI_Model {
     }
     
     //Atualiza
-    public function atualizaLocal($id, $nome, $shape, $coords, $caixa, $idestado){
+    public function atualizaLocal($id, $nome, $shape, $coords, $caixa, $patrimonio, $idestado){
         $dados = array(
             "nome" => $nome,
             "shape" => $shape,
             "coords" => $coords,
             "caixa" => $caixa,
+            "patrimonio" => $patrimonio,
             "idestado" => $idestado
         );
         //atualiza no db
@@ -81,7 +84,23 @@ class Local_model extends CI_Model {
                     "SELECT *
                     FROM local
                     WHERE idestado = 1 AND
-                        caixa = 0");
+                        caixa = 1");
+        //retorna objeto ip
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
+    //Busca todos locais de patrimonio
+    public function todosLocaisPatrimonio(){
+        $query = $this->db->query(
+                    "SELECT *
+                    FROM local
+                    WHERE idestado = 1 AND
+                        patrimonio = 1
+                    ORDER BY nome ASC");
         //retorna objeto ip
         if ($query->num_rows() > 0){
             return $this->getObjByResult($query->result());
@@ -238,6 +257,7 @@ class Local_model extends CI_Model {
         $local->setShape($r->shape);
         $local->setCoords($r->coords);
         $local->setCaixa($r->caixa);
+        $local->setPatrimonio($r->patrimonio);
         $local->setIdestado($r->idestado);
         
         return $local;
@@ -279,6 +299,10 @@ class Local_model extends CI_Model {
         return $this->caixa;
     }
 
+    function getPatrimonio() {
+        return $this->patrimonio;
+    }
+
     function getIdestado() {
         return $this->idestado;
     }
@@ -301,6 +325,10 @@ class Local_model extends CI_Model {
 
     function setCaixa($caixa) {
         $this->caixa = $caixa;
+    }
+
+    function setPatrimonio($patrimonio) {
+        $this->patrimonio = $patrimonio;
     }
 
     function setIdestado($idestado) {

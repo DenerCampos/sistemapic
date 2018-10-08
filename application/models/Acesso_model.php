@@ -20,6 +20,7 @@ class Acesso_model extends CI_Model {
     var $equipamento; //acesso aos equipamentos do pic
     var $avaliacao; //acesso ao sitema de avaliação fisica
     var $utilitario; //acesso a parte de programas e contatos (somento o TI)
+    var $patrimonio; //acesso a parte do patrimonio
     var $idusuario; //identificador do usuario
 
     /*------Construtor--------*/
@@ -29,7 +30,7 @@ class Acesso_model extends CI_Model {
     
     /*------Requisições--------*/
     //Novo acesso
-    public function novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario){
+    public function novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $patrimonio, $idusuario){
         $this->setOcorrencia($ocorrencia);
         $this->setAdmin($admin);
         $this->setCaixa($caixa);
@@ -39,6 +40,7 @@ class Acesso_model extends CI_Model {
         $this->setEquipamento($equipamento);
         $this->setAvaliacao($avaliacao);
         $this->setUtilitario($utilitario);
+        $this->setPatrimonio($patrimonio);
         $this->setIdusuario($idusuario);
     }
     
@@ -48,7 +50,7 @@ class Acesso_model extends CI_Model {
     }
     
     //Atualiza acesso
-    public function atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario){
+    public function atualiza($id, $ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $patrimonio, $idusuario){
         $dados = array(
             "ocorrencia" => $ocorrencia,
             "admin" => $admin,
@@ -59,6 +61,7 @@ class Acesso_model extends CI_Model {
             "equipamento" => $equipamento,
             "avaliacao" => $avaliacao,
             "utilitario" => $utilitario,
+            "patrimonio" => $patrimonio,
             "idusuario" => $idusuario
         );
         $this->db->set($dados);
@@ -116,6 +119,7 @@ class Acesso_model extends CI_Model {
         $acesso->setEquipamento($r->equipamento);
         $acesso->setAvaliacao($r->avaliacao);
         $acesso->setUtilitario($r->utilitario);
+        $acesso->setPatrimonio($r->patrimonio);
         $acesso->setIdusuario($r->idusuario);
         
         return $acesso;
@@ -177,6 +181,10 @@ class Acesso_model extends CI_Model {
         return $this->utilitario;
     }
 
+    function getPatrimonio() {
+        return $this->patrimonio;
+    }
+
     function getIdusuario() {
         return $this->idusuario;
     }
@@ -219,6 +227,10 @@ class Acesso_model extends CI_Model {
 
     function setUtilitario($utilitario) {
         $this->utilitario = $utilitario;
+    }
+
+    function setPatrimonio($patrimonio) {
+        $this->patrimonio = $patrimonio;
     }
 
     function setIdusuario($idusuario) {

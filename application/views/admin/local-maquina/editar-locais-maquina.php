@@ -24,7 +24,7 @@
                         <div class="col-md-12 hidden">
                             <div class="form-group">
                                 <label for="iptEdtUrl" class="control-label">Url:</label>
-                                <input type="text" name="iptEdtUrl" id="iptEdtUrl" value="<?php echo current_url(); ?>"
+                                <input type="text" name="iptEdtUrl" id="iptEdtUrl" value="<?php echo $this->uri->uri_string(); ?>"
                                        class="form-control" placeholder="" required="true">
                             </div>
                         </div>
@@ -37,9 +37,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="iptEdtShape" class="control-label">Shape:</label>
-                                <input type="text" name="iptEdtShape" id="iptEdtShape"
-                                       class="form-control" placeholder="Tipo geometrico">
+                                <label for="selEdtShape" class="control-label">Shape:</label>
+                                <select name="selEdtShape" id="selEdtShape" 
+                                        class="form-control" placeholder="Seleciona tipo">
+                                    <!-- Lista todos tipos de shape permitido -->
+                                    <option>rect</option>
+                                    <option>circle</option>
+                                    <option>poly</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -64,11 +69,12 @@
                             </div>
                         </div>
                         <div class="col-md-12 text-right text-danger">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="chkEdtCaixa" id="chkEdtCaixa" value="0"> é um local de caixa?
-                                </label>
-                            </div>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtCaixa" name="chkEdtCaixa" value="caixa" > é um local de caixa?
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtPatrimonio" name="chkEdtPatrimonio" value="patrimonio" > é um local de patrimônio?
+                            </label>
                         </div>
                     </div>
                 </div>

@@ -125,6 +125,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </li>
                 <?php } ?>
                 
+                <!--Patrimonio-->
+                <?php if (unserialize($this->session->userdata('acesso'))->getPatrimonio() == 1){ ?> 
+                <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'patrimonio')){ echo 'active';} ?>">
+                    <a class="nav-link navbar-link" href="<?php echo base_url('patrimonio'); ?>">Patrimônio</a>
+                </li>
+                <?php } ?>
+                
                 <!--Admin-->
                 <?php if ($this->session->userdata('nivel') == 0){ ?> 
                 <li role="presentation" class="<?php if (isset($ativo) && ($ativo == 'admin')){ echo 'active';} ?>">

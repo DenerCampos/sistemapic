@@ -176,6 +176,21 @@ class Manutencao_model extends CI_Model {
         }
     }
     
+    //Busca manutencao por patrimonio
+    public function buscaPatrimonio($patrimonio){
+        $query = $this->db->query(
+                "SELECT *
+                FROM manutencao 
+                WHERE patrimonio = $patrimonio
+                ORDER BY data_defeito");
+        //retorna objeto
+        if ($query->num_rows() > 0){
+            return $this->getObjByResult($query->result());
+        } else{
+            return NULL;
+        }
+    }
+    
     //Busca manutencao por id
     public function existe($id){
         $query = $this->db->query(
@@ -446,7 +461,8 @@ class Manutencao_model extends CI_Model {
                 FROM  manutencao
                 WHERE data_entrega IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_defeito DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -455,7 +471,8 @@ class Manutencao_model extends CI_Model {
                 FROM  manutencao
                 WHERE data_entrega IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_defeito DESC");
         }
         //retorna objeto ip
@@ -475,7 +492,8 @@ class Manutencao_model extends CI_Model {
                 WHERE data_entrega IS NOT NULL AND
                     data_retorno IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_entrega DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -485,7 +503,8 @@ class Manutencao_model extends CI_Model {
                 WHERE data_entrega IS NOT NULL AND
                     data_retorno IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_entrega DESC");
         }
         //retorna objeto ip
@@ -505,7 +524,8 @@ class Manutencao_model extends CI_Model {
                 WHERE data_retorno IS NOT NULL AND
                     data_sem_conserto IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_retorno DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -515,7 +535,8 @@ class Manutencao_model extends CI_Model {
                 WHERE data_retorno IS NOT NULL AND
                     data_sem_conserto IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_retorno DESC");
         }
         //retorna objeto ip
@@ -538,7 +559,8 @@ class Manutencao_model extends CI_Model {
                     data_garantia >= '$hoje' AND
                     data_reincidencia IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_retorno DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -550,7 +572,8 @@ class Manutencao_model extends CI_Model {
                     data_garantia >= '$hoje' AND
                     data_reincidencia IS NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_retorno DESC");
         }
         //retorna objeto ip
@@ -572,7 +595,8 @@ class Manutencao_model extends CI_Model {
                     data_sem_conserto IS NOT NULL AND
                     motivo IS NOT NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_sem_conserto DESC
                 LIMIT $ponteiro, $limite");
         } else {
@@ -584,7 +608,8 @@ class Manutencao_model extends CI_Model {
                     data_sem_conserto IS NOT NULL AND
                     motivo IS NOT NULL AND
                     (equipamento LIKE '%$equipamento%' OR
-                    fornecedor LIKE '%$equipamento%')
+                    fornecedor LIKE '%$equipamento%' OR
+                    patrimonio = '$equipamento')
                 ORDER BY data_sem_conserto DESC");
         }
         //retorna objeto ip

@@ -1,7 +1,7 @@
 <!-- Modal de visualizar manutencao -->
 <div id="mdlVisualizarManutencao"  class="modal fade" tabindex="-1" role="dialog" 
      aria-labelledby="mdlVisualizarManutencao" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             
             <!-- Cabeçalho -->
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <!-- Campo equipamento -->
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="iptVslEquipamento" class="control-label">Equipamento:</label>
                             <input type="text" name="iptVslEquipamento" id="iptVslEquipamento" 
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <!-- Campo defeito -->
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="iptVslDefeito" class="control-label">Defeito:</label>
                             <input type="text" name="iptVslDefeito" id="iptVslDefeito" 

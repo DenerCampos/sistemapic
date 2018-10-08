@@ -226,6 +226,7 @@ class Caixa extends CI_Controller {
             $local = $this->local->buscaId($maquina->getIdlocal());
             $resultado[] = $maquina->getNome().": ".$maquina->getIp()." - ".$local->getNome(); 
         }
+        //$teste = json_encode($resultado);
         echo json_encode($resultado);
         //WARNNING: requisição ajax é recuperada por impressão
         exit();

@@ -5,8 +5,16 @@
 
 $(document).ready(function() {
     
+    //popover bootstrap mapa
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+        html: 'true',
+        placement: 'left',
+        container: 'map'
+    });
+    
     //Autocomplete Caixas
-    $('.buscaMaquina').autocomplete({
+    $('#buscaMaquina').autocomplete({
         source: function(request, response){
             $.ajax({
                 type:"get",
@@ -17,7 +25,10 @@ $(document).ready(function() {
                 },
                 success: function(data){
                     response(data);
-                }
+                },
+                error: function(erro){
+                console.log(erro);
+        }
             });
         }
     });

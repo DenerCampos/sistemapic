@@ -145,7 +145,7 @@ class Maquina_model extends CI_Model {
     //Busca maquina por caracter (CAIXA)
     public function buscaMaquinaTermo($termo){
         $query = $this->db->query(
-                "SELECT maquina.idmaquina, maquina.nome, maquina.ip, maquina.login, maquina.descricao, maquina.idlocal, maquina.idtipo
+                "SELECT maquina.idmaquina, maquina.nome, maquina.ip, maquina.login, maquina.descricao, maquina.idlocal, maquina.idtipo, maquina.idunidade
                 FROM maquina 
                 INNER JOIN tipo
                 ON maquina.idtipo = tipo.idtipo

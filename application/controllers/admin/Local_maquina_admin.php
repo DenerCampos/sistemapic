@@ -144,37 +144,6 @@ class Local_maquina_admin extends CI_Controller {
     }
     
     /*-------------Funções---------------*/
-    //Criar
-    public function criarLocal(){
-        //recupera dados
-        $nome = $this->input->post("iptCriNome");
-        $shape = $this->input->post("iptCriShape");
-        $coords = $this->input->post("iptCriCoords");
-        $caixa = $this->input->post("chkCriCaixa");
-        $estado = $this->input->post("selCriEstado");
-        
-        //verifica se caixa
-        if (!isset($caixa)){
-            $caixa = 1;
-        }
-        
-        //verifica dados
-        if (!$this->local->localExiste($nome)){
-            //verifica se é um caixa
-            //$caixa = $
-            //cria 
-            $this->local->newLocal($nome, $shape, $coords, $caixa, $this->geraEstado($estado));
-            $this->local->addLocal();
-            //Log
-            $this->gravaLog("ADMIN criação local", "local criado: ".$nome);
-            redirect(base_url('admin/local_maquina_admin'));
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro criação local", "tentativa de criar local: ".$nome);
-            echo'erro ao criar local';
-        }
-    }
-    
     //Paginação
     public function listarLocais(){
         //Configuração da paginação codeigniter
@@ -210,34 +179,59 @@ class Local_maquina_admin extends CI_Controller {
         return $paginas;
     }
     
+    //Criar
+    public function criarLocal(){
+        //dados
+        $nome; $shape; $coords; $caixa; $patrimonio; $url;        
+        try {
+            //recupera dados
+            $this->recuperaCriaLocal($nome, $shape, $coords, $caixa, $patrimonio, $url);
+            //verifica dados
+            if (!$this->local->localExiste($nome)){
+                //cria  newLocal($nome, $shape, $coords, $caixa, $patrimonio)
+                $this->local->newLocal($nome, $shape, $coords, $caixa, $patrimonio);
+                $this->local->addLocal();
+                //Log
+                $this->gravaLog("ADMIN criação local", "local criado: ".$nome);
+                //mensagem
+                $this->mensagem("Local <strong>".$nome."</strong> criado!", $url);
+            }else{
+                //Log
+                $this->gravaLog("ADMIN erro criação local", "tentativa de criar local: ".$nome);
+                $this->erro("Erro na criação de local. Tentar novamente.");
+            }
+        } catch (Exception $exc) {
+             //Log
+            $this->gravaLog("ADMIN GERAL", $exc->getTraceAsString());
+            $this->erro($exc->getTraceAsString());
+        }
+    }    
+    
     //Atualiza
     public function atualizaLocal(){
-        //recuperando dados
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $shape = $this->input->post("iptEdtShape");
-        $coords = $this->input->post("iptEdtCoords");
-        $caixa = $this->input->post("chkEdtCaixa");
-        $estado = $this->input->post("selEdtEstado");
-        $url = $this->input->post("iptEdtUrl");
-        
-        //verifica se caixa
-        if (!isset($caixa)){
-            $caixa = 1;
+        //variaveis
+        $id; $nome; $shape; $coords; $caixa; $patrimonio; $estado; $url;
+        try {
+            //revupera dados post
+            $this->recuperaAtualizaLocal($id, $nome, $shape, $coords, $caixa, $patrimonio, $estado, $url);  
+            //verifica dados
+            if (!$this->local->verificaLocalAtualiza($id, $nome)){
+                //atualiza atualizaLocal($id, $nome, $shape, $coords, $caixa, $patrimonio, $idestado)
+                $this->local->atualizaLocal($id, $nome, $shape, $coords, $caixa, $patrimonio, $this->geraEstado($estado));
+                //Log
+                $this->gravaLog("ADMIN alteração local", "local alterado: ".$nome);
+                //mensagem
+                $this->mensagem("Local <strong>".$nome."</strong> alterado!", $url);
+            }else{
+                //Log
+                $this->gravaLog("ADMIN erro alteração local", "tentativa de alterar local: ".$nome);
+                $this->erro("Erro na criação de local. Tentar novamente.");
+            }          
+        } catch (Exception $exc) {
+            //Log
+            $this->gravaLog("ADMIN GERAL", $exc->getTraceAsString());
+            $this->erro($exc->getTraceAsString());
         }
-        
-        //verifica dados
-        if (!$this->local->verificaLocalAtualiza($id, $nome)){
-            //atualiza
-            $this->local->atualizaLocal($id, $nome, $shape, $coords, $caixa, $this->geraEstado($estado));
-            //Log
-            $this->gravaLog("ADMIN alteração local", "local alterado: ".$nome);
-            redirect($url);
-        }else{
-            //Log
-            $this->gravaLog("ADMIN erro alteração local", "tentativa de alterar local: ".$nome);
-            echo'erro ao alterar local';
-        }            
     }
     
     //Desabilitar 
@@ -315,6 +309,7 @@ class Local_maquina_admin extends CI_Controller {
                 "shape" => $local->getShape(),
                 "coords" => $local->getCoords(),
                 "caixa" => $local->getCaixa(),
+                "patrimonio" => $local->getPatrimonio(),
                 "estado" => $estado->getNome()
             );
             echo json_encode($mgs);
@@ -403,7 +398,62 @@ class Local_maquina_admin extends CI_Controller {
         $this->registro->newLog($nome, $descricao, $data, $ip, $idusuario);
         $this->registro->addLog();
     }
-      
+    
+    //Recupera dados Cria local
+    private function recuperaCriaLocal(&$nome, &$shape, &$coords, &$caixa, &$patrimonio, &$url){
+        $nome = trim($this->input->post("iptCriNome"));
+        $shape = trim($this->input->post("selCriShape"));
+        $coords = $this->input->post("iptCriCoords");
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "admin/local_maquina_admin";
+        }
+        
+        //Recupera caixa
+        if (!empty($this->input->post("chkCriCaixa"))){
+            $caixa = 1;
+        } else {
+            $caixa = 0;
+        }
+        //Recupera patrimonio
+        if (!empty($this->input->post("chkCriPatrimonio"))){
+            $patrimonio = 1;
+        } else {
+            $patrimonio = 0;
+        }
+    }
+    
+    //Recupera dados Cria local
+    private function recuperaAtualizaLocal(&$id, &$nome, &$shape, &$coords, &$caixa, &$patrimonio, &$estado, &$url){
+        //recuperando dados
+        $id = trim($this->input->post("iptEdtId"));
+        $nome = trim($this->input->post("iptEdtNome"));
+        $shape = trim($this->input->post("selEdtShape"));
+        $coords = $this->input->post("iptEdtCoords");
+        $estado = $this->input->post("selEdtEstado");
+        $url = $this->input->post("iptEdtUrl");
+        
+        //verifica URL existe
+        if (!isset($url)|| $url === ""){
+            $url = "admin/local_maquina_admin";
+        }
+        
+        //Recupera caixa
+        if (!empty($this->input->post("chkEdtCaixa"))){
+            $caixa = 1;
+        } else {
+            $caixa = 0;
+        }
+        //Recupera patrimonio
+        if (!empty($this->input->post("chkEdtPatrimonio"))){
+            $patrimonio = 1;
+        } else {
+            $patrimonio = 0;
+        }
+    }
+
+
     //verifica nivel de usuario para acesso ao sistema
     private function verificaNivel(){
         //verifica nivel usuario

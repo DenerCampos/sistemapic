@@ -4,6 +4,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- manutencaos  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    
+    <!-- botão voltar topo  -->
+    <!--<div id="back" class="btn voltar-top">
+        <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+    </div>-->
+    
     <div class="row">
         
         <!-- nova manutencao  -->
@@ -24,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   action="<?php echo base_url("manutencao/buscar") ?>">
                 <div class="input-group">
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
-                           placeholder="Busca por equipamento ou fornecedor...">
+                           placeholder="Busca por equipamento, patrimônio ou fornecedor...">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>

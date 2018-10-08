@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
 <!-- manutencaos  -->
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">    
     <div class="row">
         <div class="novo-chamado col-md-6">
             <button class="btn btn-primary" type="submit" href="#mdlCriarManutencao" 
@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   action="<?php echo base_url("manutencao/buscar") ?>">
                 <div class="input-group">
                     <input type="text" class="form-control" required="" id="iptBusca" name="iptBusca" 
-                           placeholder="Busca por equipamento ou fornecedor...">
+                           placeholder="Busca por equipamento, patrimônio ou fornecedor...">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa fa-search" aria-hidden="true"></i> Buscar!</button>

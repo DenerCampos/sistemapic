@@ -128,6 +128,9 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox" id="chkEdtUtilitario" name="chkEdtUtilitario" value="utilitario" > Utilitários
                             </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkEdtPatrimonio" name="chkEdtPatrimonio" value="patrimonio" > Patrimônio
+                            </label>
                         </div>
                         
                     </div>
