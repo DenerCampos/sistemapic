@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Setor_admin extends CI_Controller {
+class Grupo_checklist_admin extends CI_Controller {
 
     /**
-     * Setor_admin.
-     * @descripition Controlador setorres do pic (EX: TI, Fiscal)
+     * Grupo_checklist_admin.
+     * @descripition Grupo de checklist, como se fosse setor a ser checado
      * @author Dener Junio
      * 
      */
@@ -16,7 +16,7 @@ class Setor_admin extends CI_Controller {
         //verifica nivel usuario
         $this->verificaNivel();
         //carregando modelo
-        $this->load->model('Setor_model', 'setor');
+        $this->load->model('Grupo_checklist_model', 'grupo');        
         $this->load->model('estado_model', 'estado');
     }
     
@@ -33,24 +33,24 @@ class Setor_admin extends CI_Controller {
         //Carrega menu
         $this->load->view('admin/menu', array(
             "assetsUrl" => base_url("assets"),
-            "ativo" => "setores"));
+            "ativo" => "grupo"));
         //Carrega setores
-        $this->load->view('admin/setores/setores', array(
+        $this->load->view('admin/checklist/grupo', array(
             "assetsUrl" => base_url("assets"),
             "estado" => new Estado_model(),
-            "setores" => $this->setor->todosSetoresAdm(7, $this->recuperaOffset()),
-            "paginas" => $this->listarSetores()));
+            "grupos" => $this->grupo->todosGruposAdmin(7, $this->recuperaOffset()),
+            "paginas" => $this->listarGrupo()));
         //Modal
-        $this->load->view('admin/setores/criar-setores', array(
+        $this->load->view('admin/checklist/criar-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/editar-setores', array(
+        $this->load->view('admin/checklist/editar-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/remover-setores', array(
+        $this->load->view('admin/checklist/remover-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/ativar-setores', array(
+        $this->load->view('admin/checklist/ativar-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
@@ -72,9 +72,6 @@ class Setor_admin extends CI_Controller {
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
             "msgerro" => $msg));
-        //Modal
-        $this->load->view("usuario/criar-usuario", array( 
-            "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
@@ -97,8 +94,6 @@ class Setor_admin extends CI_Controller {
             "uri" => $uri
                 ));
         //Modal
-        $this->load->view("usuario/criar-usuario", array( 
-            "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
@@ -119,22 +114,22 @@ class Setor_admin extends CI_Controller {
             "assetsUrl" => base_url("assets"),
             "ativo" => "setores"));
         //Carrega setores
-        $this->load->view('admin/setores/setores', array(
+        $this->load->view('admin/checklist/grupo', array(
             "assetsUrl" => base_url("assets"),
             "estado" => new Estado_model(),
             "palavra" => $palavra,
             "resultados" => $resultado));
         //Modal
-        $this->load->view('admin/setores/criar-setores', array(
+        $this->load->view('admin/checklist/criar-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/editar-setores', array(
+        $this->load->view('admin/checklist/editar-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/remover-setores', array(
+        $this->load->view('admin/checklist/remover-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/ativar-setores', array(
+        $this->load->view('admin/checklist/ativar-grupo', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
@@ -145,35 +140,36 @@ class Setor_admin extends CI_Controller {
     
     /*------Requisições--------*/
     //Criar 
-    public function criarSetor(){
+    public function criarGrupo(){
         //recupera dados
-        $nome = $this->input->post("iptCriNome");
-        $estado = $this->input->post("selCriEstado");
+        $nome = trim($this->input->post("iptCriNome"));
+        $estado = trim($this->input->post("selCriEstado"));
+        $uri = "admin/grupo_checklist_admin";
         
         //verifica dados
-        if (!$this->setor->setorExiste($nome)){
-            //cria area
-            $this->setor->newSetor($nome, $this->geraEstado($estado));
-            $this->setor->addSetor();
+        if (!$this->grupo->existe($nome)){
+            //cria novo($nome, $idestado)
+            $this->grupo->novo($nome, $this->geraEstado($estado));
+            $this->grupo->adiciona();
             //Log
-            $this->gravaLog("ADMIN criação setor", "setor criado: ".$nome);
-            redirect(base_url('admin/setor_admin'));
+            $this->gravaLog("ADMIN criação grupo checklist", "grupo criado: ".$nome);
+            $this->mensagem("Grupo <strong>".$nome."</strong> criado.", $uri);
         }else{
             //Log
-            $this->gravaLog("ADMIN erro criação setor", "tentativa de criar setor: ".$nome);
-            echo'erro ao criar area';
+            $this->gravaLog("ADMIN erro criação grupo checklist", "tentativa de criar grupo: ".$nome);
+            $this->erro("Erro ao criar o grupo de nome: <strong>".$nome."</strong>.");
         }
     }
     
     //Paginação 
-    public function listarSetores(){
+    public function listarGrupo(){
         //Configuração da paginação codeigniter
         $config = array(
-            "base_url" => base_url('admin/setor_admin'),
+            "base_url" => base_url('admin/grupo_checklist_admin'),
             "per_page" => 7,
             "num_links" => 3,
             "uri_segment" => 3,
-            "total_rows" => $this->setor->contarTodos(),
+            "total_rows" => $this->grupo->contarTodos(),
             "full_tag_open" => "<ul class='pagination'>",
             "full_tag_close" => "</ul>",
             "first_link" => FALSE,
@@ -201,64 +197,66 @@ class Setor_admin extends CI_Controller {
     }
     
     //Atualiza setor
-    public function atualizaSetor(){
+    public function atualizaGrupo(){
         //recuperando dados do setor
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $estado = $this->input->post("selEdtEstado");
-        $url = $this->input->post("iptEdtUrl");
+        $id = trim($this->input->post("iptEdtId"));
+        $nome = trim($this->input->post("iptEdtNome"));
+        $estado = trim($this->input->post("selEdtEstado"));
+        $uri = trim($this->input->post("iptEdtUrl"));
         
         //verifica dados
-        if (!$this->setor->verificaSetorAtualiza($id, $nome)){
-            //atualiza setor
-            $this->setor->atualizaSetor($id, $nome, $this->geraEstado($estado));
+        if (!$this->grupo->verificaAtualiza($id, $nome)){ 
+            //atualiza grupo atualiza($id, $nome, $idestado)
+            $this->grupo->atualiza($id, $nome, $this->geraEstado($estado));
             //Log
-            $this->gravaLog("ADMIN alteração setor", "setor alterado: ".$nome);
-            redirect($url);
+            $this->gravaLog("ADMIN alteração grupo", "grupo alterado: ".$nome);
+            $this->mensagem("Grupo <strong>".$nome."</strong> alterado.", $uri);
         }else{
             //Log
-            $this->gravaLog("ADMIN erro alteração setor", "tentativa de alterar setor: ".$nome);
-            echo'erro ao alterar setor';
+            $this->gravaLog("ADMIN erro alteração grupo", "tentativa de alterar grupo: ".$nome);
+            $this->erro("Erro ao alterar o grupo de nome: <strong>".$nome."</strong>.");
         }            
     }
     
-    //Desabilitar setor
-    public function desabilitaSetor(){
-        //recupera id setor
-        $id = $this->input->post("iptRmvId");
-        $url = $this->input->post("iptRmvUrl");
+    //remove grupo caso não tenha dependcia
+    public function removeGrupo(){
+        //recupera id 
+        $id = trim($this->input->post("iptRmvId"));
+        $uri = trim($this->input->post("iptRmvUrl"));
         
-        //verifica se setor existe e esta ativo
-        if ($this->setor->verificaAtivo($id)){
-            //desativa setor
-            $this->setor->desativaSetor($id);
+        //busca grupo
+        $grupo = $this->grupo->buscaId($id);
+        //verifica se existe e esta ativo
+        if ($this->grupo->verificaRemover($id)){            
+            //remove 
+            $this->grupo->remove($id);
             //Log
-            $this->gravaLog("ADMIN desabilita setor", "setor desabilitado id: ".$id);
-            redirect($url);
+            $this->gravaLog("ADMIN remover grupo", "grupo removido id: ".$id." Nome: ".$grupo->getNome());
+            $this->mensagem("Grupo <strong>".$grupo->getNome()."</strong> removido.", $uri);
         }else {
             //Log
-            $this->gravaLog("ADMIN erro desabilitar setor", "tentativa de desabilitar setor id: ".$id);
-            echo'erro ao desabilitar setor';
+            $this->gravaLog("ADMIN erro remover grupo", "tentativa de remover grupo id: ".$id);
+            $this->erro("Não pode remover o grupo de nome: <strong>".$grupo->getNome()."</strong>, ele já esta sendo usado.");
         }
     }
     
     //Ativar setor
-    public function ativaSetor(){
+    public function ativaGrupo(){
         //recupera id setor
-        $id = $this->input->post("iptAtvId");
-        $url = $this->input->post("iptAtvUrl");
+        $id = trim($this->input->post("iptAtvId"));
+        $uri = trim($this->input->post("iptAtvUrl"));
         
         //verifica se setor existe e esta ativo
-        if ($this->setor->verificaDesativo($id)){
+        if ($this->grupo->verificaDesativo($id)){
             //desativa setor
-            $this->setor->ativaSetor($id);
+            $this->grupo->ativa($id);
             //Log
-            $this->gravaLog("ADMIN ativa setor", "setor ativado id: ".$id);
-            redirect($url);
+            $this->gravaLog("ADMIN ativa grupo checklist", "grupo ativado id: ".$id);
+            $this->mensagem("Grupo <strong>".$this->grupo->buscaId($id)->getNome()."</strong> ativado.", $uri);
         }else {
             //Log
             $this->gravaLog("ADMIN erro ativar setor", "tentativa de ativar setor id: ".$id);
-            echo'erro ao ativar setor';
+            $this->erro("Erro ao ativar o grupo de id: <strong>".$id."</strong>.");
         }
     }
     
@@ -269,36 +267,36 @@ class Setor_admin extends CI_Controller {
             $texto = trim($this->input->post("iptBusca"));
             //busca pelo texto
             if (isset($texto) && $texto != ""){
-                $this->resultado($this->setor->busca($texto), $texto);
+                $this->resultado($this->grupo->busca($texto), $texto);
             } else if ($texto == "") {
-                $this->resultado($this->setor->busca($texto, 100), $texto);
+                $this->resultado($this->grupo->busca($texto, 100), $texto);
             } else {
                 $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
             }            
         } catch (Exception $exc) {
             //Log
-            $this->gravaLog("erro geral ADMIN", "erro pesquisa de setores: ".$texto." erro:".$exc->getTraceAsString());
-            $this->erro("<strong>Erro Geral</strong>");
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de grupos: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>: ".$exc);
         }
     }
     /*----------------Funções AJAX---------------*/
-    //Editar setor ajax
-    public function editarSetor(){
-        //Recupera Id setor
-        $id = $this->input->post("idsetor");
-        $setor = $this->setor->buscaId($id);
+    //Editar ajax
+    public function editarGrupo(){
+        //Recupera Id 
+        $id = $this->input->post("idgrupo");
+        $grupo = $this->grupo->buscaId($id);
         
-        if (isset($setor)){
-            $estado = $this->estado->buscaId($setor->getIdestado());
+        if (isset($grupo)){
+            $estado = $this->estado->buscaId($grupo->getIdestado());
             $mgs = array(
-                "idsetor" => $setor->getIdsetor(),
-                "nome" => $setor->getNome(),
+                "idgrupo" => $grupo->getIdgrupo_checklist(),
+                "nome" => $grupo->getNome(),
                 "estado" => $estado->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Setor não encontrado"
+                "erro" => "Grupo checklist não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -307,20 +305,20 @@ class Setor_admin extends CI_Controller {
     }
     
     //Remover setor ajax
-    public function removerSetor(){
-        //Recupera Id setor
-        $id = $this->input->post("idsetor");
-        $setor = $this->setor->buscaId($id);
+    public function removerGrupo(){
+        //Recupera Id 
+        $id = $this->input->post("idgrupo");
+        $grupo = $this->grupo->buscaId($id);
         
-        if (isset($setor)){
+        if (isset($grupo)){
             $mgs = array(
-                "idsetor" => $setor->getIdsetor(),
-                "nome" => $setor->getNome()
+                "idgrupo" => $grupo->getIdgrupo_checklist(),
+                "nome" => $grupo->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Setor não encontrado"
+                "erro" => "Grupo não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -329,20 +327,20 @@ class Setor_admin extends CI_Controller {
     }
     
     //Ativar area ajax
-    public function ativarSetor(){
-        //Recupera Id setor
-        $id = $this->input->post("idsetor");
-        $setor = $this->setor->buscaId($id);
+    public function ativarGrupo(){
+        //Recupera Id 
+        $id = $this->input->post("idgrupo");
+        $grupo = $this->grupo->buscaId($id);
         
-        if (isset($setor)){
+        if (isset($grupo)){
             $mgs = array(
-                "idsetor" => $setor->getIdsetor(),
-                "nome" => $setor->getNome()
+                "idgrupo" => $grupo->getIdgrupo_checklist(),
+                "nome" => $grupo->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Setor não encontrado"
+                "erro" => "Grupo não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -389,16 +387,16 @@ class Setor_admin extends CI_Controller {
             //verifica nivel de acesso
             if ($this->session->userdata('nivel') != '0'){
                 //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Setor_adim.php");
+                $this->gravaLog("tentativa de acesso", "acesso ao controlador Grupo_checklist_admin.php");
                 redirect(base_url());
             } else {
                 //acesso permitido
                 //grava log
-                $this->gravaLog("acesso", "acesso ao controlador Setor_adim.php");
+                $this->gravaLog("acesso", "acesso ao controlador Grupo_checklist_admin.php");
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Setor_adim.php");
+            $this->gravaLog("tentativa de acesso", "acesso ao controlador Grupo_checklist_admin.php");
             redirect(base_url());
         }
     }

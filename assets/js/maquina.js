@@ -123,6 +123,43 @@ function novoIp(){
     });
 }
 
+//Visualizar inventario
+function visualizarInventarioIp(ancor){
+    //apaga todas as rows da tabela da modal
+    $(".row-programas").remove();
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"maquina/visualizarInventario",
+        //Dados
+        data:{
+            "idmaquina":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#nomeMaquinaInventario").html(msg.nome);
+                $("#nomeSistemaInventario").html(msg.sistema);
+                for (i = 0; i < msg.programas.length; i++) { 
+                    $("#corpoTabelaListaProgramas").append(
+                            '<tr class="row-programas">'+
+                                '<td>'+msg.programas[i].nome+'</td>'+
+                                '<td>'+msg.programas[i].versao+'</td>'+
+                            '<tr>'
+                            );
+                }
+            }
+            else{
+                $("#erro-visusalizar-inventario").html(msg.erro);
+            }
+        }
+    });
+}
+
 //VALIDAÇÔES
 //Nova maquina
 $('#frmCriMaquina').validate({    

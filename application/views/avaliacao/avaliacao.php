@@ -32,7 +32,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div> <!-- fim row -->
     
     <!-- painel listando pinpads -->
-    <?php if (isset($lista)) {?>
+    <?php if (!empty($lista)) {?>
     <div class="panel panel-primary">
         <!-- cabeçalho painel -->
         <div class="panel-heading">

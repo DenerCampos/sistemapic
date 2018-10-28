@@ -65,6 +65,8 @@ $route['admin/email_conf_admin/(:num)'] = 'admin/email_conf_admin';
 $route['admin/local_maquina_admin/(:num)'] = 'admin/local_maquina_admin';
 $route['admin/tipo_maquina_admin/(:num)'] = 'admin/tipo_maquina_admin';
 $route['admin/maquina_admin/(:num)'] = 'admin/maquina_admin';
+$route['admin/grupo_checklist_admin/(:num)'] = 'admin/grupo_checklist_admin';
+$route['admin/equipamento_checklist_admin/(:num)'] = 'admin/equipamento_checklist_admin';
 
 //Ocorrencia
 $route['ocorrencia/buscar/(:any)'] = 'ocorrencia/buscar/$1';

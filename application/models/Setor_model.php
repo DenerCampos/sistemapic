@@ -111,7 +111,7 @@ class Setor_model extends CI_Model {
         }
     }
     
-    //Verifica se setor esta ativa
+    //Verifica se esta ativa
     public function verificaAtivo($id){
         $query = $this->db->query(
                 "SELECT *
@@ -125,7 +125,7 @@ class Setor_model extends CI_Model {
             return FALSE;
         }
     }
-    
+        
     //Desativa setor
     public function desativaSetor($id){
         $dados = array(

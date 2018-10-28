@@ -17,10 +17,11 @@ class Maquina extends CI_Controller {
         //verifica nivel usuario
         $this->verificaNivel();
         //carregando modelo
-        $this->load->model('maquina_model', 'maquina');
-        $this->load->model('tipo_model', 'tipo');
-        $this->load->model('local_model', 'local');
-        $this->load->model('unidade_model', 'unidade');
+        $this->load->model('Maquina_model', 'maquina');
+        $this->load->model('Tipo_model', 'tipo');
+        $this->load->model('Local_model', 'local');
+        $this->load->model('Unidade_model', 'unidade');
+        $this->load->model("Software_model", "software");
     }
     
     
@@ -40,6 +41,7 @@ class Maquina extends CI_Controller {
             "local" => new Local_model(),
             "tipo" => new Tipo_model(),
             "unidade" => new Unidade_model(),
+            "software" => new Software_model(),
             "mPicPampulha" => $this->ordenaPorIP($this->maquina->buscaTodasPorUnidade(1)),
             "mPicCidade" => $this->ordenaPorIP($this->maquina->buscaTodasPorUnidade(2)),
             //"maquinas" => $this->maquina->buscaTodas(6, $this->recuperaOffset()),
@@ -52,6 +54,8 @@ class Maquina extends CI_Controller {
             "locais" => $this->local->todosLocais(),
             "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
+        $this->load->view('maquinas/visualizar-inventario', array(
+            "assetsUrl" => base_url("assets")));
         $this->load->view('maquinas/editar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
@@ -470,6 +474,30 @@ class Maquina extends CI_Controller {
         } else {
             $mgs = array(
                 "erro" => "Não existe mais IP disponivel"
+            );
+            echo json_encode($mgs);
+        }
+        //WARNNING: requisição ajax é recuperada por impressão
+        exit();
+    }
+    
+    //Visualizar inventario ajax
+    public function visualizarInventario(){
+        //Recupera Id maquina
+        $id = $this->input->post("idmaquina");
+        $maquina = $this->maquina->buscaMaquinaId($id);
+        $programas = $this->software->todosPorIdMaquina($id);
+        
+        if (isset($maquina)){
+            $mgs = array(
+                "nome" => $maquina->getNome(),
+                "sistema" => $maquina->getSistema(),
+                "programas" => $programas
+            );
+            echo json_encode($mgs);
+        } else {
+            $mgs = array(
+                "erro" => "Maquina não encontrada"
             );
             echo json_encode($mgs);
         }

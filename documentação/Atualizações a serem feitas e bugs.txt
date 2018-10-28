@@ -1,29 +1,28 @@
-<map name="image-map">
-    <area target="" alt="Secretaria" title="Secretaria" href="" coords="342,226,11" shape="circle">
-    <area target="" alt="Nucleo" title="Nucleo" href="" coords="379,129,10" shape="circle">
-    <area target="" alt="Suprimentos" title="Suprimentos" href="" coords="624,146,12" shape="circle">
-    <area target="" alt="Contabilidade" title="Contabilidade" href="" coords="648,143,11" shape="circle">
-    <area target="" alt="Tesouraria" title="Tesouraria" href="" coords="671,144,11" shape="circle">
-    <area target="" alt="Academia" title="Academia" href="" coords="630,188,11" shape="circle">    
-    <area target="" alt="TI" title="TI" href="" coords="664,183,11" shape="circle">
 
-    <area target="" alt="11" title="11" href="" coords="33,178,12" shape="circle">
-    <area target="" alt="10" title="10" href="" coords="95,182,13" shape="circle">
-    <area target="" alt="9" title="9" href="" coords="132,262,12" shape="circle">
-    <area target="" alt="8" title="8" href="" coords="181,216,11" shape="circle">
-    <area target="" alt="14" title="14" href="" coords="197,294,12" shape="circle">
-    <area target="" alt="13" title="13" href="" coords="241,384,13" shape="circle">
-    <area target="" alt="12" title="12" href="" coords="333,356,12" shape="circle">
-    <area target="" alt="6" title="6" href="" coords="299,252,11" shape="circle">
-    <area target="" alt="7" title="7" href="" coords="283,175,12" shape="circle">
-    <area target="" alt="4" title="4" href="" coords="349,196,12" shape="circle">
-    <area target="" alt="16" title="16" href="" coords="401,184,13" shape="circle">
-    <area target="" alt="3" title="3" href="" coords="501,159,12" shape="circle">
-    <area target="" alt="5" title="5" href="" coords="334,54,12" shape="circle">
-    <area target="" alt="15" title="15" href="" coords="388,51,13" shape="circle">
-    <area target="" alt="1" title="1" href="" coords="625,43,13" shape="circle">
-    <area target="" alt="2" title="2" href="" coords="665,60,12" shape="circle">
-</map>
+#GIT
+    - Primeiro fazer o comit
+    - Remoto > Expandir
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+#Nova Versão (2.3)	- Alterei rotas
+			- Criado nova pasta para amarzenar relatorios do checklist (document\checklist)
+			- Criado novas tabelas no BD
+			- Criado um arquivo de LOTE para atualizar o inventario de softwares 1 vez por mês
+	
+#bugs
+    - Usuario
+	01- Na criação do usuario esta sendo criado sem acesso a modulo nenhum. (OK)
+    - Admin
+	01- No locais de maquina aparecer na listagem se é de patrimonio. (OK)
+
+#melhorias
+    - Checklist
+	01- Criar novo modulo de checklist. Criar grupo de equipamentos a serem checados, EX: grupo catracas, dentro do grupo criar os equipamentos. ter uma tabela de itens de check list, equipamento, grupo e checklist(OK)
+    - Maquinas (IP)
+	01- Adicionar pelo nome das maquinas os softwares instaladas nelas puxando pelo aquivo que esta em \\jaguar\Inventario que é feito pelo netlogon do windows, puxar no sistema operacional e os programas instalados. (OK)
+
+--------------------------------------------------------------------------------------------------------------------------------
 
 
 #Nova Versão (2.2) 	- Alteração no BD (Local, acesso)

@@ -4,6 +4,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Codigo html  -->
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h1 class=""><strong>#Notas Versão (2.3)</strong></h1>
+    <div class="">        
+        <h2>-Melhorias</h2>
+        <h3><u>Checklist</u></h3>
+        <p>01- Novo modulo adicionado, criado grupo e equipamentos na area de Admin para fazer o checklist.</p>
+        <h3><u>Maquinas (IP)</u></h3>
+        <p>01-  Adicionado inventario de maquina. Pelo nome das maquinas capturado pelo arquivo que é feito pelo netlogon do windows, captura o sistema operacional e os programas instalados.</p>      
+    </div>    
+    <div class="">
+        <h2>-Bugs</h2>
+        <h3><u>Usuario</u></h3>
+        <p>01- Corrigido erro na criaçao de novo usuário</p>
+        <h3><u>Admin</u></h3>
+        <p>01- Locais de maquinas agora aparece se é um local de patrimonio</p>
+    </div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h1 class=""><strong>#Notas Versão (2.2)</strong></h1>
     <div class="">        
         <h2>-Melhorias</h2>

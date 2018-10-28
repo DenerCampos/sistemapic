@@ -1,5 +1,5 @@
 /* 
- * Funções JS para parte de caixa
+ * Funções JS para parte de avaliação
  * Autor: Dener Campos
  */
 

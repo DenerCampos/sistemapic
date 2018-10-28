@@ -78,6 +78,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td><?php echo $local->buscaId($maquina->getIdlocal())->getNome(); ?></td>
                                     <td><?php echo $tipo->buscaId($maquina->getIdtipo())->getNome(); ?></td>
                                     <td class="text-right">
+                                        
+                                        <?php if ($software->verificaInventario($maquina->getIdmaquina())) {?>
+                                        <!-- visualizar inventario -->
+                                        <a href="#" title="Visualizar inventário software" role="button" href="#mdlVisualizaInventario" 
+                                           data-toggle="modal" data-target="#mdlVisualizaInventario"
+                                           data-id="<?php echo $maquina->getIdmaquina(); ?>"
+                                           onclick="visualizarInventarioIp(this)">
+                                            <i class="fa fa-book" aria-hidden="true"></i>
+                                        </a>
+                                        <?php } ?>
 
                                         <!-- editar -->
                                         <a href="#" title="Editar" role="button" href="#mdlEditarMaquina" 

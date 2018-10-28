@@ -1,0 +1,97 @@
+body{
+    margin: 15px;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+.cabecalho-avaliacao{    
+    height: 100px;
+    width: auto;
+    margin-bottom: 20px;
+    background: -webkit-linear-gradient(#ffffff, #95ceff); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#ffffff, #95ceff); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#ffffff, #95ceff); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#ffffff, #95ceff);
+}
+
+.imagem-cabecalho{
+    float: left;
+    height: 100px;
+    width: 100px;
+}
+
+.logo{
+    height: 80px;
+    width: auto;
+    padding-left: 20px;
+    padding-top: 10px;
+    display: block;
+}
+
+.texto-cabecalho{
+    padding-left: 20px;
+    padding-top: 33px;
+    font-size: 25px;
+    font-weight: bold;
+    float: left;
+    display: block;
+    width: 330px;
+}
+
+.texto-cabecalho-info{
+    float: left;
+    font-size: 15px;
+    text-align: right;
+    padding-right: 20px;
+    padding-top: 20px;
+}
+
+
+table{    
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+td{
+    padding: 1px;
+}
+
+th{
+    padding: 5px;
+}
+
+table, th, td {
+    border-collapse: collapse;
+    border-bottom: 1px solid black;
+}
+
+.th-concluido{
+    width: 100px;
+}
+
+.info{
+    background-color: #95ceff;
+    text-align: center;
+}
+
+.active{
+    background-color: #dad9d9;
+    text-align: center;
+}
+
+.waring{
+    background-color: #fff8c8;
+    text-align: left;
+}
+
+.text-center{
+    text-align: center;
+}
+
+.assinatura{
+    padding-top: 100px;
+}
+
+.img-chk{
+    width: 18px;
+}

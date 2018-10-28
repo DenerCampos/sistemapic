@@ -605,3 +605,34 @@ input[type=file] {
     height: 210px;
     margin: auto;
 }
+
+/* CHECKLIST */
+/*ckeckbox alinhado*/
+.chk-center{
+    width: 100%;
+}
+
+/* MAQUINAS */
+/*Nome maquina*/
+.nome-maquina-inventario{
+    background-color: #337ab7;
+    padding: 5px 10px;
+    font-weight: bolder;
+    font-size: large;
+    color: aliceblue;
+}
+/*Nome sistema*/
+.nome-sistema-inventario{
+    background-color: #d9edf7;
+    padding: 5px 20px;
+    color: #000;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+/*Lista programas*/
+.lista-programas-inventario{
+    /* border-bottom: 1px solid black; */
+    color: #777;
+    padding: 8px 20px;
+}

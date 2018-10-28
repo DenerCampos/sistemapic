@@ -4,7 +4,7 @@ class Base_model extends CI_Model {
 
     /**
      * Base para arquivo model
-     * 
+     * @description:
      * @autor: Dener Junio
      *
      */
@@ -60,13 +60,12 @@ class Base_model extends CI_Model {
     /*------Funções internas--------*/ 
     //Retorna objeto
     private function getObjByRow($r){
-        //cria novo objeto
-        $base = new Base_model();
+         //cria novo objeto
+        $objeto = new Base_model();
         //atribue valores do resultado
-        $base->setBase($r->base);
-        $base->setExemplo($r->exemplo);
+        $objeto->setBase($r->base);
         
-        return $base;
+        return $objeto;
     }
     
     //Recuperar um array de objetos sob uma resposta de query

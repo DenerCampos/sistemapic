@@ -507,10 +507,14 @@ function editarLocal(ancor){
                 $("#selEdtShape").val(msg.shape);
                 $("#iptEdtCoords").val(msg.coords);
                 if (msg.caixa === "1"){
-                    $("#chkEdtCaixa").attr("checked", "1");
+                    $("#chkEdtCaixa").prop('checked', true);
+                } else{
+                    $("#chkEdtCaixa").prop('checked', false);
                 }
                 if (msg.patrimonio === "1"){
-                    $("#chkEdtPatrimonio").attr("checked", "1");
+                    $("#chkEdtPatrimonio").prop('checked', true);
+                } else{
+                    $("#chkEdtPatrimonio").prop('checked', false);
                 }
                 $("#selEdtEstado").val(msg.estado);
             }
@@ -875,6 +879,173 @@ function ativarUsuario(ancor){
                 $("#iptAtvId").val(msg.idusuario);
                 $("#iptAtvNome").val(msg.nome);
                 $("#iptAtvEmail").val(msg.login);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
+//CRUD GRUPO CHECKLIST
+//Edição de grupo
+function editarGrupo(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"admin/grupo_checklist_admin/editarGrupo",
+        //Dados
+        data:{
+            "idgrupo":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptEdtId").val(msg.idgrupo);
+                $("#iptEdtNome").val(msg.nome);
+                $("#selEdtEstado").val(msg.estado);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
+//Remover grupo
+function removerGrupo(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"admin/grupo_checklist_admin/removerGrupo",
+        //Dados
+        data:{
+            "idgrupo":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptRmvId").val(msg.idgrupo);
+                $("#iptRmvNome").val(msg.nome);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
+//ativar grupo
+function ativarGrupo(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"admin/grupo_checklist_admin/ativarGrupo",
+        //Dados
+        data:{
+            "idgrupo":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptAtvId").val(msg.idgrupo);
+                $("#iptAtvNome").val(msg.nome);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
+//CRUD EQUIPAMENTO CHECKLIST
+//Edição de equipamento
+function editarEquipamento(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"admin/equipamento_checklist_admin/editarEquipamento",
+        //Dados
+        data:{
+            "idequipamento":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptEdtId").val(msg.idequipamento);
+                $("#iptEdtNome").val(msg.nome);
+                $("#selEdtGrupo").val(msg.grupo);
+                $("#selEdtEstado").val(msg.estado);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
+//Remover equipamento
+function removerEquipamento(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"admin/equipamento_checklist_admin/removerEquipamento",
+        //Dados
+        data:{
+            "idequipamento":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptRmvId").val(msg.idequipamento);
+                $("#iptRmvNome").val(msg.nome);
+            }
+            else{
+                $("#alert").val(msg.erro).show;
+            }
+        }
+    });
+}
+
+//ativar equipamento
+function ativarEquipamento(ancor){
+    
+    $.ajax({
+        //tipo de requisição
+        type:"post",
+        //URL a ser invocada
+        url:baseUrl+"admin/equipamento_checklist_admin/ativarEquipamento",
+        //Dados
+        data:{
+            "idequipamento":$(ancor).attr("data-id")
+        },
+        //tipo de formato de dados
+        dataType:"json",
+        //se tudo ocorrer bem
+        success:function(msg){
+            if(!msg.erro){
+                $("#iptAtvId").val(msg.idequipamento);
+                $("#iptAtvNome").val(msg.nome);
             }
             else{
                 $("#alert").val(msg.erro).show;

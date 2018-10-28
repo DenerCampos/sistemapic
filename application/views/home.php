@@ -15,6 +15,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
 </div>
 <div class="versao">
-    <a href="<?php echo base_url('home/versao'); ?>">Versão: 2.2 - Dener Campos.</a>
+    <a href="<?php echo base_url('home/versao'); ?>">Versão: 2.3 - Dener Campos.</a>
 </div>
     </div>

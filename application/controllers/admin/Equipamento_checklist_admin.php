@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Setor_admin extends CI_Controller {
+class Equipamento_checklist_admin extends CI_Controller {
 
     /**
-     * Setor_admin.
-     * @descripition Controlador setorres do pic (EX: TI, Fiscal)
+     * Equipamento_checklist_admin.
+     * @descripition Equipamentos a serem estados no checklist que pertence a algum grupo
      * @author Dener Junio
      * 
      */
@@ -16,7 +16,8 @@ class Setor_admin extends CI_Controller {
         //verifica nivel usuario
         $this->verificaNivel();
         //carregando modelo
-        $this->load->model('Setor_model', 'setor');
+        $this->load->model('Equipamento_checklist_model', 'equipamento');   
+        $this->load->model('Grupo_checklist_model', 'grupo');   
         $this->load->model('estado_model', 'estado');
     }
     
@@ -33,24 +34,27 @@ class Setor_admin extends CI_Controller {
         //Carrega menu
         $this->load->view('admin/menu', array(
             "assetsUrl" => base_url("assets"),
-            "ativo" => "setores"));
-        //Carrega setores
-        $this->load->view('admin/setores/setores', array(
+            "ativo" => "equipamento"));
+        //Carrega equipamento
+        $this->load->view('admin/checklist/equipamento', array(
             "assetsUrl" => base_url("assets"),
             "estado" => new Estado_model(),
-            "setores" => $this->setor->todosSetoresAdm(7, $this->recuperaOffset()),
-            "paginas" => $this->listarSetores()));
+            "grupo" => new Grupo_checklist_model(),
+            "lista" => $this->equipamento->todosEquipamentoAdmin(7, $this->recuperaOffset()),
+            "paginas" => $this->listarEquipamento()));
         //Modal
-        $this->load->view('admin/setores/criar-setores', array(
+        $this->load->view('admin/checklist/criar-equipamento', array(
+            "assetsUrl" => base_url("assets"),
+            "grupo" => $this->grupo->todosGrupos(),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/checklist/editar-equipamento', array(
+            "assetsUrl" => base_url("assets"),
+            "grupo" => $this->grupo->todosGrupos(),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/checklist/remover-equipamento', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/editar-setores', array(
-            "assetsUrl" => base_url("assets"),
-            "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/remover-setores', array(
-            "assetsUrl" => base_url("assets"),
-            "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/ativar-setores', array(
+        $this->load->view('admin/checklist/ativar-equipamento', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
@@ -72,9 +76,6 @@ class Setor_admin extends CI_Controller {
         $this->load->view('mensagens/erro', array(
             "assetsUrl" => base_url("assets"),
             "msgerro" => $msg));
-        //Modal
-        $this->load->view("usuario/criar-usuario", array( 
-            "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
@@ -97,8 +98,6 @@ class Setor_admin extends CI_Controller {
             "uri" => $uri
                 ));
         //Modal
-        $this->load->view("usuario/criar-usuario", array( 
-            "assetsUrl" => base_url("assets")));
         //Carrega fechamento html
         $this->load->view("_html/rodape", array( 
             "assetsUrl" => base_url("assets"), 
@@ -117,24 +116,27 @@ class Setor_admin extends CI_Controller {
         //Carrega menu
         $this->load->view('admin/menu', array(
             "assetsUrl" => base_url("assets"),
-            "ativo" => "setores"));
-        //Carrega setores
-        $this->load->view('admin/setores/setores', array(
+            "ativo" => "equipamento"));
+        //Carrega equipamento
+        $this->load->view('admin/checklist/equipamento', array(
             "assetsUrl" => base_url("assets"),
             "estado" => new Estado_model(),
+            "grupo" => new Grupo_checklist_model(),
             "palavra" => $palavra,
             "resultados" => $resultado));
         //Modal
-        $this->load->view('admin/setores/criar-setores', array(
+        $this->load->view('admin/checklist/criar-equipamento', array(
+            "assetsUrl" => base_url("assets"),
+            "grupo" => $this->grupo->todosGrupos(),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/checklist/editar-equipamento', array(
+            "assetsUrl" => base_url("assets"),
+            "grupo" => $this->grupo->todosGrupos(),
+            "estados" => $this->estado->todosEstados()));
+        $this->load->view('admin/checklist/remover-equipamento', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/editar-setores', array(
-            "assetsUrl" => base_url("assets"),
-            "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/remover-setores', array(
-            "assetsUrl" => base_url("assets"),
-            "estados" => $this->estado->todosEstados()));
-        $this->load->view('admin/setores/ativar-setores', array(
+        $this->load->view('admin/checklist/ativar-equipamento', array(
             "assetsUrl" => base_url("assets"),
             "estados" => $this->estado->todosEstados()));
         //Carrega fechamento html
@@ -145,35 +147,38 @@ class Setor_admin extends CI_Controller {
     
     /*------Requisições--------*/
     //Criar 
-    public function criarSetor(){
+    public function criarEquipamento(){
         //recupera dados
-        $nome = $this->input->post("iptCriNome");
-        $estado = $this->input->post("selCriEstado");
+        //aqui
+        $nome = trim($this->input->post("iptCriNome"));
+        $estado = trim($this->input->post("selCriEstado"));
+        $grupo = trim($this->input->post("selCriGrupo"));
+        $uri = "admin/equipamento_checklist_admin";
         
         //verifica dados
-        if (!$this->setor->setorExiste($nome)){
-            //cria area
-            $this->setor->newSetor($nome, $this->geraEstado($estado));
-            $this->setor->addSetor();
+        if (!$this->equipamento->existe($nome)){
+            //cria novo($nome, $idgrupo_checklist, $idestado)
+            $this->equipamento->novo($nome, $this->geraGrupo($grupo), $this->geraEstado($estado));
+            $this->equipamento->adiciona();
             //Log
-            $this->gravaLog("ADMIN criação setor", "setor criado: ".$nome);
-            redirect(base_url('admin/setor_admin'));
+            $this->gravaLog("ADMIN criação equipamento checklist", "equipamento criado: ".$nome);
+            $this->mensagem("Equipamento <strong>".$nome."</strong> criado.", $uri);
         }else{
             //Log
-            $this->gravaLog("ADMIN erro criação setor", "tentativa de criar setor: ".$nome);
-            echo'erro ao criar area';
+            $this->gravaLog("ADMIN erro criação equipamento checklist", "tentativa de criar equipamento: ".$nome);
+            $this->erro("Erro ao criar o equipamento de nome: <strong>".$nome."</strong>.");
         }
     }
     
     //Paginação 
-    public function listarSetores(){
+    public function listarEquipamento(){
         //Configuração da paginação codeigniter
         $config = array(
-            "base_url" => base_url('admin/setor_admin'),
+            "base_url" => base_url('admin/equipamento_checklist_admin'),
             "per_page" => 7,
             "num_links" => 3,
             "uri_segment" => 3,
-            "total_rows" => $this->setor->contarTodos(),
+            "total_rows" => $this->equipamento->contarTodos(),
             "full_tag_open" => "<ul class='pagination'>",
             "full_tag_close" => "</ul>",
             "first_link" => FALSE,
@@ -200,65 +205,68 @@ class Setor_admin extends CI_Controller {
         return $paginas;
     }
     
-    //Atualiza setor
-    public function atualizaSetor(){
+    //Atualiza 
+    public function atualizaEquipamento(){
         //recuperando dados do setor
-        $id = $this->input->post("iptEdtId");
-        $nome = $this->input->post("iptEdtNome");
-        $estado = $this->input->post("selEdtEstado");
-        $url = $this->input->post("iptEdtUrl");
+        $id = trim($this->input->post("iptEdtId"));
+        $nome = trim($this->input->post("iptEdtNome"));
+        $estado = trim($this->input->post("selEdtEstado"));
+        $grupo = trim($this->input->post("selEdtGrupo"));
+        $uri = trim($this->input->post("iptEdtUrl"));
         
         //verifica dados
-        if (!$this->setor->verificaSetorAtualiza($id, $nome)){
-            //atualiza setor
-            $this->setor->atualizaSetor($id, $nome, $this->geraEstado($estado));
+        if (!$this->equipamento->verificaAtualiza($id, $nome)){ 
+            //atualiza atualiza($id, $nome, $idgrupo_checklist, $idestado)
+            $this->equipamento->atualiza($id, $nome, $this->geraGrupo($grupo), $this->geraEstado($estado));
             //Log
-            $this->gravaLog("ADMIN alteração setor", "setor alterado: ".$nome);
-            redirect($url);
+            $this->gravaLog("ADMIN alteração equipamento", "equipamento alterado: ".$nome);
+            $this->mensagem("Grupo <strong>".$nome."</strong> alterado.", $uri);
         }else{
             //Log
-            $this->gravaLog("ADMIN erro alteração setor", "tentativa de alterar setor: ".$nome);
-            echo'erro ao alterar setor';
+            $this->gravaLog("ADMIN erro alteração equipamento", "tentativa de alterar equipamento: ".$nome);
+            $this->erro("Erro ao alterar o equipamento de nome: <strong>".$nome."</strong>.");
         }            
     }
     
-    //Desabilitar setor
-    public function desabilitaSetor(){
+    //remove grupo caso não tenha dependcia
+    public function removeEquipamento(){
         //recupera id setor
-        $id = $this->input->post("iptRmvId");
-        $url = $this->input->post("iptRmvUrl");
+        $id = trim($this->input->post("iptRmvId"));
+        $uri = trim($this->input->post("iptRmvUrl"));
         
-        //verifica se setor existe e esta ativo
-        if ($this->setor->verificaAtivo($id)){
-            //desativa setor
-            $this->setor->desativaSetor($id);
+        //busca grupo
+        $grupo = $this->equipamento->buscaId($id);        
+        //verifica se pode ser removido
+        if ($this->equipamento->verificaRemover($id)){            
+            //remove 
+            $this->equipamento->remove($id);
             //Log
-            $this->gravaLog("ADMIN desabilita setor", "setor desabilitado id: ".$id);
-            redirect($url);
+            $this->gravaLog("ADMIN remover equipamento", "equipamento removido id: ".$id." Nome: ".$grupo->getNome());
+            $this->mensagem("Equipamento <strong>".$grupo->getNome()."</strong> removido.", $uri);
         }else {
             //Log
-            $this->gravaLog("ADMIN erro desabilitar setor", "tentativa de desabilitar setor id: ".$id);
-            echo'erro ao desabilitar setor';
+            $this->gravaLog("ADMIN erro remover equipamento", "tentativa de remover equipamento id: ".$id);
+            $this->erro("Não pode remover o equipamento de nome: <strong>".$grupo->getNome()."</strong>, ele já esta sendo usado.");
         }
     }
     
     //Ativar setor
-    public function ativaSetor(){
+    public function ativaEquipamento(){
         //recupera id setor
-        $id = $this->input->post("iptAtvId");
-        $url = $this->input->post("iptAtvUrl");
+        $id = trim($this->input->post("iptAtvId"));
+        $uri = trim($this->input->post("iptAtvUrl"));
         
-        //verifica se setor existe e esta ativo
-        if ($this->setor->verificaDesativo($id)){
-            //desativa setor
-            $this->setor->ativaSetor($id);
+        //verifica se existe e esta ativo
+        if ($this->equipamento->verificaDesativo($id)){
+            //desativa 
+            $this->equipamento->ativa($id);
             //Log
-            $this->gravaLog("ADMIN ativa setor", "setor ativado id: ".$id);
-            redirect($url);
+            $this->gravaLog("ADMIN ativa equipamento checklist", "equipamento ativado id: ".$id);
+            $this->mensagem("Equipamento <strong>".$this->equipamento->buscaId($id)->getNome()."</strong> ativado.", $uri);
         }else {
             //Log
-            $this->gravaLog("ADMIN erro ativar setor", "tentativa de ativar setor id: ".$id);
-            echo'erro ao ativar setor';
+            $this->gravaLog("ADMIN erro ativar equipamento", "tentativa de ativar equipamento id: ".$id);
+            $this->erro("Erro ao ativar o equipamento de id: <strong>".$id."</strong>.");
         }
     }
     
@@ -269,36 +277,38 @@ class Setor_admin extends CI_Controller {
             $texto = trim($this->input->post("iptBusca"));
             //busca pelo texto
             if (isset($texto) && $texto != ""){
-                $this->resultado($this->setor->busca($texto), $texto);
+                $this->resultado($this->equipamento->busca($texto), $texto);
             } else if ($texto == "") {
-                $this->resultado($this->setor->busca($texto, 100), $texto);
+                $this->resultado($this->equipamento->busca($texto, 100), $texto);
             } else {
                 $this->erro("Erro ao pesquisar a palavra <strong>".$texto."</strong>");
             }            
         } catch (Exception $exc) {
             //Log
-            $this->gravaLog("erro geral ADMIN", "erro pesquisa de setores: ".$texto." erro:".$exc->getTraceAsString());
-            $this->erro("<strong>Erro Geral</strong>");
+            $this->gravaLog("erro geral ADMIN", "erro pesquisa de grupos: ".$texto." erro:".$exc->getTraceAsString());
+            $this->erro("<strong>Erro Geral</strong>: ".$exc);
         }
     }
     /*----------------Funções AJAX---------------*/
-    //Editar setor ajax
-    public function editarSetor(){
-        //Recupera Id setor
-        $id = $this->input->post("idsetor");
-        $setor = $this->setor->buscaId($id);
+    //Editar ajax
+    public function editarEquipamento(){
+        //Recupera Id 
+        $id = $this->input->post("idequipamento");
+        $equipamento = $this->equipamento->buscaId($id);
         
-        if (isset($setor)){
-            $estado = $this->estado->buscaId($setor->getIdestado());
+        if (isset($equipamento)){
+            $estado = $this->estado->buscaId($equipamento->getIdestado());
+            $grupo = $this->grupo->buscaId($equipamento->getIdgrupo_checklist());
             $mgs = array(
-                "idsetor" => $setor->getIdsetor(),
-                "nome" => $setor->getNome(),
+                "idequipamento" => $equipamento->getIdequipamento_checklist(),
+                "nome" => $equipamento->getNome(),
+                "grupo" => $grupo->getNome(),
                 "estado" => $estado->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Setor não encontrado"
+                "erro" => "Equipamento checklist não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -307,20 +317,20 @@ class Setor_admin extends CI_Controller {
     }
     
     //Remover setor ajax
-    public function removerSetor(){
-        //Recupera Id setor
-        $id = $this->input->post("idsetor");
-        $setor = $this->setor->buscaId($id);
+    public function removerEquipamento(){
+        //Recupera Id 
+        $id = $this->input->post("idequipamento");
+        $equipamento = $this->equipamento->buscaId($id);
         
-        if (isset($setor)){
+        if (isset($equipamento)){
             $mgs = array(
-                "idsetor" => $setor->getIdsetor(),
-                "nome" => $setor->getNome()
+                "idequipamento" => $equipamento->getIdequipamento_checklist(),
+                "nome" => $equipamento->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Setor não encontrado"
+                "erro" => "Equipamento não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -329,20 +339,20 @@ class Setor_admin extends CI_Controller {
     }
     
     //Ativar area ajax
-    public function ativarSetor(){
-        //Recupera Id setor
-        $id = $this->input->post("idsetor");
-        $setor = $this->setor->buscaId($id);
+    public function ativarEquipamento(){
+       //Recupera Id 
+        $id = $this->input->post("idequipamento");
+        $equipamento = $this->equipamento->buscaId($id);
         
-        if (isset($setor)){
+        if (isset($equipamento)){
             $mgs = array(
-                "idsetor" => $setor->getIdsetor(),
-                "nome" => $setor->getNome()
+                "idequipamento" => $equipamento->getIdequipamento_checklist(),
+                "nome" => $equipamento->getNome()
             );
             echo json_encode($mgs);
         } else {
             $mgs = array(
-                "erro" => "Setor não encontrado"
+                "erro" => "Equipamento não encontrado"
             );
             echo json_encode($mgs);
         }
@@ -363,6 +373,11 @@ class Setor_admin extends CI_Controller {
     //busca estado
     private function geraEstado($estado){
         return $this->estado->buscaNome($estado)->getIdestado();
+    }
+    
+    //busca estado
+    private function geraGrupo($grupo){
+        return $this->grupo->buscaNome($grupo)->getIdgrupo_checklist();
     }
 
     //Grava log no BD
@@ -389,16 +404,16 @@ class Setor_admin extends CI_Controller {
             //verifica nivel de acesso
             if ($this->session->userdata('nivel') != '0'){
                 //grava log
-                $this->gravaLog("tentativa de acesso", "acesso ao controlador Setor_adim.php");
+                $this->gravaLog("tentativa de acesso", "acesso ao controlador Grupo_checklist_admin.php");
                 redirect(base_url());
             } else {
                 //acesso permitido
                 //grava log
-                $this->gravaLog("acesso", "acesso ao controlador Setor_adim.php");
+                $this->gravaLog("acesso", "acesso ao controlador Grupo_checklist_admin.php");
             }
         } else {
             //grava log
-            $this->gravaLog("tentativa de acesso", "acesso ao controlador Setor_adim.php");
+            $this->gravaLog("tentativa de acesso", "acesso ao controlador Grupo_checklist_admin.php");
             redirect(base_url());
         }
     }

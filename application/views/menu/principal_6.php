@@ -54,9 +54,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <li>
                             <a class="navbar-link" href="<?php echo base_url('relatorio/tecnico'); ?>" >Relatório por técnico</a>
                         </li>
-                        <li>
-                            <a class="navbar-link" href="<?php echo base_url('checklist'); ?>" >Relatório check-list</a>
-                        </li>
                     </ul>
                 </li>
                 <?php } ?>

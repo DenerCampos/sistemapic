@@ -428,7 +428,7 @@ class Avaliacao extends CI_Controller {
         }
     } 
     
-    //Enviar email
+    //PDF
     public function pdf(){
         //recupera dados
         $idavaliacao;
@@ -1293,23 +1293,7 @@ class Avaliacao extends CI_Controller {
             "aerobicar" => $this->aerobicar->BuscarPorIdaerobica($this->aerobica->BuscarPorIdavaliacao($idavaliacao)->getIdaerobica()),
             "aerobicazt" => $this->aerobicazt->BuscarPorIdaerobica($this->aerobica->BuscarPorIdavaliacao($idavaliacao)->getIdaerobica())
                 ), TRUE);  
-//            
-//            $this->load->view("avaliacao/relatorio", array( 
-//            "assetsUrl" => base_url("assets"),
-//            "avaliacao" => $avaliação,
-//            "aluno" => $this->aluno->buscaPorId($avaliação->getIdaluno()),
-//            "clinico" => $this->clinico->BuscarPorIdavaliacao($idavaliacao),
-//            "bioimpedancia" => $this->bioimpedancia->BuscarPorIdavaliacao($idavaliacao),
-//            "antropometria" => $this->antropometria->BuscarPorIdavaliacao($idavaliacao),
-//            "fisioterapico" => $this->fisioterapico->BuscarPorIdavaliacao($idavaliacao),
-//            "aerobica" => $this->aerobica->BuscarPorIdavaliacao($idavaliacao),
-//            "aerobicat" => $this->aerobicat->BuscarPorIdaerobica($this->aerobica->BuscarPorIdavaliacao($idavaliacao)->getIdaerobica()),
-//            "aerobicar" => $this->aerobicar->BuscarPorIdaerobica($this->aerobica->BuscarPorIdavaliacao($idavaliacao)->getIdaerobica()),
-//            "aerobicazt" => $this->aerobicazt->BuscarPorIdaerobica($this->aerobica->BuscarPorIdavaliacao($idavaliacao)->getIdaerobica())
-//                ));  
-
         }
-        //var_export($paginas);
         return $paginas;
     }
     

@@ -46,6 +46,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 class="<?php if (isset($ativo) && ($ativo == 'tipomaquinas')){ echo 'active';} ?>">
                 <a href="<?php echo base_url('admin/tipo_maquina_admin') ?>">Tipo de maquinas</a>
             </li>
+            <li role="presentation" data-toggle="tooltip" data-placement="top" title="Cadastros dos grupos do checklist" 
+                class="<?php if (isset($ativo) && ($ativo == 'grupo')){ echo 'active';} ?>">
+                <a href="<?php echo base_url('admin/grupo_checklist_admin') ?>">Grupos checklist</a>
+            </li>
+            <li role="presentation" data-toggle="tooltip" data-placement="top" title="Cadastros dos equipamentos do checklist" 
+                class="<?php if (isset($ativo) && ($ativo == 'equipamento')){ echo 'active';} ?>">
+                <a href="<?php echo base_url('admin/equipamento_checklist_admin') ?>">Equipamentos checklist</a>
+            </li>
         </ul>
     </div>
 <!-- row fecha em outro arquivo -->

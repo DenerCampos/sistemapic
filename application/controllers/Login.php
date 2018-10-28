@@ -83,8 +83,8 @@ class Login extends CI_Controller {
                 //cria usuario
                 $this->usuario->newUsuario($nome, $login, $this->geraSenha($senha), 2, 1);
                 $this->usuario->addUsuario();
-                //cria acesso padrão novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $idusuario)
-                $this->acesso->novo(1, 0, 0, 0, 0, 1, 0, 0, 0, $this->usuario->buscaUsuario($login)->getIdusuario());
+                //cria acesso padrão novo($ocorrencia, $admin, $caixa, $manutencao, $relatorio, $usuario, $equipamento, $avaliacao, $utilitario, $patrimonio, $idusuario)
+                $this->acesso->novo(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, $this->usuario->buscaUsuario($login)->getIdusuario());
                 $this->acesso->adiciona();
                 //Log
                 $this->gravaLog("criação usuario", "usuario criado: " . $nome . " Email: " . $login);

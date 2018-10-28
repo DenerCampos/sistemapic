@@ -16,6 +16,7 @@ class Maquina_model extends CI_Model {
     var $ip; //ip da maquina
     var $login; //ultimo usuario logado na maquina
     var $descricao; //descrição, se necessario.
+    var $sistema; //sistema operacional da maquina, puxado via arquivo em \\jaguar\Inventario ou adicionado manualmente
     var $idlocal; //local aonda a maquina se encontra no map pic
     var $idtipo; //tipo de maquina, ex: CAIXAS, SERVIDORES, USUARIO, IMPRESSORA.
     var $idunidade; //unidade em que se encontra a maquina
@@ -27,7 +28,7 @@ class Maquina_model extends CI_Model {
     
     /*------Requisições--------*/
     //instancia novo ip
-    public function newMaquina($nome, $ip, $idlocal, $idtipo, $idunidade, $login = NULL, $descricao = NULL){
+    public function newMaquina($nome, $ip, $idlocal, $idtipo, $idunidade, $login = NULL, $descricao = NULL, $sistema = NULL){
         $this->setNome($nome);
         $this->setIp($ip);
         if (isset($login)){
@@ -35,6 +36,9 @@ class Maquina_model extends CI_Model {
         }
         if (isset($descricao)){
             $this->setDescricao($descricao);
+        }
+        if (isset($sistema)){
+            $this->setSistema($sistema);
         }
         $this->setIdlocal($idlocal);
         $this->setIdtipo($idtipo);
@@ -47,11 +51,12 @@ class Maquina_model extends CI_Model {
     }
 
     //atualiza maquina
-    public function atualizaMaquina($id, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade){
+    public function atualizaMaquina($id, $nome, $login, $descricao, $sistema, $idlocal, $idtipo, $idunidade){
         $dados = array(
             "nome" => $nome,
             "login"=> $login,
             "descricao" => $descricao,
+            "sistema" => $sistema,
             "idlocal" => $idlocal,
             "idtipo" => $idtipo,
             "idunidade" => $idunidade,
@@ -62,7 +67,7 @@ class Maquina_model extends CI_Model {
         $this->db->update('maquina');
     }
     
-    //atualiza maquina arquivo txt
+    //atualiza maquina arquivo txt (somente IP dos caixas)
     public function atualizaMaquinaArquivo($id, $nome, $login, $descricao){
         $dados = array(
             "nome" => $nome,
@@ -76,12 +81,24 @@ class Maquina_model extends CI_Model {
         $this->db->update('maquina');
     }
     
+    //atualiza sistema operacional da maquina (via arquivo)
+    public function atualizaSoftware($id, $sistema){
+        $dados = array(
+            "sistema" => $sistema
+        );
+        //atualiza no db
+        $this->db->set($dados);
+        $this->db->where('idmaquina', $id);
+        $this->db->update('maquina');
+    }
+    
     //cria maquina
-    public function criaMaquina($ip, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade){
+    public function criaMaquina($ip, $nome, $login, $descricao, $sistema, $idlocal, $idtipo, $idunidade){
         $dados = array(
             "nome" => $nome,
             "login"=> $login,
             "descricao" => $descricao,
+            "sistema" => $sistema,
             "idlocal" => $idlocal,
             "idtipo" => $idtipo,
             "idunidade" => $idunidade,
@@ -98,6 +115,7 @@ class Maquina_model extends CI_Model {
             "nome" => "LIVRE",
             "login" => NULL,
             "descricao" => NULL,
+            "sistema" => NULL,
             "idlocal" => $idlocal,
             "idtipo" => $idtipo,
             
@@ -145,7 +163,7 @@ class Maquina_model extends CI_Model {
     //Busca maquina por caracter (CAIXA)
     public function buscaMaquinaTermo($termo){
         $query = $this->db->query(
-                "SELECT maquina.idmaquina, maquina.nome, maquina.ip, maquina.login, maquina.descricao, maquina.idlocal, maquina.idtipo, maquina.idunidade
+                "SELECT maquina.idmaquina, maquina.nome, maquina.ip, maquina.login, maquina.descricao, maquina.sistema, maquina.idlocal, maquina.idtipo, maquina.idunidade
                 FROM maquina 
                 INNER JOIN tipo
                 ON maquina.idtipo = tipo.idtipo
@@ -393,6 +411,7 @@ class Maquina_model extends CI_Model {
         $maquina->setIp($r->ip);
         $maquina->setLogin($r->login);
         $maquina->setDescricao($r->descricao);
+        $maquina->setSistema($r->sistema);
         $maquina->setIdlocal($r->idlocal);
         $maquina->setIdtipo($r->idtipo);
         $maquina->setIdunidade($r->idunidade);
@@ -436,6 +455,10 @@ class Maquina_model extends CI_Model {
         return $this->descricao;
     }
 
+    function getSistema() {
+        return $this->sistema;
+    }
+
     function getIdlocal() {
         return $this->idlocal;
     }
@@ -466,6 +489,10 @@ class Maquina_model extends CI_Model {
 
     function setDescricao($descricao) {
         $this->descricao = $descricao;
+    }
+
+    function setSistema($sistema) {
+        $this->sistema = $sistema;
     }
 
     function setIdlocal($idlocal) {

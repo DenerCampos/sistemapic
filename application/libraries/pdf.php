@@ -142,6 +142,58 @@ class Pdf {
         $mpdf->Output($filename, "F");
         //$mpdf->Output(date("Y-m-d_his").'_impressao.pdf', 'I');
     }
+    
+    //gerando checklist
+    public function geraChecklistPDF($paginas, $css=null, $filename=null){
+        require_once("mpdf_lib/mpdf.php");
+            
+
+        $mpdf = new mPDF();
+
+        //$mpdf->allow_charset_conversion=true;
+        //$mpdf->charset_in='iso-8859-1';
+        
+        //debug
+        $mpdf->debug = TRUE;
+        $mpdf->showImageErrors = TRUE;
+
+        //Exibir a pagina inteira no browser
+        $mpdf->SetDisplayMode('fullpage');
+
+        //Cabeçalho: Seta a data/hora completa de quando o PDF foi gerado + um texto no lado direito
+        //$mpdf->SetHeader('{DATE j/m/Y H:i}|{PAGENO}/{nb}|Texto no cabeçalho');
+
+        //Rodapé: Seta a data/hora completa de quando o PDF foi gerado + um texto no lado direito
+        $mpdf->SetFooter('{DATE j/m/Y H:i}|{PAGENO}/{nb}|Check-list PIC Pampulha');
+        
+        //carrega css
+        if ($css != null){
+            $mpdf->WriteHTML($css, 1);
+        }
+        
+        //$mpdf->showImageErrors = true;
+        //Adiciaona
+        $mpdf->WriteHTML($paginas, 0);
+        
+        // define um nome para o arquivo PDF
+        if($filename == null){
+            $filename = date("Y-m-d_his").'_impressao.pdf';
+        } else {
+            $filename = './document/checklist/'.$filename.'.pdf';
+        }
+        //Gera PDF
+        $mpdf->Output($filename, "F");
+        //$mpdf->Output(date("Y-m-d_his").'_impressao.pdf', 'I');
+    }
+    
+    
+    //gerando teste em html
+    public function geraTesteHTML($paginas, $css=null, $filename=null){
+        
+        echo $paginas;
+
+        
+    }
 }
  
 /* End of file pdf.php */
