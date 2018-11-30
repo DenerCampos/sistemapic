@@ -240,7 +240,7 @@ class Checklist extends CI_Controller {
                 "para" => "ricardo.souza@pic-clube.com.br",
                 "copia" => "ti@pic-clube.com.br",
                 "assunto" => "Check-list PIC Pampulha: ".date("d/m/Y", strtotime($this->checklist->buscaId($id)->getData())),
-                "corpo" => "Prezados, boa dia! \n\nSegue em anexo o check-lista do dia: ".date("d/m/Y", strtotime($this->checklist->buscaId($id)->getData())).". \n\nAtt. \n.\n"
+                "corpo" => "Prezados, boa dia! \n\nSegue em anexo o check-lista do dia: ".date("d/m/Y", strtotime($this->checklist->buscaId($id)->getData())).". \n\nAtt. \n".$this->usuario->buscaId($this->checklist->buscaId($id)->getIdusuario())->getNome().".\n"
             );
             echo json_encode($msg);
         } else {

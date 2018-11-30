@@ -132,6 +132,7 @@ class Maquina extends CI_Controller {
             "local" => new Local_model(),            
             "tipo" => new Tipo_model(),
             "unidade" => new Unidade_model(),
+            "software" => new Software_model(),
             "palavra" => $texto,
             "mPicPampulha" => $this->ordenaPorIP($mPicPampulha),
             "mPicCidade" => $this->ordenaPorIP($mPicCidade)));
@@ -141,6 +142,8 @@ class Maquina extends CI_Controller {
             "locais" => $this->local->todosLocais(),
             "unidades" => $this->unidade->todasUnidades(),
             "tipos" => $this->tipo->todosTipos()));
+        $this->load->view('maquinas/visualizar-inventario', array(
+            "assetsUrl" => base_url("assets")));
         $this->load->view('maquinas/editar-maquinas', array(
             "assetsUrl" => base_url("assets"),
             "locais" => $this->local->todosLocais(),
@@ -230,8 +233,8 @@ class Maquina extends CI_Controller {
             $this->recuperaEditar($id, $nome, $ip, $login, $descricao, $local, $tipo, $unidade, $url);
             //verifica dados
             if (!$this->maquina->verificaMaquinaAtualiza($id, $nome)){
-                //atualiza  atualizaMaquina($id, $nome, $login, $descricao, $idlocal, $idtipo, $idunidade)
-                $this->maquina->atualizaMaquina($id, $nome, $login, $descricao, $this->geraLocal($local), $this->geraTipo($tipo), $this->geraUnidade($unidade));
+                //atualiza  atualizaMaquina($id, $nome, $login, $descricao, $sistema, $idlocal, $idtipo, $idunidade)
+                $this->maquina->atualizaMaquina($id, $nome, $login, $descricao, $this->maquina->buscaMaquinaId($id)->getSistema(), $this->geraLocal($local), $this->geraTipo($tipo), $this->geraUnidade($unidade));
                 //Log
                 $this->gravaLog("alteração maquina", "maquina alterado: ".$nome." ip: ". $ip);
                 $this->mensagem("Alteração concluída.", $url);

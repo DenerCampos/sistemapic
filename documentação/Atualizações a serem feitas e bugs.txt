@@ -5,6 +5,29 @@
 
 -------------------------------------------------------------------------------------------------------------------------------
 
+#Nova Versão (2.4)	- xxxxxxxxxxx
+	
+#bugs
+    - Maquinas
+	01- Não esta alterando o nome da maquina no editar. (OK)
+	02- Exibir o inventario no resultado da pesquisa. (OK)    
+    - Relatorio (check-list)
+	01- Não está aparecendo o nome de quem fez no e-mail do relatório. (OK)
+    - Notificação
+	01- Verificar a linha 173, aparentemente não tem a função gravarLog no controlador notificacao.php (OK)
+
+#melhorias
+    - Dashboard
+	01- Implementação de uma dashboard, mostrando chamados em aberto, em atendimento e fechados em tempo real. Colocar alguns graficos e metricas. ()
+    - Setores
+	01- Colocar o ramal nos setores e puxar automatico na criação do chamado. ()
+    - HelpDesk
+	01- Remover anexo caso necessario. ()
+	02- Ao inserir anexo, colocar no comentario automaticamente que foi inserido o anexo e os links ou o nome do anexo. ()
+	03- Ter um botão na solução ou comentario para adicionar a string (E-mail de XXX) para chamados aberto ou respondidos por e-mail. ()
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 #Nova Versão (2.3)	- Alterei rotas
 			- Criado nova pasta para amarzenar relatorios do checklist (document\checklist)
 			- Criado novas tabelas no BD

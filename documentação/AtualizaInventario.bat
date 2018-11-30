@@ -1,7 +1,7 @@
 REM DESENVOLVERDOR: Dener Junio
 REM DATA: 28-10-2018
 REM ENTRADA: Arquivos em \\jaguar\Inventario (arquivo com o mesmo nome da maquina)
-REM 		 Layout do arquivo: formato CSV
+REM 		 Layout do arquivo: formato CSV (UTF-8)
 REM 		 "linha em branco"
 REM 		 Node,Caption
 REM 		 CAIXA38,Microsoft Windows XP Professional
